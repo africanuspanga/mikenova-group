@@ -4,6 +4,21 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Target, Eye, Award, Shield, Gem, TrendingUp, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "About Us - MIKENOVA GROUP | Curated Excellence in Tanzania",
+  description:
+    "Learn about MIKENOVA GROUP, a distinctive holding company in Tanzania with 12 specialized divisions unified by uncompromising standards of luxury, precision, and excellence across consumer goods, health, trade, and infrastructure.",
+  openGraph: {
+    title: "About Us - MIKENOVA GROUP | Curated Excellence in Tanzania",
+    description:
+      "Learn about MIKENOVA GROUP, a distinctive holding company in Tanzania with 12 specialized divisions unified by uncompromising standards of luxury, precision, and excellence.",
+    url: "https://www.mikenovagroup.co.tz/about",
+    siteName: "MIKENOVA GROUP",
+    type: "website",
+  },
+}
 
 export default function AboutPage() {
   const values = [

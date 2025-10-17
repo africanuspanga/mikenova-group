@@ -18,10 +18,10 @@ export function Footer() {
           <div>
             <h4 className="font-medium text-[#F0A500] mb-4 tracking-wider">QUICK LINKS</h4>
             <ul className="space-y-2">
-              {["Home", "About", "Services", "Products", "Contact"].map((item) => (
+              {["Home", "About", "Services", "Products", "Goddess Glow", "Contact"].map((item) => (
                 <li key={item}>
                   <Link
-                    href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                    href={item === "Home" ? "/" : `/${item.toLowerCase().replace(/\s+/g, "-")}`}
                     className="text-sm text-[#A8A6A1] hover:text-[#F0A500] transition-colors"
                   >
                     {item}
@@ -53,11 +53,26 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2 text-sm text-[#A8A6A1]">
                 <Mail className="h-4 w-4 text-[#F0A500] flex-shrink-0" />
-                <span>info@mikenovagroup.com</span>
+                <span>info@mikenovagroup.co.tz</span>
+              </li>
+              <li className="flex items-center gap-2 text-sm text-[#A8A6A1]">
+                <Mail className="h-4 w-4 text-[#F0A500] flex-shrink-0" />
+                <span>mikenovagrouptz@gmail.com</span>
               </li>
               <li className="flex items-center gap-2 text-sm text-[#A8A6A1]">
                 <Phone className="h-4 w-4 text-[#F0A500] flex-shrink-0" />
-                <span>+255 XXX XXX XXX</span>
+                <span>+255 675 622 238</span>
+              </li>
+              <li className="flex items-center gap-2 text-sm text-[#A8A6A1]">
+                <Phone className="h-4 w-4 text-[#F0A500] flex-shrink-0" />
+                <a
+                  href="https://wa.me/255675622238"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#F0A500] transition-colors"
+                >
+                  WhatsApp: +255 675 622 238
+                </a>
               </li>
             </ul>
           </div>

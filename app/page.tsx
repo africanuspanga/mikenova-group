@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Sparkles, TrendingUp, Users, Award, Building2 } from "lucide-react"
+import { ArrowRight, TrendingUp, Users, Award, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Navigation } from "@/components/navigation"
@@ -115,6 +115,65 @@ export default function HomePage() {
     },
   ]
 
+  const latestArrivals = [
+    {
+      name: "Crème de la Mer",
+      brand: "La Mer",
+      category: "Cosmetics",
+      image: "/arrivals/la-mer-cream.avif",
+      description: "Iconic luxury moisturizing cream",
+    },
+    {
+      name: "Oud Wood Eau de Parfum",
+      brand: "Tom Ford",
+      category: "Cosmetics",
+      image: "/arrivals/tom-ford-oud-wood.jpg",
+      description: "Premium fragrance with gold accents",
+    },
+    {
+      name: "Submariner Watch",
+      brand: "Rolex",
+      category: "Fashion",
+      image: "/arrivals/rolex-submariner.jpg",
+      description: "Luxury timepiece with metal bracelet",
+    },
+    {
+      name: "So Kate Pumps",
+      brand: "Christian Louboutin",
+      category: "Fashion",
+      image: "/arrivals/louboutin-pumps.avif",
+      description: "Signature red sole high heels",
+    },
+    {
+      name: "Lounge Chair & Ottoman",
+      brand: "Eames",
+      category: "Furniture",
+      image: "/arrivals/eames-lounge-chair.jpg",
+      description: "Iconic mid-century modern design",
+    },
+    {
+      name: "Ashwagandha GoldPlus",
+      brand: "Himalaya Wellness",
+      category: "Pharmacy",
+      image: "/arrivals/himalaya-ashwagandha.webp",
+      description: "Premium herbal supplement",
+    },
+    {
+      name: "Prenatal Multi + DHA",
+      brand: "Nature Made",
+      category: "Pharmacy",
+      image: "/arrivals/nature-made-prenatal.jpg",
+      description: "Medical-grade prenatal vitamins",
+    },
+    {
+      name: "Evolv Blood Pressure Monitor",
+      brand: "Omron",
+      category: "Dispensary",
+      image: "/arrivals/omron-blood-pressure.webp",
+      description: "Premium wireless health monitoring",
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-[#1B1A17]">
       <Navigation />
@@ -203,11 +262,11 @@ export default function HomePage() {
                   key={index}
                   className="bg-white border-[#D4D2CC] hover:shadow-xl transition-all duration-300 overflow-hidden group"
                 >
-                  <div className="h-80 bg-white flex items-center justify-center p-8">
+                  <div className="h-80 bg-gradient-to-br from-[#FAFAF8] via-white to-[#F5F5F0] flex items-center justify-center p-8">
                     <Image
                       src={
                         index === 0
-                          ? "/products/luxury-face-serum.avif"
+                          ? "/products/luxury-face-serum-new.png"
                           : index === 1
                             ? "/products/gold-moisturizer.jpg"
                             : "/products/diamond-eye-cream.png"
@@ -215,7 +274,7 @@ export default function HomePage() {
                       alt={product.name}
                       width={400}
                       height={400}
-                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300"
+                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
                     />
                   </div>
                   <CardContent className="p-6">
@@ -242,19 +301,19 @@ export default function HomePage() {
                   key={index}
                   className="bg-white border-[#D4D2CC] hover:shadow-xl transition-all duration-300 overflow-hidden group"
                 >
-                  <div className="h-80 bg-white flex items-center justify-center p-8">
+                  <div className="h-80 bg-gradient-to-br from-[#FAFAF8] via-white to-[#F5F5F0] flex items-center justify-center p-8">
                     <Image
                       src={
                         index === 0
                           ? "/products/designer-leather-boots.jpg"
                           : index === 1
-                            ? "/products/luxury-handbag.webp"
-                            : "/products/silk-evening-dress.webp"
+                            ? "/products/luxury-handbag-new.jpg"
+                            : "/products/silk-evening-dress-new.png"
                       }
                       alt={product.name}
                       width={400}
                       height={400}
-                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300"
+                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
                     />
                   </div>
                   <CardContent className="p-6">
@@ -281,7 +340,7 @@ export default function HomePage() {
                   key={index}
                   className="bg-white border-[#D4D2CC] hover:shadow-xl transition-all duration-300 overflow-hidden group"
                 >
-                  <div className="h-80 bg-white flex items-center justify-center p-8">
+                  <div className="h-80 bg-gradient-to-br from-[#FAFAF8] via-white to-[#F5F5F0] flex items-center justify-center p-8">
                     <Image
                       src={
                         index === 0
@@ -293,7 +352,7 @@ export default function HomePage() {
                       alt={product.name}
                       width={400}
                       height={400}
-                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300"
+                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
                     />
                   </div>
                   <CardContent className="p-6">
@@ -320,7 +379,7 @@ export default function HomePage() {
                   key={index}
                   className="bg-white border-[#D4D2CC] hover:shadow-xl transition-all duration-300 overflow-hidden group"
                 >
-                  <div className="h-80 bg-white flex items-center justify-center p-8">
+                  <div className="h-80 bg-gradient-to-br from-[#FAFAF8] via-white to-[#F5F5F0] flex items-center justify-center p-8">
                     <Image
                       src={
                         index === 0
@@ -332,7 +391,7 @@ export default function HomePage() {
                       alt={product.name}
                       width={400}
                       height={400}
-                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300"
+                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
                     />
                   </div>
                   <CardContent className="p-6">
@@ -359,7 +418,7 @@ export default function HomePage() {
                   key={index}
                   className="bg-white border-[#D4D2CC] hover:shadow-xl transition-all duration-300 overflow-hidden group"
                 >
-                  <div className="h-80 bg-white flex items-center justify-center p-8">
+                  <div className="h-80 bg-gradient-to-br from-[#FAFAF8] via-white to-[#F5F5F0] flex items-center justify-center p-8">
                     <Image
                       src={
                         index === 0
@@ -371,7 +430,7 @@ export default function HomePage() {
                       alt={product.name}
                       width={400}
                       height={400}
-                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300"
+                      className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
                     />
                   </div>
                   <CardContent className="p-6">
@@ -405,7 +464,47 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 bg-[#1B1A17]">
+      <section className="relative py-24 bg-[#1B1A17] overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <Image src="/goddess-glow/natural-beauty.png" alt="Background" fill className="object-cover" />
+        </div>
+        <div className="container mx-auto px-4 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="relative h-[500px] rounded-lg overflow-hidden shadow-2xl">
+              <Image
+                src="/goddess-glow/hero-beach.png"
+                alt="Goddess Glow Brightening Body Cream"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="text-center lg:text-left">
+              <div className="inline-block bg-[#F0A500]/10 border border-[#F0A500] px-4 py-2 rounded-full mb-6">
+                <span className="text-[#F0A500] text-sm font-medium tracking-wider uppercase">Featured Product</span>
+              </div>
+              <h2 className="font-serif text-4xl md:text-6xl text-[#F0A500] mb-6">Goddess Glow</h2>
+              <p className="text-2xl md:text-3xl text-[#FAFAF8] mb-4 font-light">Brightening Body Cream</p>
+              <p className="text-lg text-[#A8A6A1] mb-8 leading-relaxed max-w-xl">
+                Experience the skincare secret trusted by thousands of women across Africa. Reveal your natural radiance
+                with our premium brightening formula that fades dark spots, evens skin tone, and restores your youthful
+                glow.
+              </p>
+              <Button
+                asChild
+                size="lg"
+                className="bg-[#F0A500] text-[#1B1A17] hover:bg-[#F0A500]/90 font-medium tracking-wider text-lg px-10 py-6 transition-all duration-300 hover:scale-105"
+              >
+                <Link href="/goddess-glow">
+                  LEARN MORE
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-[#FAFAF8]">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl text-[#F0A500] mb-4">Our Divisions</h2>
@@ -534,6 +633,78 @@ export default function HomePage() {
                 className="object-contain w-full h-full group-hover:scale-110 transition-transform"
               />
             </div>
+            <div className="aspect-square bg-[#FAFAF8] border border-[#3A3835] hover:border-[#F0A500] transition-all duration-300 flex items-center justify-center p-4 group">
+              <Image
+                src="/brands/deldar.webp"
+                alt="Deldar"
+                width={120}
+                height={120}
+                className="object-contain w-full h-full group-hover:scale-110 transition-transform"
+              />
+            </div>
+            <div className="aspect-square bg-[#FAFAF8] border border-[#3A3835] hover:border-[#F0A500] transition-all duration-300 flex items-center justify-center p-4 group">
+              <Image
+                src="/brands/orca.png"
+                alt="Orca"
+                width={120}
+                height={120}
+                className="object-contain w-full h-full group-hover:scale-110 transition-transform"
+              />
+            </div>
+            <div className="aspect-square bg-[#FAFAF8] border border-[#3A3835] hover:border-[#F0A500] transition-all duration-300 flex items-center justify-center p-4 group">
+              <Image
+                src="/brands/empress-furniture.jpg"
+                alt="Empress Furniture"
+                width={120}
+                height={120}
+                className="object-contain w-full h-full group-hover:scale-110 transition-transform"
+              />
+            </div>
+            <div className="aspect-square bg-[#FAFAF8] border border-[#3A3835] hover:border-[#F0A500] transition-all duration-300 flex items-center justify-center p-4 group">
+              <Image
+                src="/brands/palmers.jpg"
+                alt="Palmer's"
+                width={120}
+                height={120}
+                className="object-contain w-full h-full group-hover:scale-110 transition-transform"
+              />
+            </div>
+            <div className="aspect-square bg-[#FAFAF8] border border-[#3A3835] hover:border-[#F0A500] transition-all duration-300 flex items-center justify-center p-4 group">
+              <Image
+                src="/brands/istikbal.png"
+                alt="İstikbal"
+                width={120}
+                height={120}
+                className="object-contain w-full h-full group-hover:scale-110 transition-transform"
+              />
+            </div>
+            <div className="aspect-square bg-[#FAFAF8] border border-[#3A3835] hover:border-[#F0A500] transition-all duration-300 flex items-center justify-center p-4 group">
+              <Image
+                src="/brands/cerave.png"
+                alt="CeraVe"
+                width={120}
+                height={120}
+                className="object-contain w-full h-full group-hover:scale-110 transition-transform"
+              />
+            </div>
+            <div className="aspect-square bg-[#FAFAF8] border border-[#3A3835] hover:border-[#F0A500] transition-all duration-300 flex items-center justify-center p-4 group">
+              <Image
+                src="/brands/la-roche-posay.png"
+                alt="La Roche-Posay"
+                width={120}
+                height={120}
+                className="object-contain w-full h-full group-hover:scale-110 transition-transform"
+              />
+            </div>
+            <div className="aspect-square bg-[#FAFAF8] border border-[#3A3835] hover:border-[#F0A500] transition-all duration-300 flex items-center justify-center p-4 group">
+              <Image
+                src="/brands/brand-logo.avif"
+                alt="Brand Partner"
+                width={120}
+                height={120}
+                className="object-contain w-full h-full group-hover:scale-110 transition-transform"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -545,23 +716,27 @@ export default function HomePage() {
             <p className="text-lg text-[#1B1A17] max-w-2xl mx-auto">Discover our newest additions to the collection</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+            {latestArrivals.map((product, index) => (
               <Card
-                key={item}
+                key={index}
                 className="bg-white border-[#D4D2CC] hover:shadow-xl transition-all duration-300 overflow-hidden group relative"
               >
                 <div className="absolute top-4 right-4 z-10 bg-[#F0A500] text-[#1B1A17] text-xs font-bold px-3 py-1 tracking-wider">
                   NEW
                 </div>
-                <div className="aspect-square bg-gradient-to-br from-[#E8E6E1] to-[#D4D2CC] flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <Sparkles className="h-12 w-12 text-[#F0A500] mx-auto mb-4" />
-                    <p className="text-sm text-[#6B6A67]">New Product {item}</p>
-                  </div>
+                <div className="aspect-square bg-white flex items-center justify-center">
+                  <Image
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
+                    width={400}
+                    height={400}
+                    className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
+                  />
                 </div>
                 <CardContent className="p-6">
-                  <p className="text-xs text-[#6B6A67] mb-2 tracking-wider uppercase">Brand Name</p>
-                  <h4 className="font-serif text-lg text-[#1B1A17] mb-4">Product Name</h4>
+                  <p className="text-xs text-[#6B6A67] mb-2 tracking-wider uppercase">{product.brand}</p>
+                  <h4 className="font-serif text-lg text-[#1B1A17] mb-2">{product.name}</h4>
+                  <p className="text-xs text-[#A8A6A1] mb-4">{product.description}</p>
                   <Button
                     variant="outline"
                     size="sm"

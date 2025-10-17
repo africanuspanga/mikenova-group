@@ -129,15 +129,29 @@ export default function ContactPage() {
                     <Mail className="h-6 w-6 text-[#F0A500] flex-shrink-0 mt-1" />
                     <div>
                       <h3 className="font-medium text-[#1B1A17] mb-1 tracking-wider">EMAIL</h3>
-                      <p className="text-[#6B6A67]">info@mikenovagroup.com</p>
-                      <p className="text-[#6B6A67]">partnerships@mikenovagroup.com</p>
+                      <p className="text-[#6B6A67]">info@mikenovagroup.co.tz</p>
+                      <p className="text-[#6B6A67]">mikenovagrouptz@gmail.com</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
                     <Phone className="h-6 w-6 text-[#F0A500] flex-shrink-0 mt-1" />
                     <div>
                       <h3 className="font-medium text-[#1B1A17] mb-1 tracking-wider">PHONE</h3>
-                      <p className="text-[#6B6A67]">+255 XXX XXX XXX</p>
+                      <p className="text-[#6B6A67]">+255 675 622 238</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <Phone className="h-6 w-6 text-[#F0A500] flex-shrink-0 mt-1" />
+                    <div>
+                      <h3 className="font-medium text-[#1B1A17] mb-1 tracking-wider">WHATSAPP</h3>
+                      <a
+                        href="https://wa.me/255675622238"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#6B6A67] hover:text-[#F0A500] transition-colors"
+                      >
+                        +255 675 622 238
+                      </a>
                     </div>
                   </div>
                 </div>

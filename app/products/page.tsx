@@ -6,7 +6,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Sparkles, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 
 export default function ProductsPage() {
   const [activeCategory, setActiveCategory] = useState("all")
@@ -22,40 +22,190 @@ export default function ProductsPage() {
 
   const products = [
     // Cosmetics
-    { name: "Luxury Face Serum", category: "cosmetics", brand: "Premium Skincare" },
-    { name: "Gold Infused Moisturizer", category: "cosmetics", brand: "Elite Beauty" },
-    { name: "Diamond Eye Cream", category: "cosmetics", brand: "Luxury Cosmetics" },
-    { name: "Premium Face Mask", category: "cosmetics", brand: "Beauty Elite" },
-    { name: "Anti-Aging Serum", category: "cosmetics", brand: "Premium Care" },
-    { name: "Luxury Perfume", category: "cosmetics", brand: "Fragrance House" },
+    {
+      name: "Luxury Face Serum",
+      category: "cosmetics",
+      brand: "Premium Skincare",
+      image: "/products/luxury-face-serum-new.png",
+    },
+    {
+      name: "Gold Infused Moisturizer",
+      category: "cosmetics",
+      brand: "Elite Beauty",
+      image: "/products/gold-moisturizer.jpg",
+    },
+    {
+      name: "Diamond Eye Cream",
+      category: "cosmetics",
+      brand: "Luxury Cosmetics",
+      image: "/products/diamond-eye-cream.png",
+    },
+    {
+      name: "Premium Face Mask",
+      category: "cosmetics",
+      brand: "Beauty Elite",
+      image: "/arrivals/la-mer-cream.avif",
+    },
+    {
+      name: "Anti-Aging Serum",
+      category: "cosmetics",
+      brand: "Premium Care",
+      image: "/products/luxury-face-serum-new.png",
+    },
+    {
+      name: "Luxury Perfume",
+      category: "cosmetics",
+      brand: "Fragrance House",
+      image: "/arrivals/tom-ford-oud-wood.jpg",
+    },
     // Fashion
-    { name: "Designer Leather Boots", category: "fashion", brand: "Fashion Elite" },
-    { name: "Luxury Handbag", category: "fashion", brand: "Premium Label" },
-    { name: "Silk Evening Dress", category: "fashion", brand: "Couture Brand" },
-    { name: "Cashmere Coat", category: "fashion", brand: "Luxury Fashion" },
-    { name: "Designer Sunglasses", category: "fashion", brand: "Premium Eyewear" },
-    { name: "Leather Wallet", category: "fashion", brand: "Elite Accessories" },
+    {
+      name: "Designer Leather Boots",
+      category: "fashion",
+      brand: "Fashion Elite",
+      image: "/products/designer-leather-boots.jpg",
+    },
+    {
+      name: "Luxury Handbag",
+      category: "fashion",
+      brand: "Premium Label",
+      image: "/products/luxury-handbag-new.jpg",
+    },
+    {
+      name: "Silk Evening Dress",
+      category: "fashion",
+      brand: "Couture Brand",
+      image: "/products/silk-evening-dress-new.png",
+    },
+    {
+      name: "Cashmere Coat",
+      category: "fashion",
+      brand: "Luxury Fashion",
+      image: "/products/silk-evening-dress-new.png",
+    },
+    {
+      name: "Designer Sunglasses",
+      category: "fashion",
+      brand: "Premium Eyewear",
+      image: "/arrivals/rolex-submariner.jpg",
+    },
+    {
+      name: "Leather Wallet",
+      category: "fashion",
+      brand: "Elite Accessories",
+      image: "/products/luxury-handbag-new.jpg",
+    },
     // Furniture
-    { name: "Executive Office Chair", category: "furniture", brand: "Premium Furniture" },
-    { name: "Luxury Dining Table", category: "furniture", brand: "Elite Home" },
-    { name: "Designer Sofa Set", category: "furniture", brand: "Luxury Living" },
-    { name: "Modern Coffee Table", category: "furniture", brand: "Contemporary Design" },
-    { name: "Luxury Bed Frame", category: "furniture", brand: "Premium Bedroom" },
-    { name: "Designer Bookshelf", category: "furniture", brand: "Elite Storage" },
+    {
+      name: "Executive Office Chair",
+      category: "furniture",
+      brand: "Premium Furniture",
+      image: "/products/executive-office-chair.webp",
+    },
+    {
+      name: "Luxury Dining Table",
+      category: "furniture",
+      brand: "Elite Home",
+      image: "/products/luxury-dining-table.webp",
+    },
+    {
+      name: "Designer Sofa Set",
+      category: "furniture",
+      brand: "Luxury Living",
+      image: "/products/designer-sofa-set.webp",
+    },
+    {
+      name: "Modern Coffee Table",
+      category: "furniture",
+      brand: "Contemporary Design",
+      image: "/arrivals/eames-lounge-chair.jpg",
+    },
+    {
+      name: "Luxury Bed Frame",
+      category: "furniture",
+      brand: "Premium Bedroom",
+      image: "/products/designer-sofa-set.webp",
+    },
+    {
+      name: "Designer Bookshelf",
+      category: "furniture",
+      brand: "Elite Storage",
+      image: "/products/luxury-dining-table.webp",
+    },
     // Pharmacy
-    { name: "Premium Supplements", category: "pharmacy", brand: "Health Plus" },
-    { name: "Advanced Vitamins", category: "pharmacy", brand: "Wellness Pro" },
-    { name: "Medical Grade Products", category: "pharmacy", brand: "Care Elite" },
-    { name: "Immunity Boosters", category: "pharmacy", brand: "Health First" },
-    { name: "Pain Relief Medication", category: "pharmacy", brand: "Medical Care" },
-    { name: "Prescription Medicines", category: "pharmacy", brand: "Pharma Elite" },
+    {
+      name: "Premium Supplements",
+      category: "pharmacy",
+      brand: "Health Plus",
+      image: "/products/premium-supplement-bottles.avif",
+    },
+    {
+      name: "Advanced Vitamins",
+      category: "pharmacy",
+      brand: "Wellness Pro",
+      image: "/products/advanced-vitamin-packaging.jpg",
+    },
+    {
+      name: "Medical Grade Products",
+      category: "pharmacy",
+      brand: "Care Elite",
+      image: "/products/medical-grade-health-products.jpg",
+    },
+    {
+      name: "Immunity Boosters",
+      category: "pharmacy",
+      brand: "Health First",
+      image: "/arrivals/himalaya-ashwagandha.webp",
+    },
+    {
+      name: "Pain Relief Medication",
+      category: "pharmacy",
+      brand: "Medical Care",
+      image: "/products/medical-grade-health-products.jpg",
+    },
+    {
+      name: "Prescription Medicines",
+      category: "pharmacy",
+      brand: "Pharma Elite",
+      image: "/arrivals/nature-made-prenatal.jpg",
+    },
     // Dispensary
-    { name: "Wellness Package", category: "dispensary", brand: "Health First" },
-    { name: "Medical Supplies Kit", category: "dispensary", brand: "Care Pro" },
-    { name: "Premium Health Items", category: "dispensary", brand: "Wellness Elite" },
-    { name: "First Aid Kit", category: "dispensary", brand: "Emergency Care" },
-    { name: "Health Monitoring Devices", category: "dispensary", brand: "Medical Tech" },
-    { name: "Wellness Supplements", category: "dispensary", brand: "Health Pro" },
+    {
+      name: "Wellness Package",
+      category: "dispensary",
+      brand: "Health First",
+      image: "/products/wellness-package-kit.jpg",
+    },
+    {
+      name: "Medical Supplies Kit",
+      category: "dispensary",
+      brand: "Care Pro",
+      image: "/products/medical-supplies-kit.webp",
+    },
+    {
+      name: "Premium Health Items",
+      category: "dispensary",
+      brand: "Wellness Elite",
+      image: "/products/premium-health-monitoring-devices.jpg",
+    },
+    {
+      name: "First Aid Kit",
+      category: "dispensary",
+      brand: "Emergency Care",
+      image: "/products/medical-supplies-kit.webp",
+    },
+    {
+      name: "Health Monitoring Devices",
+      category: "dispensary",
+      brand: "Medical Tech",
+      image: "/arrivals/omron-blood-pressure.webp",
+    },
+    {
+      name: "Wellness Supplements",
+      category: "dispensary",
+      brand: "Health Pro",
+      image: "/products/wellness-package-kit.jpg",
+    },
   ]
 
   const filteredProducts = activeCategory === "all" ? products : products.filter((p) => p.category === activeCategory)
@@ -110,11 +260,12 @@ export default function ProductsPage() {
                 key={index}
                 className="bg-white border-[#D4D2CC] hover:shadow-xl transition-all duration-300 overflow-hidden group"
               >
-                <div className="aspect-square bg-gradient-to-br from-[#E8E6E1] to-[#D4D2CC] flex items-center justify-center overflow-hidden">
-                  <div className="text-center p-8 group-hover:scale-110 transition-transform duration-500">
-                    <Sparkles className="h-12 w-12 text-[#F0A500] mx-auto mb-4" />
-                    <p className="text-sm text-[#6B6A67]">Product Image</p>
-                  </div>
+                <div className="aspect-square bg-white relative overflow-hidden flex items-center justify-center p-8">
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                  />
                 </div>
                 <CardContent className="p-6">
                   <p className="text-xs text-[#6B6A67] mb-2 tracking-wider uppercase">{product.brand}</p>

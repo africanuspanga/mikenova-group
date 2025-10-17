@@ -14,7 +14,6 @@ export function Navigation() {
     { href: "/about", label: "ABOUT" },
     { href: "/services", label: "SERVICES" },
     { href: "/products", label: "PRODUCTS" },
-    { href: "/contact", label: "CONTACT" },
   ]
 
   return (
@@ -36,6 +35,13 @@ export function Navigation() {
                 {link.label}
               </Link>
             ))}
+            <Button
+              asChild
+              size="sm"
+              className="bg-[#F0A500] text-[#1B1A17] hover:bg-[#F0A500]/90 font-medium tracking-wider transition-all duration-300"
+            >
+              <Link href="/contact">CONTACT</Link>
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -57,6 +63,14 @@ export function Navigation() {
                 {link.label}
               </Link>
             ))}
+            <Button
+              asChild
+              size="sm"
+              className="w-full mt-3 bg-[#F0A500] text-[#1B1A17] hover:bg-[#F0A500]/90 font-medium tracking-wider transition-all duration-300"
+              onClick={() => setIsOpen(false)}
+            >
+              <Link href="/contact">CONTACT</Link>
+            </Button>
           </div>
         )}
       </div>
