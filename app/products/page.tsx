@@ -50,7 +50,7 @@ export default function ProductsPage() {
       name: "Anti-Aging Serum",
       category: "cosmetics",
       brand: "Premium Care",
-      image: "/products/luxury-face-serum-new.png",
+      image: "/products/anti-aging-serum.webp", // replaced duplicate with new anti-aging serum image
     },
     {
       name: "Luxury Perfume",
@@ -81,7 +81,7 @@ export default function ProductsPage() {
       name: "Cashmere Coat",
       category: "fashion",
       brand: "Luxury Fashion",
-      image: "/products/silk-evening-dress-new.png",
+      image: "/products/cashmere-coat.webp", // replaced duplicate with new cashmere coat image
     },
     {
       name: "Designer Sunglasses",
@@ -93,7 +93,7 @@ export default function ProductsPage() {
       name: "Leather Wallet",
       category: "fashion",
       brand: "Elite Accessories",
-      image: "/products/luxury-handbag-new.jpg",
+      image: "/products/leather-wallet.jpg", // replaced duplicate with new leather wallet image
     },
     // Furniture
     {
@@ -118,7 +118,7 @@ export default function ProductsPage() {
       name: "Modern Coffee Table",
       category: "furniture",
       brand: "Contemporary Design",
-      image: "/arrivals/eames-lounge-chair.jpg",
+      image: "/products/modern-coffee-table.jpg", // replaced with new modern coffee table image
     },
     {
       name: "Luxury Bed Frame",
