@@ -53,7 +53,7 @@ export default function GoddessGlowPage() {
               size="lg"
               className="bg-[#D4AF37] hover:bg-[#B8941F] text-black font-medium px-6 md:px-8 py-5 md:py-6 text-base md:text-lg w-full md:w-auto"
             >
-              <a href="https://wa.me/255675622238" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/255623821175" target="_blank" rel="noopener noreferrer">
                 Order on WhatsApp
               </a>
             </Button>
@@ -184,7 +184,7 @@ export default function GoddessGlowPage() {
             size="lg"
             className="bg-[#1B1A17] hover:bg-[#2A2925] text-white font-medium px-8 md:px-12 py-6 md:py-7 text-lg md:text-xl shadow-2xl w-full md:w-auto"
           >
-            <a href="https://wa.me/255675622238" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/255623821175" target="_blank" rel="noopener noreferrer">
               Contact Us on WhatsApp
             </a>
           </Button>

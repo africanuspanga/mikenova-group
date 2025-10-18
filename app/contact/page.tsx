@@ -145,12 +145,12 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-medium text-[#1B1A17] mb-1 tracking-wider">WHATSAPP</h3>
                       <a
-                        href="https://wa.me/255675622238"
+                        href="https://wa.me/255623821175"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#6B6A67] hover:text-[#F0A500] transition-colors"
                       >
-                        +255 675 622 238
+                        +255 623 821 175
                       </a>
                     </div>
                   </div>

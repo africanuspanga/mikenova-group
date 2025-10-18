@@ -66,12 +66,12 @@ export function Footer() {
               <li className="flex items-center gap-2 text-sm text-[#A8A6A1]">
                 <Phone className="h-4 w-4 text-[#F0A500] flex-shrink-0" />
                 <a
-                  href="https://wa.me/255675622238"
+                  href="https://wa.me/255623821175"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-[#F0A500] transition-colors"
                 >
-                  WhatsApp: +255 675 622 238
+                  WhatsApp: +255 623 821 175
                 </a>
               </li>
             </ul>
