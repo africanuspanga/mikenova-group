@@ -85,7 +85,7 @@ export function Chatbot() {
         {
           role: "assistant",
           content:
-            "I apologize, but I'm having trouble connecting right now. Please try contacting us directly at +255 675 622 238 or via email at info@mikenovagroup.co.tz.",
+            "I apologize, but I'm having trouble connecting right now. Please try contacting us directly at +255 675 622 238 or via email at mikenovagroup@gmail.com.",
         },
       ])
     } finally {

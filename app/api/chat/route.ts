@@ -29,7 +29,7 @@ Goddess Glow Brightening Body Cream - Premium skincare trusted by thousands. Fad
 
 CONTACT:
 • Phone/WhatsApp: +255 623 821 175
-• Email: info@mikenovagroup.co.tz
+• Email: mikenovagroup@gmail.com
 • Website: www.mikenovagroup.co.tz
 
 YOUR ROLE:
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           message:
-            "I apologize, but the chat service is not fully configured yet. Please contact us directly at +255 623 821 175 or info@mikenovagroup.co.tz for assistance.",
+            "I apologize, but the chat service is not fully configured yet. Please contact us directly at +255 623 821 175 or mikenovagroup@gmail.com for assistance.",
         },
         { status: 200 },
       )
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         message:
-          "I'm having trouble connecting right now. Please contact us directly at +255 623 821 175 or info@mikenovagroup.co.tz.",
+          "I'm having trouble connecting right now. Please contact us directly at +255 623 821 175 or mikenovagroup@gmail.com.",
       },
       { status: 200 },
     )

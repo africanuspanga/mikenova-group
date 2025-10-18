@@ -22,8 +22,21 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
-    // Handle form submission
+
+    // Format the message for WhatsApp
+    const whatsappMessage = `*New Contact Form Submission*%0A%0A*Name:* ${formData.name}%0A*Email:* ${formData.email}%0A*Phone:* ${formData.phone}%0A*Subject:* ${formData.subject}%0A*Message:* ${formData.message}`
+
+    // Redirect to WhatsApp with pre-filled message
+    window.open(`https://wa.me/255623821175?text=${whatsappMessage}`, "_blank")
+
+    // Reset form
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    })
   }
 
   return (
@@ -127,10 +140,9 @@ export default function ContactPage() {
                   </div>
                   <div className="flex items-start gap-4">
                     <Mail className="h-6 w-6 text-[#F0A500] flex-shrink-0 mt-1" />
-                    <div>
+                    <div className="min-w-0">
                       <h3 className="font-medium text-[#1B1A17] mb-1 tracking-wider">EMAIL</h3>
-                      <p className="text-[#6B6A67]">info@mikenovagroup.co.tz</p>
-                      <p className="text-[#6B6A67]">mikenovagrouptz@gmail.com</p>
+                      <p className="text-[#6B6A67] break-all">mikenovagroup@gmail.com</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">

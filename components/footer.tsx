@@ -53,11 +53,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2 text-sm text-[#A8A6A1]">
                 <Mail className="h-4 w-4 text-[#F0A500] flex-shrink-0" />
-                <span>info@mikenovagroup.co.tz</span>
-              </li>
-              <li className="flex items-center gap-2 text-sm text-[#A8A6A1]">
-                <Mail className="h-4 w-4 text-[#F0A500] flex-shrink-0" />
-                <span>mikenovagrouptz@gmail.com</span>
+                <span>mikenovagroup@gmail.com</span>
               </li>
               <li className="flex items-center gap-2 text-sm text-[#A8A6A1]">
                 <Phone className="h-4 w-4 text-[#F0A500] flex-shrink-0" />
