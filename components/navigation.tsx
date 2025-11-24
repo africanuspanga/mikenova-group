@@ -14,6 +14,8 @@ export function Navigation() {
     { href: "/about", label: "ABOUT" },
     { href: "/services", label: "SERVICES" },
     { href: "/products", label: "PRODUCTS" },
+    { href: "/goddess-glow", label: "GLOW" },
+    { href: "/blog", label: "BLOG" }, // Added BLOG link to navigation
   ]
 
   return (
@@ -77,3 +79,5 @@ export function Navigation() {
     </nav>
   )
 }
+
+export default Navigation
