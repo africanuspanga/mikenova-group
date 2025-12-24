@@ -1,13 +1,142 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, TrendingUp, Users, Award, Building2 } from "lucide-react"
+import {
+  ArrowRight,
+  TrendingUp,
+  Users,
+  Award,
+  Building2,
+  ShoppingCart,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+
+interface Product {
+  id: string
+  name: string
+  price: number
+  originalPrice: number
+  description: string
+  images: string[]
+}
+
+const goddessGlowProducts: Product[] = [
+  {
+    id: "body-cream",
+    name: "Goddess Glow Body Cream",
+    price: 55000,
+    originalPrice: 68750,
+    description: "Brightening body cream that reveals smooth, even, radiant skin. Dermatologist approved formula.",
+    images: ["/goddess-glow/body-cream-beach.png", "/goddess-glow/body-cream-hand.jpeg"],
+  },
+  {
+    id: "body-oil",
+    name: "Goddess Glow Body Oil",
+    price: 30000,
+    originalPrice: 37500,
+    description: "Luxurious body oil that nourishes and gives your skin a luminous, healthy glow.",
+    images: ["/goddess-glow/body-oil-hero.jpeg", "/goddess-glow/body-oil-product.jpeg"],
+  },
+  {
+    id: "bar-soap",
+    name: "Goddess Glow Bar Soap",
+    price: 10000,
+    originalPrice: 12500,
+    description: "Natural brightening bar soap infused with fruit extracts. Cleanses and brightens.",
+    images: ["/goddess-glow/bar-soap-1.jpeg", "/goddess-glow/bar-soap-2.jpeg"],
+  },
+]
+
+function HomeProductCard({ product }: { product: Product }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % product.images.length)
+  }
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length)
+  }
+
+  return (
+    <Card className="!bg-white overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <div className="relative h-[280px] sm:h-[300px] md:h-[350px] overflow-hidden">
+        <Image
+          src={product.images[currentImageIndex] || "/placeholder.svg"}
+          alt={product.name}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        {/* Discount Badge */}
+        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-[#E53935] text-white px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-bold">
+          -{discount}% OFF
+        </div>
+        {/* Image Navigation */}
+        {product.images.length > 1 && (
+          <>
+            <button
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-[#1B1A17]" />
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+              aria-label="Next image"
+            >
+              <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#1B1A17]" />
+            </button>
+            {/* Dots Indicator */}
+            <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              {product.images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    index === currentImageIndex ? "bg-white w-4" : "bg-white/50"
+                  }`}
+                  aria-label={`Go to image ${index + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+      <CardContent className="p-4 sm:p-6">
+        <h3 className="font-serif text-lg sm:text-xl text-[#1B1A17] mb-2">{product.name}</h3>
+        <p className="text-[#4A4A4A] text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed line-clamp-2">
+          {product.description}
+        </p>
+        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <span className="text-xl sm:text-2xl font-bold text-[#1B1A17]">TZS {product.price.toLocaleString()}</span>
+          <span className="text-sm sm:text-base text-[#999] line-through">
+            TZS {product.originalPrice.toLocaleString()}
+          </span>
+        </div>
+        <Button
+          asChild
+          className="w-full bg-[#D4AF37] hover:bg-[#B8941F] text-[#1B1A17] font-semibold py-4 sm:py-5 text-sm sm:text-base"
+        >
+          <Link href="/goddess-glow#shop">
+            <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+            Shop Now
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}
 
 export default function HomePage() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -181,8 +310,7 @@ export default function HomePage() {
       <section
         className="relative min-h-screen flex items-center justify-center"
         style={{
-          backgroundImage:
-            "url(https://hebbkx1anhila5yf.public.blob.vercel-storage.com/hero%20background%20image-B0uVidQ2qu46YphDF4ljOjppJMTdmq.jpg)",
+          backgroundImage: "url(/images/hero-20background-20image.jpg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -458,6 +586,46 @@ export default function HomePage() {
               <Link href="/products">
                 VIEW ALL PRODUCTS
                 <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-12 sm:py-16 md:py-24 bg-[#FDFBF7]">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center gap-2 mb-3 sm:mb-4">
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-[#D4AF37]" />
+              <span className="text-[#D4AF37] font-medium tracking-wider text-xs sm:text-sm uppercase">Shop Now</span>
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-[#D4AF37]" />
+            </div>
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl text-[#1B1A17] mb-3 sm:mb-4">
+              Goddess Glow Collection
+            </h2>
+            <p className="text-[#4A4A4A] text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
+              Discover our signature skincare line for radiant, glowing skin
+            </p>
+            <div className="inline-block bg-[#E53935] text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold mt-3 sm:mt-4">
+              Limited Time: 20% OFF All Products!
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            {goddessGlowProducts.map((product) => (
+              <HomeProductCard key={product.id} product={product} />
+            ))}
+          </div>
+
+          <div className="text-center mt-8 sm:mt-12">
+            <Button
+              asChild
+              size="lg"
+              className="bg-[#1B1A17] hover:bg-[#2a2925] text-[#FAFAF8] font-medium tracking-wider px-6 sm:px-8 py-5 sm:py-6 text-sm sm:text-base"
+            >
+              <Link href="/goddess-glow">
+                View Full Collection & Buy
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Link>
             </Button>
           </div>
