@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { X, Send, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -15,6 +16,7 @@ interface Message {
 }
 
 export function Chatbot() {
+  const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -23,24 +25,14 @@ export function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  const hiddenPaths = ["/goddess-glow", "/admin-login", "/admin"]
+  const shouldHide = hiddenPaths.some((path) => pathname?.startsWith(path))
+
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" })
     }
   }
-
-  useEffect(() => {
-    if (messages.length > 0 || isLoading) {
-      // Small delay to ensure DOM is updated
-      setTimeout(scrollToBottom, 100)
-    }
-  }, [messages.length, isLoading])
-
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [isOpen])
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
@@ -53,6 +45,19 @@ export function Chatbot() {
       ])
     }
   }, [isOpen, messages.length])
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (messages.length > 0 || isLoading) {
+      // Small delay to ensure DOM is updated
+      setTimeout(scrollToBottom, 100)
+    }
+  }, [messages.length, isLoading])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -91,6 +96,10 @@ export function Chatbot() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (shouldHide) {
+    return null
   }
 
   return (

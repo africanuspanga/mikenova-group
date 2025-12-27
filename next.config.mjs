@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // The site uses /api/chat for the chatbot which requires server-side functionality
   
   eslint: {
     ignoreDuringBuilds: true,
@@ -11,8 +11,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  
-  trailingSlash: true,
 }
 
 export default nextConfig
