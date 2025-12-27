@@ -1,69 +1,35 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import {
-  Check,
-  Sparkles,
   ShoppingCart,
   Plus,
   Minus,
   X,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Star,
+  Shield,
+  Leaf,
   MessageCircle,
   Building2,
   QrCode,
-  ChevronLeft,
-  ChevronRight,
+  Check,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-
-interface Product {
-  id: string
-  name: string
-  price: number
-  originalPrice: number
-  description: string
-  images: string[]
-}
+import { Navigation } from "@/components/navigation"
+import { Footer } from "@/components/footer"
+import { getProducts, type Product } from "@/lib/products-store"
 
 interface CartItem extends Product {
   quantity: number
 }
-
-const products: Product[] = [
-  {
-    id: "body-cream",
-    name: "Goddess Glow Body Cream",
-    price: 55000,
-    originalPrice: 68750,
-    description:
-      "Brightening body cream that reveals smooth, even, radiant skin. Dermatologist approved formula trusted by thousands.",
-    images: ["/goddess-glow/body-cream-beach.png", "/goddess-glow/body-cream-hand.jpeg"],
-  },
-  {
-    id: "body-oil",
-    name: "Goddess Glow Body Oil",
-    price: 30000,
-    originalPrice: 37500,
-    description:
-      "Luxurious body oil that nourishes and gives your skin a luminous, healthy glow. Perfect for all skin types.",
-    images: ["/goddess-glow/body-oil-hero.jpeg", "/goddess-glow/body-oil-product.jpeg"],
-  },
-  {
-    id: "bar-soap",
-    name: "Goddess Glow Bar Soap",
-    price: 10000,
-    originalPrice: 12500,
-    description:
-      "Natural brightening bar soap infused with fruit extracts. Cleanses and brightens for a refreshed glow.",
-    images: ["/goddess-glow/bar-soap-1.jpeg", "/goddess-glow/bar-soap-2.jpeg"],
-  },
-]
 
 function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: (product: Product) => void }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -79,617 +45,708 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
 
   return (
     <Card className="!bg-white overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-      <div className="relative h-[300px] md:h-[350px] overflow-hidden">
+      <div className="relative h-[300px] sm:h-[350px] overflow-hidden">
         <Image
-          src={product.images[currentImageIndex] || "/placeholder.svg"}
+          src={product.images[currentImageIndex] || "/placeholder.svg?height=400&width=400&query=skincare product"}
           alt={product.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {/* Discount Badge */}
         <div className="absolute top-4 left-4 bg-[#E53935] text-white px-3 py-1 rounded-full text-sm font-bold">
-          -{discount}% OFF
+          -{discount}%
         </div>
-        {/* Image Navigation */}
+
+        {/* Image Navigation - Always visible on mobile */}
         {product.images.length > 1 && (
           <>
             <button
               onClick={prevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
               aria-label="Previous image"
             >
-              <ChevronLeft className="h-5 w-5 text-[#1B1A17]" />
+              <ChevronLeft className="w-5 h-5 text-[#1B1A17]" />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
               aria-label="Next image"
             >
-              <ChevronRight className="h-5 w-5 text-[#1B1A17]" />
+              <ChevronRight className="w-5 h-5 text-[#1B1A17]" />
             </button>
-            {/* Dots Indicator */}
+            {/* Image Dots */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-              {product.images.map((_, index) => (
+              {product.images.map((_, idx) => (
                 <button
-                  key={index}
-                  onClick={() => setCurrentImageIndex(index)}
+                  key={idx}
+                  onClick={() => setCurrentImageIndex(idx)}
                   className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentImageIndex ? "bg-white w-4" : "bg-white/50"
+                    idx === currentImageIndex ? "bg-[#F0A500] w-4" : "bg-white/70"
                   }`}
-                  aria-label={`Go to image ${index + 1}`}
+                  aria-label={`View image ${idx + 1}`}
                 />
               ))}
             </div>
           </>
         )}
       </div>
-      <CardContent className="p-6">
-        <h3 className="font-serif text-xl text-[#1B1A17] mb-2">{product.name}</h3>
-        <p className="text-[#4A4A4A] text-sm mb-4 leading-relaxed">{product.description}</p>
+
+      <CardContent className="p-4 sm:p-6">
+        <h3 className="text-lg sm:text-xl font-bold text-[#1B1A17] mb-2">{product.name}</h3>
+        <p className="text-[#1B1A17]/70 text-sm mb-4 line-clamp-2">{product.description}</p>
+
+        {/* Pricing */}
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-2xl font-bold text-[#1B1A17]">TZS {product.price.toLocaleString()}</span>
-          <span className="text-base text-[#999] line-through">TZS {product.originalPrice.toLocaleString()}</span>
+          <span className="text-xl sm:text-2xl font-bold text-[#1B1A17]">TZS {product.price.toLocaleString()}</span>
+          <span className="text-[#1B1A17]/50 line-through text-sm">TZS {product.originalPrice.toLocaleString()}</span>
         </div>
+
+        {/* Add to Cart Button */}
         <Button
           onClick={() => onAddToCart(product)}
-          className="w-full bg-[#D4AF37] hover:bg-[#B8941F] text-[#1B1A17] font-semibold py-5"
+          className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 text-[#1B1A17] font-semibold py-5 sm:py-6 text-base"
         >
-          <ShoppingCart className="h-5 w-5 mr-2" />
-          Add to Cart
+          <ShoppingCart className="w-5 h-5 mr-2" />
+          Ongeza Kwenye Cart
         </Button>
       </CardContent>
     </Card>
   )
 }
 
-function CartModal({
-  isOpen,
-  onClose,
-  cartItems,
-  updateQuantity,
-  removeFromCart,
-  getTotal,
-}: {
-  isOpen: boolean
-  onClose: () => void
-  cartItems: CartItem[]
-  updateQuantity: (id: string, quantity: number) => void
-  removeFromCart: (id: string) => void
-  getTotal: () => number
-}) {
-  const [paymentMethod, setPaymentMethod] = useState<"whatsapp" | "bank" | "lipa" | null>(null)
+export default function GoddessGlowPage() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [cart, setCart] = useState<CartItem[]>([])
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState<"whatsapp" | "bank" | "lipa-namba" | null>(null)
   const [showConfirmationForm, setShowConfirmationForm] = useState(false)
-  const [formData, setFormData] = useState({
-    fullName: "",
-    phoneNumber: "",
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+
+  // Confirmation form state
+  const [confirmationForm, setConfirmationForm] = useState({
+    name: "",
+    phone: "",
     location: "",
     description: "",
-    transaction: "",
+    transactionId: "",
   })
 
-  if (!isOpen) return null
+  // New states for managing cart and product images
+  const [allProducts, setAllProducts] = useState<Product[]>([])
+  const [currentImageIndex, setCurrentImageIndex] = useState<{ [key: string]: number }>({})
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false)
+  const [showBankDetails, setShowBankDetails] = useState(false)
+  const [showLipaNamba, setShowLipaNamba] = useState(false)
+  const [confirmationData, setConfirmationData] = useState({
+    name: "",
+    phone: "",
+    location: "",
+    description: "",
+    transactionId: "",
+  })
 
-  const handleWhatsAppOrder = () => {
-    const orderDetails = cartItems
-      .map((item) => `${item.name} x${item.quantity} = TZS ${(item.price * item.quantity).toLocaleString()}`)
-      .join("\n")
-    const total = getTotal()
-    const message = `Habari! Ningependa kuagiza:\n\n${orderDetails}\n\nJUMLA: TZS ${total.toLocaleString()}\n\nTafadhali nisaidie kukamilisha order yangu.`
-    window.open(`https://wa.me/255675622238?text=${encodeURIComponent(message)}`, "_blank")
-  }
-
-  const handleSubmitConfirmation = () => {
-    const orderDetails = cartItems
-      .map((item) => `${item.name} x${item.quantity} = TZS ${(item.price * item.quantity).toLocaleString()}`)
-      .join("\n")
-    const total = getTotal()
-    const message = `THIBITISHA MALIPO\n\nJina: ${formData.fullName}\nSimu: ${formData.phoneNumber}\nMahali: ${formData.location}\nMaelezo: ${formData.description || "N/A"}\n\nORDER:\n${orderDetails}\n\nJUMLA: TZS ${total.toLocaleString()}\n\nTRANSACTION:\n${formData.transaction}`
-    window.open(`https://wa.me/255675622238?text=${encodeURIComponent(message)}`, "_blank")
-  }
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl w-full max-w-2xl max-h-[95vh] overflow-y-auto shadow-2xl">
-        <div className="sticky top-0 bg-white border-b border-[#E5E5E5] p-3 sm:p-4 md:p-6 flex items-center justify-between z-10">
-          <h2 className="font-serif text-lg sm:text-xl md:text-2xl text-[#1B1A17]">
-            {showConfirmationForm ? "Thibitisha Malipo" : paymentMethod ? "Lipa Sasa" : "Your Cart"}
-          </h2>
-          <button
-            onClick={() => {
-              if (showConfirmationForm) {
-                setShowConfirmationForm(false)
-              } else if (paymentMethod) {
-                setPaymentMethod(null)
-              } else {
-                onClose()
-              }
-            }}
-            className="p-2 hover:bg-[#F5F5F5] rounded-full transition-colors"
-          >
-            <X className="h-5 w-5 text-[#1B1A17]" />
-          </button>
-        </div>
-
-        <div className="p-3 sm:p-4 md:p-6">
-          {showConfirmationForm ? (
-            /* Payment Confirmation Form */
-            <div className="space-y-4">
-              <p className="text-[#4A4A4A] text-sm mb-4">Jaza fomu hii kuthibitisha malipo yako</p>
-              <div>
-                <label className="block text-sm font-medium text-[#1B1A17] mb-1">Jina Kamili *</label>
-                <Input
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  placeholder="Jina lako kamili"
-                  className="border-[#E5E5E5] text-[#1B1A17] placeholder:text-[#9CA3AF] bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#1B1A17] mb-1">Namba ya Simu *</label>
-                <Input
-                  value={formData.phoneNumber}
-                  onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                  placeholder="+255..."
-                  className="border-[#E5E5E5] text-[#1B1A17] placeholder:text-[#9CA3AF] bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#1B1A17] mb-1">Mahali Unapoishi *</label>
-                <Input
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  placeholder="Mfano: Dar es Salaam, Kinondoni"
-                  className="border-[#E5E5E5] text-[#1B1A17] placeholder:text-[#9CA3AF] bg-white"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#1B1A17] mb-1">Maelezo</label>
-                <Textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Maelezo mengine (optional)"
-                  className="border-[#E5E5E5] text-[#1B1A17] placeholder:text-[#9CA3AF] bg-white"
-                  rows={2}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#1B1A17] mb-1">Transaction (Copy & Paste) *</label>
-                <Textarea
-                  value={formData.transaction}
-                  onChange={(e) => setFormData({ ...formData, transaction: e.target.value })}
-                  placeholder="Copy na paste message ya malipo hapa"
-                  className="border-[#E5E5E5] text-[#1B1A17] placeholder:text-[#9CA3AF] bg-white"
-                  rows={3}
-                />
-              </div>
-              <Button
-                onClick={handleSubmitConfirmation}
-                disabled={!formData.fullName || !formData.phoneNumber || !formData.location || !formData.transaction}
-                className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-semibold py-5 mt-4"
-              >
-                <MessageCircle className="h-5 w-5 mr-2" />
-                Submit Info via WhatsApp
-              </Button>
-            </div>
-          ) : paymentMethod === "bank" ? (
-            /* Bank Payment Details */
-            <div className="text-center">
-              <div className="mb-6">
-                <Image
-                  src="/goddess-glow/nbc-logo.png"
-                  alt="NBC Bank Logo"
-                  width={120}
-                  height={60}
-                  className="mx-auto"
-                />
-              </div>
-              <div className="bg-[#F5F5F5] rounded-xl p-4 sm:p-6 mb-6">
-                <p className="text-sm text-[#4A4A4A] mb-2">Account Name</p>
-                <p className="font-semibold text-[#1B1A17] text-base sm:text-lg mb-4">MICHAEL C ELIA</p>
-                <p className="text-sm text-[#4A4A4A] mb-2">Account Number</p>
-                <p className="font-mono font-bold text-xl sm:text-2xl text-[#1B1A17]">048174113791</p>
-              </div>
-              <p className="text-base sm:text-lg font-semibold text-[#1B1A17] mb-2">
-                Jumla: TZS {getTotal().toLocaleString()}
-              </p>
-              <button
-                onClick={() => setShowConfirmationForm(true)}
-                className="text-[#D4AF37] hover:text-[#B8962E] font-medium underline mt-4 text-sm sm:text-base"
-              >
-                Malipo yamekamilika? Bofya hapa!
-              </button>
-            </div>
-          ) : paymentMethod === "lipa" ? (
-            /* Lipa Namba Details */
-            <div className="text-center">
-              <p className="text-[#4A4A4A] mb-4 text-sm sm:text-base">Scan QR Code au tumia Lipa Namba</p>
-              <div className="bg-white rounded-xl p-2 sm:p-4 mb-6 inline-block border border-[#E5E5E5]">
-                <Image
-                  src="/goddess-glow/lipa-namba.png"
-                  alt="Lipa Namba QR Code"
-                  width={280}
-                  height={280}
-                  className="mx-auto w-[200px] h-[200px] sm:w-[280px] sm:h-[280px]"
-                />
-              </div>
-              <p className="text-base sm:text-lg font-semibold text-[#1B1A17] mb-2">
-                Jumla: TZS {getTotal().toLocaleString()}
-              </p>
-              <button
-                onClick={() => setShowConfirmationForm(true)}
-                className="text-[#D4AF37] hover:text-[#B8962E] font-medium underline mt-4 text-sm sm:text-base"
-              >
-                Malipo yamekamilika? Bofya hapa!
-              </button>
-            </div>
-          ) : cartItems.length === 0 ? (
-            <div className="text-center py-8 sm:py-12">
-              <ShoppingCart className="h-12 w-12 sm:h-16 sm:w-16 text-[#E5E5E5] mx-auto mb-4" />
-              <p className="text-[#4A4A4A]">Your cart is empty</p>
-            </div>
-          ) : (
-            <>
-              {/* Cart Items */}
-              <div className="space-y-3 sm:space-y-4 mb-6">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-[#FAFAF8] rounded-xl">
-                    <Image
-                      src={item.images[0] || "/placeholder.svg"}
-                      alt={item.name}
-                      width={60}
-                      height={60}
-                      className="rounded-lg object-cover w-[50px] h-[50px] sm:w-[60px] sm:h-[60px]"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-[#1B1A17] text-sm sm:text-base truncate">{item.name}</h4>
-                      <p className="text-[#D4AF37] font-semibold text-sm sm:text-base">
-                        TZS {item.price.toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="p-1 sm:p-1.5 hover:bg-white rounded-full transition-colors"
-                      >
-                        <Minus className="h-3 w-3 sm:h-4 sm:w-4 text-[#4A4A4A]" />
-                      </button>
-                      <span className="w-6 sm:w-8 text-center font-medium text-[#1B1A17] text-sm sm:text-base">
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="p-1 sm:p-1.5 hover:bg-white rounded-full transition-colors"
-                      >
-                        <Plus className="h-3 w-3 sm:h-4 sm:w-4 text-[#4A4A4A]" />
-                      </button>
-                    </div>
-                    <button
-                      onClick={() => removeFromCart(item.id)}
-                      className="p-1 sm:p-1.5 hover:bg-red-50 rounded-full transition-colors"
-                    >
-                      <X className="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              {/* Total */}
-              <div className="border-t border-[#E5E5E5] pt-4 mb-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-base sm:text-lg font-medium text-[#1B1A17]">Total</span>
-                  <span className="text-xl sm:text-2xl font-bold text-[#D4AF37]">
-                    TZS {getTotal().toLocaleString()}
-                  </span>
-                </div>
-              </div>
-
-              {/* Payment Options */}
-              <div className="space-y-3">
-                <p className="text-sm text-[#4A4A4A] font-medium mb-3">Choose Payment Method:</p>
-                <Button
-                  onClick={handleWhatsAppOrder}
-                  className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-semibold py-4 sm:py-5 flex items-center justify-center gap-2 text-sm sm:text-base"
-                >
-                  <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
-                  WhatsApp Us
-                </Button>
-                <Button
-                  onClick={() => setPaymentMethod("bank")}
-                  className="w-full bg-[#1B1A17] hover:bg-[#2d2c28] text-white font-semibold py-4 sm:py-5 flex items-center justify-center gap-2 text-sm sm:text-base"
-                >
-                  <Building2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Pay via Bank
-                </Button>
-                <Button
-                  onClick={() => setPaymentMethod("lipa")}
-                  className="w-full bg-[#D4AF37] hover:bg-[#B8962E] text-[#1B1A17] font-semibold py-4 sm:py-5 flex items-center justify-center gap-2 text-sm sm:text-base"
-                >
-                  <QrCode className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Pay via Lipa Namba
-                </Button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default function GoddessGlowPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-  const [isCartOpen, setIsCartOpen] = useState(false)
-
-  const benefits = [
-    "Clinically proven formula that helps fade dark spots and scars",
-    "Smoothens and softens skin for a silky, touchable feel",
-    "Brightens dull areas and restores your natural, healthy glow",
-    "Deeply moisturizes to keep your skin nourished all day",
-    "Reduces wrinkles and fine lines, leaving a youthful appearance",
-    "Detoxifies and repairs skin from harsh product damage",
-    "Clears acne and blemishes for an even tone",
-    "Removes dark patches underarms, elbows, inner thighs, and knees",
-    "Safe and gentle for all skin types and tones",
-    "Made with authentic ingredients, trusted by skincare lovers everywhere",
-  ]
+  useEffect(() => {
+    const fetchedProducts = getProducts()
+    setProducts(fetchedProducts)
+    setAllProducts(fetchedProducts) // Set allProducts as well
+    // Initialize currentImageIndex for each product
+    const initialImageIndex = fetchedProducts.reduce(
+      (acc, product) => {
+        acc[product.id] = 0
+        return acc
+      },
+      {} as { [key: string]: number },
+    )
+    setCurrentImageIndex(initialImageIndex)
+  }, [])
 
   const addToCart = (product: Product) => {
-    setCartItems((prev) => {
+    setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id)
       if (existing) {
         return prev.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item))
       }
       return [...prev, { ...product, quantity: 1 }]
     })
-    setIsCartOpen(true)
   }
 
   const updateQuantity = (id: string, quantity: number) => {
-    setCartItems((prev) => prev.map((item) => (item.id === id ? { ...item, quantity } : item)))
+    setCart((prev) =>
+      prev
+        .map((item) => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
+        .filter((item) => item.quantity > 0),
+    )
   }
 
   const removeFromCart = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id))
+    setCart((prev) => prev.filter((item) => item.id !== id))
   }
 
-  const getTotal = () => {
-    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+
+  const handleWhatsAppOrder = () => {
+    const orderDetails = cart
+      .map((item) => `${item.name} x${item.quantity} = TZS ${(item.price * item.quantity).toLocaleString()}`)
+      .join("\n")
+
+    const message = `Habari! Nataka kuorder:\n\n${orderDetails}\n\nJumla: TZS ${cartTotal.toLocaleString()}`
+    const whatsappUrl = `https://wa.me/255675622238?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, "_blank")
   }
 
-  const total = getTotal()
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+  const handleConfirmationSubmit = () => {
+    const { name, phone, location, description, transactionId } = confirmationData
+
+    if (!name || !phone || !location || !transactionId) {
+      alert("Tafadhali jaza taarifa zote zinazohitajika")
+      return
+    }
+
+    const orderDetails = cart
+      .map((item) => `${item.name} x${item.quantity} = TZS ${(item.price * item.quantity).toLocaleString()}`)
+      .join("\n")
+
+    const paymentType =
+      paymentMethod === "bank" ? "Bank Transfer (NBC)" : paymentMethod === "lipa-namba" ? "Lipa Namba" : "Unknown"
+
+    const message = `THIBITISHO LA MALIPO - GODDESS GLOW\n\n📦 Order:\n${orderDetails}\n\n💰 Jumla: TZS ${cartTotal.toLocaleString()}\n\n💳 Njia ya Malipo: ${paymentType}\n🧾 Transaction ID: ${transactionId}\n\n👤 Jina: ${name}\n📱 Simu: ${phone}\n📍 Eneo: ${location}\n📝 Maelezo: ${description || "Hakuna"}`
+
+    const whatsappUrl = `https://wa.me/255675622238?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, "_blank")
+
+    // Reset
+    setShowConfirmationForm(false)
+    setConfirmationData({ name: "", phone: "", location: "", description: "", transactionId: "" })
+    setPaymentMethod(null)
+    setIsCartOpen(false)
+    setCart([])
+    setShowPaymentOptions(false)
+    setShowBankDetails(false)
+    setShowLipaNamba(false)
+  }
+
+  // New functions for image navigation within ProductCard
+  const nextImage = (productId: string, imageCount: number) => {
+    setCurrentImageIndex((prev) => ({
+      ...prev,
+      [productId]: (prev[productId] + 1) % imageCount,
+    }))
+  }
+
+  const prevImage = (productId: string, imageCount: number) => {
+    setCurrentImageIndex((prev) => ({
+      ...prev,
+      [productId]: (prev[productId] - 1 + imageCount) % imageCount,
+    }))
+  }
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7]">
+    <div className="min-h-screen bg-[#FAFAF8]">
+      {/* Navigation component */}
       <Navigation />
 
-      {/* Floating Cart Button */}
-      {cartCount > 0 && (
-        <button
-          onClick={() => setIsCartOpen(true)}
-          className="fixed bottom-6 right-6 z-40 bg-[#D4AF37] hover:bg-[#B8941F] text-[#1B1A17] p-4 rounded-full shadow-2xl flex items-center gap-2 transition-transform hover:scale-105"
-        >
-          <ShoppingCart className="h-6 w-6" />
-          <span className="font-bold">{cartCount}</span>
-        </button>
-      )}
-
-      {/* Cart Modal */}
-      <CartModal
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        updateQuantity={updateQuantity}
-        removeFromCart={removeFromCart}
-        getTotal={getTotal}
-      />
-
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-end md:items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/goddess-glow/hero-beach.png"
-            alt="Goddess Glow Brightening Body Cream"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
-        </div>
+      <section
+        className="relative text-[#FAFAF8] py-16 sm:py-24 lg:py-32 overflow-hidden pt-28 sm:pt-32"
+        style={{
+          backgroundImage: "url(/goddess-glow/body-oil-hero.jpeg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-[#1B1A17]/70" />
 
-        <div className="relative z-10 container mx-auto px-4 lg:px-8 pb-16 md:pb-0">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-2 mb-4 md:mb-6">
-              <Sparkles className="h-5 w-5 md:h-6 md:w-6 text-[#D4AF37]" />
-              <span className="text-[#D4AF37] font-medium tracking-wider text-xs md:text-sm uppercase">
-                Premium Skincare
-              </span>
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          <div className="text-center max-w-3xl mx-auto">
+            {/* Visible logo */}
+            <div className="flex justify-center mb-6 sm:mb-8">
+              <Image
+                src="/logo-new.png"
+                alt="MIKENOVA GROUP"
+                width={280}
+                height={90}
+                className="h-16 sm:h-20 lg:h-24 w-auto"
+                priority
+              />
             </div>
-            <h1 className="font-serif text-4xl md:text-7xl text-white mb-4 md:mb-6 leading-tight">Goddess Glow</h1>
-            <p className="text-xl md:text-3xl text-white/90 mb-3 md:mb-4 font-light">Brightening Body Cream</p>
-            <p className="text-lg md:text-xl text-white/80 mb-6 md:mb-8 leading-relaxed">
-              Reveal Your Natural Radiance
+
+            <div className="inline-flex items-center gap-2 bg-[#F0A500]/20 border border-[#F0A500]/30 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 mb-4 sm:mb-6">
+              <Sparkles className="w-4 h-4 text-[#F0A500]" />
+              <span className="text-xs sm:text-sm text-[#F0A500] font-medium">Premium Skincare Collection</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
+              <span className="text-[#F0A500]">Goddess Glow</span>
+              <br />
+              <span className="text-[#FAFAF8]">Brightening Collection</span>
+            </h1>
+
+            <p className="text-base sm:text-xl text-[#FAFAF8]/90 mb-6 sm:mb-8 max-w-2xl mx-auto px-4 leading-relaxed">
+              Gundua siri ya ngozi inayong&apos;aa na bidhaa zetu za asili. Brightening cream, oil, na soap zilizoundwa
+              kutoa matokeo ya kushangaza.
             </p>
-            <Button
-              asChild
-              size="lg"
-              className="bg-[#D4AF37] hover:bg-[#B8941F] text-black font-medium px-6 md:px-8 py-5 md:py-6 text-base md:text-lg w-full md:w-auto"
-            >
-              <a href="#shop">Shop Now</a>
-            </Button>
+
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+              <Button
+                onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
+                className="bg-[#F0A500] hover:bg-[#F0A500]/90 text-[#1B1A17] font-semibold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg"
+              >
+                <ShoppingCart className="w-5 h-5 mr-2" />
+                Nunua Sasa
+              </Button>
+              <Link href="/">
+                <Button
+                  variant="outline"
+                  className="border-[#FAFAF8] text-[#FAFAF8] bg-transparent hover:bg-[#FAFAF8]/10 px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg w-full sm:w-auto"
+                >
+                  Rudi Nyumbani
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="py-16 md:py-20 bg-white">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-serif text-3xl md:text-5xl text-[#1B1A17] mb-6">
-              The Skincare Secret Trusted by Thousands
+      {/* About Section */}
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1B1A17] mb-4">
+              Kuhusu <span className="text-[#F0A500]">Goddess Glow</span>
             </h2>
-            <p className="text-base md:text-lg text-[#4A4A4A] leading-relaxed">
-              Goddess Glow Brightening Body Cream reveals smooth, even, radiant skin using dermatologist approved
-              ingredients trusted by thousands of women across Africa.
+            <p className="text-[#1B1A17]/70 text-base sm:text-lg leading-relaxed">
+              Furahia ngozi inayong&apos;aa na bidhaa zetu bora kuanzia Goddess Glow Body Cream, Goddess Glow Body Oil
+              na Goddess Glow Bar Soap.
             </p>
           </div>
         </div>
       </section>
 
-      <section id="shop" className="py-16 md:py-24 bg-[#FDFBF7]">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 mb-4">
-              <Sparkles className="h-5 w-5 text-[#D4AF37]" />
-              <span className="text-[#D4AF37] font-medium tracking-wider text-sm uppercase">Shop Now</span>
-              <Sparkles className="h-5 w-5 text-[#D4AF37]" />
-            </div>
-            <h2 className="font-serif text-3xl md:text-5xl text-[#1B1A17] mb-4">Our Products</h2>
-            <p className="text-[#4A4A4A] text-base md:text-lg max-w-2xl mx-auto">
-              Discover the complete Goddess Glow collection for your perfect skincare routine
+      {/* Products Section */}
+      <section id="products" className="py-12 sm:py-20 bg-[#FAFAF8]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-4xl font-bold text-[#1B1A17] mb-3 sm:mb-4">Bidhaa Zetu</h2>
+            <p className="text-[#1B1A17]/60 max-w-2xl mx-auto text-sm sm:text-base px-4">
+              Chagua bidhaa unayoipenda na uongeze kwenye kikapu chako
             </p>
-            <div className="inline-block bg-[#E53935] text-white px-4 py-2 rounded-full text-sm font-bold mt-4">
-              Limited Time: 20% OFF All Products!
-            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            {allProducts.map((product) => (
+              <Card
+                key={product.id}
+                className="!bg-white overflow-hidden group hover:shadow-xl transition-all duration-300 border-[#F0A500]/20"
+              >
+                <div className="relative aspect-square overflow-hidden">
+                  {/* Discount Badge */}
+                  <div className="absolute top-3 left-3 z-10 bg-[#E53935] text-white text-xs font-bold px-2 py-1 rounded">
+                    -20%
+                  </div>
+
+                  {/* Product Image */}
+                  <Image
+                    src={product.images[currentImageIndex[product.id] || 0]}
+                    alt={product.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+
+                  {/* Image Navigation - Always visible on mobile */}
+                  {product.images.length > 1 && (
+                    <>
+                      <button
+                        onClick={() => prevImage(product.id, product.images.length)}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-lg transition-all z-10"
+                        aria-label="Previous image"
+                      >
+                        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#1B1A17]" />
+                      </button>
+                      <button
+                        onClick={() => nextImage(product.id, product.images.length)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-lg transition-all z-10"
+                        aria-label="Next image"
+                      >
+                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#1B1A17]" />
+                      </button>
+
+                      {/* Image Dots */}
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                        {product.images.map((_, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() =>
+                              setCurrentImageIndex((prev) => ({
+                                ...prev,
+                                [product.id]: idx,
+                              }))
+                            }
+                            className={`w-2 h-2 rounded-full transition-all ${
+                              (currentImageIndex[product.id] || 0) === idx ? "bg-[#F0A500] w-4" : "bg-white/70"
+                            }`}
+                            aria-label={`Go to image ${idx + 1}`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <CardContent className="p-4 sm:p-6">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#1B1A17] mb-2">{product.name}</h3>
+                  <p className="text-[#1B1A17]/60 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
+                    {product.description}
+                  </p>
+
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <span className="text-xl sm:text-2xl font-bold text-[#F0A500]">
+                      TZS {product.price.toLocaleString()}
+                    </span>
+                    <span className="text-sm sm:text-base text-[#1B1A17]/40 line-through">
+                      TZS {Math.round(product.price * 1.2).toLocaleString()}
+                    </span>
+                  </div>
+
+                  <Button
+                    onClick={() => addToCart(product)}
+                    className="w-full bg-[#1B1A17] hover:bg-[#1B1A17]/90 text-[#FAFAF8] font-medium py-4 sm:py-5 text-sm sm:text-base"
+                  >
+                    <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                    Ongeza Kwenye Kikapu
+                  </Button>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Image Grid Section */}
-      <section className="py-16 md:py-20 bg-white">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            <div className="relative h-[400px] md:h-[500px] overflow-hidden rounded-lg">
-              <Image
-                src="/goddess-glow/natural-beauty.png"
-                alt="Natural radiant beauty"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="relative h-[400px] md:h-[500px] overflow-hidden rounded-lg">
-              <Image
-                src="/goddess-glow/wedding-party.png"
-                alt="Special occasions beauty"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Benefits Section */}
-      <section className="py-16 md:py-20 bg-[#FDFBF7]">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="font-serif text-3xl md:text-5xl text-[#1B1A17] mb-4 text-center">Why You'll Love It</h2>
-            <div className="w-20 h-1 bg-[#D4AF37] mx-auto mb-12" />
+      <section className="py-12 sm:py-16 bg-[#1B1A17]">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-[#FAFAF8] mb-8 sm:mb-12">
+            Kwa Nini <span className="text-[#F0A500]">Goddess Glow?</span>
+          </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-start gap-3 bg-white p-4 rounded-xl shadow-sm">
-                  <div className="flex-shrink-0 mt-1">
-                    <Check className="h-5 w-5 text-[#D4AF37]" />
-                  </div>
-                  <p className="text-sm md:text-base text-[#4A4A4A] leading-relaxed">{benefit}</p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {[
+              { icon: Star, title: "Ubora wa Juu", desc: "Viambato bora vilivyochaguliwa kwa uangalifu" },
+              { icon: Shield, title: "Salama", desc: "Imethibitishwa na wataalamu wa ngozi" },
+              { icon: Leaf, title: "Asili", desc: "Viambato vya asili bila kemikali kali" },
+              { icon: Check, title: "Matokeo", desc: "Matokeo yanayoonekana ndani ya wiki 2-4" },
+            ].map((benefit, idx) => (
+              <div key={idx} className="text-center p-4 sm:p-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#F0A500]/20 rounded-full mb-3 sm:mb-4">
+                  <benefit.icon className="w-6 h-6 sm:w-8 sm:h-8 text-[#F0A500]" />
                 </div>
-              ))}
-            </div>
+                <h3 className="text-base sm:text-lg font-semibold text-[#FAFAF8] mb-1 sm:mb-2">{benefit.title}</h3>
+                <p className="text-[#FAFAF8]/60 text-xs sm:text-sm">{benefit.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-[#1B1A17]">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-3xl md:text-5xl text-white mb-4">See the Glow in Action</h2>
-            <p className="text-white/70 text-base md:text-lg max-w-2xl mx-auto">
-              Watch how Goddess Glow transforms skin and discover why thousands trust our products
-            </p>
+      {/* Video Section */}
+      <section className="py-12 sm:py-20 bg-[#FAFAF8]">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1B1A17] mb-3 sm:mb-4">
+              Tazama <span className="text-[#F0A500]">Video Yetu</span>
+            </h2>
+            <p className="text-[#1B1A17]/60 text-sm sm:text-base">Gundua zaidi kuhusu bidhaa zetu za Goddess Glow</p>
           </div>
-          <div className="max-w-4xl mx-auto">
-            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
-              <video
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/promo%20video-XwIGcoZzWkdIGf3tXnbTNxVgHCMqtX.mp4"
-                controls
-                className="w-full h-full object-cover"
-                poster="/goddess-glow/body-cream-beach.png"
+
+          <div className="relative aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl">
+            <video controls className="w-full h-full object-cover" poster="/goddess-glow/body-oil-hero.jpeg">
+              <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/promo%20video-XwIGcoZzWkdIGf3tXnbTNxVgHCMqtX.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </section>
+
+      {/* Floating Cart Button - Mobile optimized */}
+      <button
+        onClick={() => setIsCartOpen(true)}
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 bg-[#F0A500] text-[#1B1A17] p-3 sm:p-4 rounded-full shadow-2xl hover:bg-[#F0A500]/90 transition-all hover:scale-110"
+        aria-label="Open cart"
+      >
+        <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
+        {cartCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-[#E53935] text-white text-xs w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center font-bold">
+            {cartCount}
+          </span>
+        )}
+      </button>
+
+      {/* Cart Modal */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setIsCartOpen(false)} />
+          <div className="relative bg-white w-full sm:max-w-lg sm:mx-4 max-h-[90vh] sm:max-h-[85vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-2xl">
+            {/* Cart Header */}
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#F0A500]/20">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#1B1A17]">Kikapu Chako</h2>
+              <button
+                onClick={() => setIsCartOpen(false)}
+                className="p-2 hover:bg-[#F0A500]/10 rounded-full transition-colors"
+                aria-label="Close cart"
               >
-                Your browser does not support the video tag.
-              </video>
+                <X className="w-5 h-5 sm:w-6 sm:h-6 text-[#1B1A17]" />
+              </button>
+            </div>
+
+            {/* Cart Items */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+              {cart.length === 0 ? (
+                <div className="text-center py-8 sm:py-12">
+                  <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-[#1B1A17]/20 mx-auto mb-4" />
+                  <p className="text-[#1B1A17]/60">Kikapu chako ni tupu</p>
+                </div>
+              ) : (
+                <div className="space-y-3 sm:space-y-4">
+                  {cart.map((item) => (
+                    <div key={item.id} className="flex gap-3 sm:gap-4 p-3 sm:p-4 bg-[#FAFAF8] rounded-xl">
+                      <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden flex-shrink-0">
+                        <Image
+                          src={item.images[0] || "/placeholder.svg"}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-[#1B1A17] text-sm sm:text-base truncate">{item.name}</h3>
+                        <p className="text-[#F0A500] font-bold text-sm sm:text-base">
+                          TZS {item.price.toLocaleString()}
+                        </p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <button
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="p-1 bg-[#1B1A17] text-white rounded"
+                            aria-label="Decrease quantity"
+                          >
+                            <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <span className="w-6 sm:w-8 text-center text-[#1B1A17] font-medium text-sm sm:text-base">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="p-1 bg-[#1B1A17] text-white rounded"
+                            aria-label="Increase quantity"
+                          >
+                            <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="ml-auto p-1 text-[#E53935] hover:bg-[#E53935]/10 rounded"
+                            aria-label="Remove item"
+                          >
+                            <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Cart Footer */}
+            {cart.length > 0 && (
+              <div className="border-t border-[#F0A500]/20 p-4 sm:p-6">
+                <div className="flex justify-between items-center mb-4 sm:mb-6">
+                  <span className="text-base sm:text-lg font-medium text-[#1B1A17]">Jumla:</span>
+                  <span className="text-xl sm:text-2xl font-bold text-[#F0A500]">TZS {cartTotal.toLocaleString()}</span>
+                </div>
+
+                {!showPaymentOptions ? (
+                  <Button
+                    onClick={() => setShowPaymentOptions(true)}
+                    className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 text-[#1B1A17] font-semibold py-5 sm:py-6 text-base sm:text-lg"
+                  >
+                    Endelea Kulipa
+                  </Button>
+                ) : (
+                  <div className="space-y-2 sm:space-y-3">
+                    <p className="text-center text-[#1B1A17]/70 mb-2 sm:mb-3 text-sm sm:text-base">
+                      Chagua njia ya malipo:
+                    </p>
+
+                    {/* WhatsApp */}
+                    <Button
+                      onClick={handleWhatsAppOrder}
+                      className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white font-medium py-4 sm:py-5 text-sm sm:text-base"
+                    >
+                      <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      Agiza kupitia WhatsApp
+                    </Button>
+
+                    {/* Bank Transfer */}
+                    <Button
+                      onClick={() => setShowBankDetails(!showBankDetails)}
+                      className="w-full bg-[#1B1A17] hover:bg-[#1B1A17]/90 text-[#FAFAF8] font-medium py-4 sm:py-5 text-sm sm:text-base"
+                    >
+                      <Building2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      Lipa kupitia Benki
+                    </Button>
+
+                    {showBankDetails && (
+                      <div className="bg-[#FAFAF8] p-3 sm:p-4 rounded-xl space-y-2 sm:space-y-3">
+                        <div className="flex items-center gap-3 mb-3">
+                          <Image
+                            src="/goddess-glow/nbc-logo.png"
+                            alt="NBC Bank"
+                            width={60}
+                            height={40}
+                            className="h-8 sm:h-10 w-auto"
+                          />
+                          <span className="font-semibold text-[#1B1A17] text-sm sm:text-base">
+                            National Bank of Commerce
+                          </span>
+                        </div>
+                        <div className="space-y-1 text-xs sm:text-sm">
+                          <p className="text-[#1B1A17]">
+                            <span className="text-[#1B1A17]/60">Account:</span>{" "}
+                            <span className="font-mono font-bold">048174113791</span>
+                          </p>
+                          <p className="text-[#1B1A17]">
+                            <span className="text-[#1B1A17]/60">Name:</span>{" "}
+                            <span className="font-bold">MICHAEL C ELIA</span>
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setShowConfirmationForm(true)}
+                          className="text-[#F0A500] text-xs sm:text-sm font-medium hover:underline mt-2"
+                        >
+                          Malipo yamekamilika? Bofya hapa!
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Lipa Namba */}
+                    <Button
+                      onClick={() => setShowLipaNamba(!showLipaNamba)}
+                      className="w-full bg-[#FFD700] hover:bg-[#FFD700]/90 text-[#1B1A17] font-medium py-4 sm:py-5 text-sm sm:text-base"
+                    >
+                      <QrCode className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      Lipa Namba (Scan QR)
+                    </Button>
+
+                    {showLipaNamba && (
+                      <div className="bg-[#FAFAF8] p-3 sm:p-4 rounded-xl">
+                        <div className="relative aspect-square max-w-[200px] sm:max-w-[250px] mx-auto">
+                          <Image
+                            src="/goddess-glow/lipa-namba.png"
+                            alt="Lipa Namba QR Code"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        <p className="text-center text-[#1B1A17]/70 text-xs sm:text-sm mt-2">Scan QR code kulipa</p>
+                        <button
+                          onClick={() => setShowConfirmationForm(true)}
+                          className="block w-full text-center text-[#F0A500] text-xs sm:text-sm font-medium hover:underline mt-2"
+                        >
+                          Malipo yamekamilika? Bofya hapa!
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Payment Confirmation Form Modal */}
+      {showConfirmationForm && (
+        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setShowConfirmationForm(false)} />
+          <div className="relative bg-white w-full sm:max-w-md sm:mx-4 max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl">
+            <div className="p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h3 className="text-lg sm:text-xl font-bold text-[#1B1A17]">Thibitisha Malipo</h3>
+                <button
+                  onClick={() => setShowConfirmationForm(false)}
+                  className="p-2 hover:bg-[#F0A500]/10 rounded-full"
+                  aria-label="Close form"
+                >
+                  <X className="w-5 h-5 text-[#1B1A17]" />
+                </button>
+              </div>
+
+              <div className="space-y-3 sm:space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Jina Lako</label>
+                  <Input
+                    value={confirmationData.name}
+                    onChange={(e) => setConfirmationData((prev) => ({ ...prev, name: e.target.value }))}
+                    placeholder="Ingiza jina lako"
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Namba ya Simu</label>
+                  <Input
+                    value={confirmationData.phone}
+                    onChange={(e) => setConfirmationData((prev) => ({ ...prev, phone: e.target.value }))}
+                    placeholder="0712 345 678"
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Mahali Unapoishi</label>
+                  <Input
+                    value={confirmationData.location}
+                    onChange={(e) => setConfirmationData((prev) => ({ ...prev, location: e.target.value }))}
+                    placeholder="Mfano: Kinondoni, Dar es Salaam"
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Maelezo ya Ziada</label>
+                  <Textarea
+                    value={confirmationData.description}
+                    onChange={(e) => setConfirmationData((prev) => ({ ...prev, description: e.target.value }))}
+                    placeholder="Maelezo mengine kuhusu order yako..."
+                    rows={2}
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Transaction ID / Reference</label>
+                  <Input
+                    value={confirmationData.transactionId}
+                    onChange={(e) => setConfirmationData((prev) => ({ ...prev, transactionId: e.target.value }))}
+                    placeholder="Namba ya muamala"
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
+                  />
+                </div>
+
+                <Button
+                  onClick={handleConfirmationSubmit}
+                  className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 text-[#1B1A17] font-semibold py-5 sm:py-6 text-sm sm:text-base mt-2"
+                >
+                  <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  Tuma Uthibitisho
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+      )}
 
-      {/* Luxury Lifestyle Section */}
-      <section className="relative h-[500px] md:h-[600px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/goddess-glow/luxury-horse.png"
-            alt="Luxury lifestyle with Goddess Glow"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-black/30" />
-        </div>
-
-        <div className="relative z-10 container mx-auto px-4 lg:px-8 text-center">
-          <h2 className="font-serif text-3xl md:text-6xl text-white mb-6">The Result</h2>
-          <p className="text-lg md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            Feel the difference from the very first touch — skin that's visibly softer, brighter, and more radiant. With
-            consistent use, Goddess Glow Brightening Body Cream will reveal your natural tone, enhance your glow, and
-            give you confidence that shines from within.
-          </p>
-        </div>
-      </section>
-
-      {/* Trust Section */}
-      <section className="py-16 md:py-20 bg-white">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 mb-6">
-              <Sparkles className="h-6 w-6 md:h-8 md:w-8 text-[#D4AF37]" />
-              <span className="text-[#D4AF37] font-medium tracking-wider text-base md:text-lg">
-                Authentic. Proven. Trusted.
-              </span>
-              <Sparkles className="h-6 w-6 md:h-8 md:w-8 text-[#D4AF37]" />
-            </div>
-            <p className="text-xl md:text-3xl mb-8 leading-relaxed text-[#1B1A17]">
-              Backed by real results and loved by countless users, Goddess Glow stands as a symbol of genuine beauty
-              care — no harsh chemicals, no false promises, just authentic results.
-            </p>
-            <p className="text-lg md:text-xl text-[#4A4A4A]">
-              Join the growing community that swears by the glow — and make your skin the best it's ever been.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 md:py-24 bg-gradient-to-br from-[#D4AF37] to-[#F0C75E]">
-        <div className="container mx-auto px-4 lg:px-8 text-center">
-          <h2 className="font-serif text-3xl md:text-6xl text-[#1B1A17] mb-6">Ready to Reveal Your Glow?</h2>
-          <p className="text-lg md:text-2xl text-[#1B1A17]/80 mb-10 max-w-2xl mx-auto">
-            Experience the transformation thousands of women trust. Shop the complete Goddess Glow collection today.
-          </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-[#1B1A17] hover:bg-[#2A2925] text-white font-medium px-8 md:px-12 py-6 md:py-7 text-lg md:text-xl shadow-2xl w-full md:w-auto"
-          >
-            <a href="#shop">Shop Now</a>
-          </Button>
-        </div>
-      </section>
-
+      {/* Footer component */}
       <Footer />
     </div>
   )
