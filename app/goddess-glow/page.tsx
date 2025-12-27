@@ -1,8 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   ShoppingCart,
   Plus,
@@ -10,22 +14,18 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
-  Star,
-  Shield,
-  Leaf,
   MessageCircle,
-  Building2,
-  QrCode,
-  Check,
+  Sparkles,
+  Shield,
+  Droplets,
+  Sun,
+  Play,
+  CheckCircle,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { getProducts, type Product } from "@/lib/products-store"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import { getProducts, type Product } from "@/lib/products-store"
+import { toast, Toaster } from "sonner"
 
 interface CartItem extends Product {
   quantity: number
@@ -35,17 +35,17 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
 
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     setCurrentImageIndex((prev) => (prev + 1) % product.images.length)
-  }
+  }, [product.images.length])
 
-  const prevImage = () => {
+  const prevImage = useCallback(() => {
     setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length)
-  }
+  }, [product.images.length])
 
   return (
     <Card className="!bg-white overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-      <div className="relative h-[300px] sm:h-[350px] overflow-hidden">
+      <div className="relative h-[280px] sm:h-[320px] md:h-[350px] overflow-hidden">
         <Image
           src={product.images[currentImageIndex] || "/placeholder.svg?height=400&width=400&query=skincare product"}
           alt={product.name}
@@ -53,35 +53,33 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {/* Discount Badge */}
-        <div className="absolute top-4 left-4 bg-[#E53935] text-white px-3 py-1 rounded-full text-sm font-bold">
+        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-[#E53935] text-white px-2.5 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-bold">
           -{discount}%
         </div>
 
-        {/* Image Navigation - Always visible on mobile */}
         {product.images.length > 1 && (
           <>
             <button
               onClick={prevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white active:bg-white p-2.5 sm:p-2 rounded-full shadow-lg transition-all touch-manipulation"
               aria-label="Previous image"
             >
-              <ChevronLeft className="w-5 h-5 text-[#1B1A17]" />
+              <ChevronLeft className="w-5 h-5 sm:w-5 sm:h-5 text-[#1B1A17]" />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white active:bg-white p-2.5 sm:p-2 rounded-full shadow-lg transition-all touch-manipulation"
               aria-label="Next image"
             >
-              <ChevronRight className="w-5 h-5 text-[#1B1A17]" />
+              <ChevronRight className="w-5 h-5 sm:w-5 sm:h-5 text-[#1B1A17]" />
             </button>
-            {/* Image Dots */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-2.5 sm:gap-2">
               {product.images.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentImageIndex(idx)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    idx === currentImageIndex ? "bg-[#F0A500] w-4" : "bg-white/70"
+                  className={`w-2.5 h-2.5 sm:w-2 sm:h-2 rounded-full transition-all touch-manipulation ${
+                    idx === currentImageIndex ? "bg-[#F0A500] w-5 sm:w-4" : "bg-white/70"
                   }`}
                   aria-label={`View image ${idx + 1}`}
                 />
@@ -91,22 +89,25 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
         )}
       </div>
 
-      <CardContent className="p-4 sm:p-6">
-        <h3 className="text-lg sm:text-xl font-bold text-[#1B1A17] mb-2">{product.name}</h3>
-        <p className="text-[#1B1A17]/70 text-sm mb-4 line-clamp-2">{product.description}</p>
+      <CardContent className="p-4 sm:p-5 md:p-6">
+        <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#1B1A17] mb-1.5 sm:mb-2">{product.name}</h3>
+        <p className="text-[#1B1A17]/70 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">{product.description}</p>
 
         {/* Pricing */}
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-xl sm:text-2xl font-bold text-[#1B1A17]">TZS {product.price.toLocaleString()}</span>
-          <span className="text-[#1B1A17]/50 line-through text-sm">TZS {product.originalPrice.toLocaleString()}</span>
+        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#1B1A17]">
+            TZS {product.price.toLocaleString()}
+          </span>
+          <span className="text-[#1B1A17]/50 line-through text-xs sm:text-sm">
+            TZS {product.originalPrice.toLocaleString()}
+          </span>
         </div>
 
-        {/* Add to Cart Button */}
         <Button
           onClick={() => onAddToCart(product)}
-          className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 text-[#1B1A17] font-semibold py-5 sm:py-6 text-base"
+          className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] font-semibold py-4 sm:py-5 md:py-6 text-sm sm:text-base touch-manipulation"
         >
-          <ShoppingCart className="w-5 h-5 mr-2" />
+          <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
           Ongeza Kwenye Cart
         </Button>
       </CardContent>
@@ -118,25 +119,12 @@ export default function GoddessGlowPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [cart, setCart] = useState<CartItem[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<"whatsapp" | "bank" | "lipa-namba" | null>(null)
-  const [showConfirmationForm, setShowConfirmationForm] = useState(false)
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
-
-  // Confirmation form state
-  const [confirmationForm, setConfirmationForm] = useState({
-    name: "",
-    phone: "",
-    location: "",
-    description: "",
-    transactionId: "",
-  })
-
-  // New states for managing cart and product images
-  const [allProducts, setAllProducts] = useState<Product[]>([])
-  const [currentImageIndex, setCurrentImageIndex] = useState<{ [key: string]: number }>({})
   const [showPaymentOptions, setShowPaymentOptions] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState<string>("")
   const [showBankDetails, setShowBankDetails] = useState(false)
   const [showLipaNamba, setShowLipaNamba] = useState(false)
+  const [showConfirmationForm, setShowConfirmationForm] = useState(false)
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const [confirmationData, setConfirmationData] = useState({
     name: "",
     phone: "",
@@ -146,177 +134,149 @@ export default function GoddessGlowPage() {
   })
 
   useEffect(() => {
-    const fetchedProducts = getProducts()
-    setProducts(fetchedProducts)
-    setAllProducts(fetchedProducts) // Set allProducts as well
-    // Initialize currentImageIndex for each product
-    const initialImageIndex = fetchedProducts.reduce(
-      (acc, product) => {
-        acc[product.id] = 0
-        return acc
-      },
-      {} as { [key: string]: number },
-    )
-    setCurrentImageIndex(initialImageIndex)
+    const loadedProducts = getProducts()
+    setProducts(loadedProducts)
   }, [])
 
-  const addToCart = (product: Product) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id)
-      if (existing) {
-        return prev.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item))
+  const addToCart = useCallback((product: Product) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id)
+      if (existingItem) {
+        toast.success(`${product.name} - Idadi imeongezwa!`, {
+          icon: <CheckCircle className="w-5 h-5 text-green-500" />,
+          position: "top-center",
+          duration: 2000,
+        })
+        return prevCart.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item))
       }
-      return [...prev, { ...product, quantity: 1 }]
+      toast.success(`${product.name} imeongezwa kwenye cart!`, {
+        icon: <CheckCircle className="w-5 h-5 text-green-500" />,
+        position: "top-center",
+        duration: 2000,
+      })
+      return [...prevCart, { ...product, quantity: 1 }]
     })
-  }
+  }, [])
 
-  const updateQuantity = (id: string, quantity: number) => {
-    setCart((prev) =>
-      prev
-        .map((item) => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
-        .filter((item) => item.quantity > 0),
-    )
-  }
+  const updateQuantity = useCallback((id: string, quantity: number) => {
+    if (quantity <= 0) {
+      setCart((prevCart) => prevCart.filter((item) => item.id !== id))
+    } else {
+      setCart((prevCart) => prevCart.map((item) => (item.id === id ? { ...item, quantity } : item)))
+    }
+  }, [])
 
-  const removeFromCart = (id: string) => {
-    setCart((prev) => prev.filter((item) => item.id !== id))
-  }
+  const removeFromCart = useCallback((id: string) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id))
+    toast.success("Bidhaa imeondolewa", {
+      position: "top-center",
+      duration: 1500,
+    })
+  }, [])
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
 
-  const handleWhatsAppOrder = () => {
+  const handleWhatsAppOrder = useCallback(() => {
     const orderDetails = cart
-      .map((item) => `${item.name} x${item.quantity} = TZS ${(item.price * item.quantity).toLocaleString()}`)
+      .map((item) => `• ${item.name} x${item.quantity} - TZS ${(item.price * item.quantity).toLocaleString()}`)
       .join("\n")
+    const message = `🛒 *Order Mpya - Goddess Glow*\n\n${orderDetails}\n\n💰 *Jumla: TZS ${cartTotal.toLocaleString()}*\n\nNataka kununua bidhaa hizi.`
+    window.open(`https://wa.me/255623821175?text=${encodeURIComponent(message)}`, "_blank")
+  }, [cart, cartTotal])
 
-    const message = `Habari! Nataka kuorder:\n\n${orderDetails}\n\nJumla: TZS ${cartTotal.toLocaleString()}`
-    const whatsappUrl = `https://wa.me/255675622238?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, "_blank")
-  }
-
-  const handleConfirmationSubmit = () => {
-    const { name, phone, location, description, transactionId } = confirmationData
-
-    if (!name || !phone || !location || !transactionId) {
-      alert("Tafadhali jaza taarifa zote zinazohitajika")
+  const handleConfirmationSubmit = useCallback(() => {
+    if (!confirmationData.name || !confirmationData.phone || !confirmationData.location) {
+      toast.error("Tafadhali jaza taarifa zote zinazohitajika")
       return
     }
 
-    const orderDetails = cart
-      .map((item) => `${item.name} x${item.quantity} = TZS ${(item.price * item.quantity).toLocaleString()}`)
-      .join("\n")
+    const orderDetails = cart.map((item) => `• ${item.name} x${item.quantity}`).join("\n")
+    const message = `✅ *Uthibitisho wa Malipo - Goddess Glow*\n\n👤 *Jina:* ${confirmationData.name}\n📱 *Simu:* ${confirmationData.phone}\n📍 *Mahali:* ${confirmationData.location}\n\n🛒 *Bidhaa:*\n${orderDetails}\n\n💰 *Jumla:* TZS ${cartTotal.toLocaleString()}\n\n💳 *Njia ya Malipo:* ${paymentMethod === "bank" ? "Bank Transfer" : "Lipa Namba"}\n🔢 *Transaction ID:* ${confirmationData.transactionId || "N/A"}\n\n📝 *Maelezo:* ${confirmationData.description || "Hakuna"}`
+    window.open(`https://wa.me/255623821175?text=${encodeURIComponent(message)}`, "_blank")
 
-    const paymentType =
-      paymentMethod === "bank" ? "Bank Transfer (NBC)" : paymentMethod === "lipa-namba" ? "Lipa Namba" : "Unknown"
-
-    const message = `THIBITISHO LA MALIPO - GODDESS GLOW\n\n📦 Order:\n${orderDetails}\n\n💰 Jumla: TZS ${cartTotal.toLocaleString()}\n\n💳 Njia ya Malipo: ${paymentType}\n🧾 Transaction ID: ${transactionId}\n\n👤 Jina: ${name}\n📱 Simu: ${phone}\n📍 Eneo: ${location}\n📝 Maelezo: ${description || "Hakuna"}`
-
-    const whatsappUrl = `https://wa.me/255675622238?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, "_blank")
-
-    // Reset
     setShowConfirmationForm(false)
-    setConfirmationData({ name: "", phone: "", location: "", description: "", transactionId: "" })
-    setPaymentMethod(null)
-    setIsCartOpen(false)
-    setCart([])
-    setShowPaymentOptions(false)
-    setShowBankDetails(false)
-    setShowLipaNamba(false)
-  }
-
-  // New functions for image navigation within ProductCard
-  const nextImage = (productId: string, imageCount: number) => {
-    setCurrentImageIndex((prev) => ({
-      ...prev,
-      [productId]: (prev[productId] + 1) % imageCount,
-    }))
-  }
-
-  const prevImage = (productId: string, imageCount: number) => {
-    setCurrentImageIndex((prev) => ({
-      ...prev,
-      [productId]: (prev[productId] - 1 + imageCount) % imageCount,
-    }))
-  }
+    setConfirmationData({
+      name: "",
+      phone: "",
+      location: "",
+      description: "",
+      transactionId: "",
+    })
+    toast.success("Asante! Tutawasiliana nawe hivi karibuni.")
+  }, [cart, cartTotal, confirmationData, paymentMethod])
 
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
-      {/* Navigation component */}
+      <Toaster richColors />
       <Navigation />
 
       {/* Hero Section */}
-      <section
-        className="relative text-[#FAFAF8] py-16 sm:py-24 lg:py-32 overflow-hidden pt-28 sm:pt-32"
-        style={{
-          backgroundImage: "url(/goddess-glow/body-oil-hero.jpeg)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-[#1B1A17]/70" />
+      <section className="relative min-h-[75vh] sm:min-h-[80vh] flex items-center justify-center pt-24 sm:pt-28 md:pt-32">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/goddess-glow/body-oil-hero.jpeg"
+            alt="Goddess Glow Products"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1B1A17]/80 via-[#1B1A17]/60 to-[#1B1A17]/80" />
+        </div>
 
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="text-center max-w-3xl mx-auto">
-            {/* Visible logo */}
-            <div className="flex justify-center mb-6 sm:mb-8">
-              <Image
-                src="/logo-new.png"
-                alt="MIKENOVA GROUP"
-                width={280}
-                height={90}
-                className="h-16 sm:h-20 lg:h-24 w-auto"
-                priority
-              />
-            </div>
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 text-center">
+          {/* Logo */}
+          <div className="mb-5 sm:mb-6 md:mb-8">
+            <Image
+              src="/logo-new.png"
+              alt="MIKENOVA GROUP"
+              width={180}
+              height={60}
+              className="mx-auto w-[120px] sm:w-[150px] md:w-[180px] h-auto"
+            />
+          </div>
 
-            <div className="inline-flex items-center gap-2 bg-[#F0A500]/20 border border-[#F0A500]/30 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 mb-4 sm:mb-6">
-              <Sparkles className="w-4 h-4 text-[#F0A500]" />
-              <span className="text-xs sm:text-sm text-[#F0A500] font-medium">Premium Skincare Collection</span>
-            </div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#FAFAF8] mb-3 sm:mb-4 md:mb-6 leading-tight">
+            <span className="text-[#F0A500]">Goddess Glow</span>
+            <br />
+            <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal">Brightening Collection</span>
+          </h1>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
-              <span className="text-[#F0A500]">Goddess Glow</span>
-              <br />
-              <span className="text-[#FAFAF8]">Brightening Collection</span>
-            </h1>
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[#FAFAF8]/90 max-w-3xl mx-auto mb-5 sm:mb-6 md:mb-8 leading-relaxed px-2">
+            Gundua siri ya ngozi inayong&apos;aa na bidhaa zetu za asili. Brightening cream, oil, na soap zilizoundwa
+            kutoa matokeo ya kushangaza.
+          </p>
 
-            <p className="text-base sm:text-xl text-[#FAFAF8]/90 mb-6 sm:mb-8 max-w-2xl mx-auto px-4 leading-relaxed">
-              Gundua siri ya ngozi inayong&apos;aa na bidhaa zetu za asili. Brightening cream, oil, na soap zilizoundwa
-              kutoa matokeo ya kushangaza.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
+            <Button
+              onClick={() => document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" })}
+              className="bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] font-semibold px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base md:text-lg touch-manipulation"
+            >
+              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              Nunua Sasa
+            </Button>
+            <Link href="/contact" className="w-full sm:w-auto">
               <Button
-                onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-                className="bg-[#F0A500] hover:bg-[#F0A500]/90 text-[#1B1A17] font-semibold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg"
+                variant="outline"
+                className="border-[#FAFAF8] text-[#FAFAF8] hover:bg-[#FAFAF8]/10 active:bg-[#FAFAF8]/20 px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base md:text-lg w-full bg-transparent touch-manipulation"
               >
-                <ShoppingCart className="w-5 h-5 mr-2" />
-                Nunua Sasa
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                Wasiliana Nasi
               </Button>
-              <Link href="/">
-                <Button
-                  variant="outline"
-                  className="border-[#FAFAF8] text-[#FAFAF8] bg-transparent hover:bg-[#FAFAF8]/10 px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg w-full sm:w-auto"
-                >
-                  Rudi Nyumbani
-                </Button>
-              </Link>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-12 sm:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#1B1A17] mb-4">
-              Kuhusu <span className="text-[#F0A500]">Goddess Glow</span>
+      {/* About Section - Shorter */}
+      <section className="py-10 sm:py-12 md:py-16 bg-[#FAFAF8]">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1B1A17] mb-3 sm:mb-4 md:mb-6">
+              Kuhusu Goddess Glow
             </h2>
-            <p className="text-[#1B1A17]/70 text-base sm:text-lg leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg text-[#1B1A17]/80 leading-relaxed">
               Furahia ngozi inayong&apos;aa na bidhaa zetu bora kuanzia Goddess Glow Body Cream, Goddess Glow Body Oil
               na Goddess Glow Bar Soap.
             </p>
@@ -324,159 +284,116 @@ export default function GoddessGlowPage() {
         </div>
       </section>
 
-      {/* Products Section */}
-      <section id="products" className="py-12 sm:py-20 bg-[#FAFAF8]">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-4xl font-bold text-[#1B1A17] mb-3 sm:mb-4">Bidhaa Zetu</h2>
-            <p className="text-[#1B1A17]/60 max-w-2xl mx-auto text-sm sm:text-base px-4">
-              Chagua bidhaa unayoipenda na uongeze kwenye kikapu chako
+      {/* Shop Section */}
+      <section id="shop" className="py-10 sm:py-16 md:py-20 bg-[#FAFAF8]">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-6 sm:mb-8 md:mb-12">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#1B1A17] mb-2 sm:mb-3 md:mb-4">
+              Bidhaa Zetu <span className="text-[#F0A500]">Maarufu</span>
+            </h2>
+            <p className="text-[#1B1A17]/70 text-xs sm:text-sm md:text-base max-w-2xl mx-auto px-2">
+              Chagua bidhaa unayoipenda na uongeze kwenye cart. Bei nafuu na ubora wa hali ya juu.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            {allProducts.map((product) => (
-              <Card
-                key={product.id}
-                className="!bg-white overflow-hidden group hover:shadow-xl transition-all duration-300 border-[#F0A500]/20"
-              >
-                <div className="relative aspect-square overflow-hidden">
-                  {/* Discount Badge */}
-                  <div className="absolute top-3 left-3 z-10 bg-[#E53935] text-white text-xs font-bold px-2 py-1 rounded">
-                    -20%
-                  </div>
-
-                  {/* Product Image */}
-                  <Image
-                    src={product.images[currentImageIndex[product.id] || 0]}
-                    alt={product.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-
-                  {/* Image Navigation - Always visible on mobile */}
-                  {product.images.length > 1 && (
-                    <>
-                      <button
-                        onClick={() => prevImage(product.id, product.images.length)}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-lg transition-all z-10"
-                        aria-label="Previous image"
-                      >
-                        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#1B1A17]" />
-                      </button>
-                      <button
-                        onClick={() => nextImage(product.id, product.images.length)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-lg transition-all z-10"
-                        aria-label="Next image"
-                      >
-                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#1B1A17]" />
-                      </button>
-
-                      {/* Image Dots */}
-                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-                        {product.images.map((_, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() =>
-                              setCurrentImageIndex((prev) => ({
-                                ...prev,
-                                [product.id]: idx,
-                              }))
-                            }
-                            className={`w-2 h-2 rounded-full transition-all ${
-                              (currentImageIndex[product.id] || 0) === idx ? "bg-[#F0A500] w-4" : "bg-white/70"
-                            }`}
-                            aria-label={`Go to image ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                <CardContent className="p-4 sm:p-6">
-                  <h3 className="text-lg sm:text-xl font-bold text-[#1B1A17] mb-2">{product.name}</h3>
-                  <p className="text-[#1B1A17]/60 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
-                    {product.description}
-                  </p>
-
-                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                    <span className="text-xl sm:text-2xl font-bold text-[#F0A500]">
-                      TZS {product.price.toLocaleString()}
-                    </span>
-                    <span className="text-sm sm:text-base text-[#1B1A17]/40 line-through">
-                      TZS {Math.round(product.price * 1.2).toLocaleString()}
-                    </span>
-                  </div>
-
-                  <Button
-                    onClick={() => addToCart(product)}
-                    className="w-full bg-[#1B1A17] hover:bg-[#1B1A17]/90 text-[#FAFAF8] font-medium py-4 sm:py-5 text-sm sm:text-base"
-                  >
-                    <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                    Ongeza Kwenye Kikapu
-                  </Button>
-                </CardContent>
-              </Card>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
             ))}
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="py-12 sm:py-16 bg-[#1B1A17]">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-[#FAFAF8] mb-8 sm:mb-12">
+      <section className="py-10 sm:py-12 md:py-16 bg-gradient-to-b from-[#1B1A17] to-[#2A2825]">
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FAFAF8] text-center mb-6 sm:mb-8 md:mb-12">
             Kwa Nini <span className="text-[#F0A500]">Goddess Glow?</span>
           </h2>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {[
-              { icon: Star, title: "Ubora wa Juu", desc: "Viambato bora vilivyochaguliwa kwa uangalifu" },
-              { icon: Shield, title: "Salama", desc: "Imethibitishwa na wataalamu wa ngozi" },
-              { icon: Leaf, title: "Asili", desc: "Viambato vya asili bila kemikali kali" },
-              { icon: Check, title: "Matokeo", desc: "Matokeo yanayoonekana ndani ya wiki 2-4" },
-            ].map((benefit, idx) => (
-              <div key={idx} className="text-center p-4 sm:p-6">
-                <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#F0A500]/20 rounded-full mb-3 sm:mb-4">
-                  <benefit.icon className="w-6 h-6 sm:w-8 sm:h-8 text-[#F0A500]" />
-                </div>
-                <h3 className="text-base sm:text-lg font-semibold text-[#FAFAF8] mb-1 sm:mb-2">{benefit.title}</h3>
-                <p className="text-[#FAFAF8]/60 text-xs sm:text-sm">{benefit.desc}</p>
-              </div>
+              {
+                icon: Sparkles,
+                title: "Kung'aa Asili",
+                desc: "Matokeo ya asili yanayoonekana",
+              },
+              {
+                icon: Shield,
+                title: "Salama 100%",
+                desc: "Bila kemikali hatari",
+              },
+              {
+                icon: Droplets,
+                title: "Unyevu wa Kina",
+                desc: "Ngozi laini siku nzima",
+              },
+              {
+                icon: Sun,
+                title: "Kinga ya Jua",
+                desc: "Ulinzi dhidi ya UV",
+              },
+            ].map((item, index) => (
+              <Card
+                key={index}
+                className="!bg-white/5 border-[#F0A500]/20 text-center p-3 sm:p-4 md:p-6 hover:bg-white/10 transition-colors"
+              >
+                <item.icon className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-[#F0A500] mx-auto mb-2 sm:mb-3 md:mb-4" />
+                <h3 className="font-bold text-[#FAFAF8] mb-1 sm:mb-2 text-xs sm:text-sm md:text-base">{item.title}</h3>
+                <p className="text-[#FAFAF8]/70 text-[10px] sm:text-xs md:text-sm leading-tight">{item.desc}</p>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* Video Section */}
-      <section className="py-12 sm:py-20 bg-[#FAFAF8]">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-6 sm:mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#1B1A17] mb-3 sm:mb-4">
-              Tazama <span className="text-[#F0A500]">Video Yetu</span>
-            </h2>
-            <p className="text-[#1B1A17]/60 text-sm sm:text-base">Gundua zaidi kuhusu bidhaa zetu za Goddess Glow</p>
-          </div>
+      <section className="py-10 sm:py-12 md:py-16 bg-[#1B1A17]">
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FAFAF8] text-center mb-6 sm:mb-8 md:mb-12">
+            Tazama <span className="text-[#F0A500]">Video Yetu</span>
+          </h2>
 
-          <div className="relative aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl">
-            <video controls className="w-full h-full object-cover" poster="/goddess-glow/body-oil-hero.jpeg">
-              <source src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/promo%20video-XwIGcoZzWkdIGf3tXnbTNxVgHCMqtX.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+          <div className="max-w-4xl mx-auto">
+            <div className="relative aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl">
+              {!isVideoPlaying ? (
+                <div className="relative w-full h-full">
+                  <Image src="/goddess-glow/body-cream-beach.png" alt="Video thumbnail" fill className="object-cover" />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <button
+                      onClick={() => setIsVideoPlaying(true)}
+                      className="bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] p-4 sm:p-5 md:p-6 rounded-full transition-transform hover:scale-110 active:scale-95 touch-manipulation"
+                      aria-label="Play video"
+                    >
+                      <Play className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <video
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/promo%20video-XwIGcoZzWkdIGf3tXnbTNxVgHCMqtX.mp4"
+                  controls
+                  autoPlay
+                  playsInline
+                  className="w-full h-full object-cover"
+                  onEnded={() => setIsVideoPlaying(false)}
+                >
+                  Your browser does not support the video tag.
+                </video>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Floating Cart Button - Mobile optimized */}
       <button
         onClick={() => setIsCartOpen(true)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 bg-[#F0A500] text-[#1B1A17] p-3 sm:p-4 rounded-full shadow-2xl hover:bg-[#F0A500]/90 transition-all hover:scale-110"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] p-3.5 sm:p-4 rounded-full shadow-2xl z-40 transition-transform hover:scale-110 active:scale-95 touch-manipulation"
         aria-label="Open cart"
       >
         <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
         {cartCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-[#E53935] text-white text-xs w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center font-bold">
+          <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-[#E53935] text-white text-[10px] sm:text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center animate-pulse">
             {cartCount}
           </span>
         )}
@@ -486,142 +403,167 @@ export default function GoddessGlowPage() {
       {isCartOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
           <div className="absolute inset-0 bg-black/60" onClick={() => setIsCartOpen(false)} />
-          <div className="relative bg-white w-full sm:max-w-lg sm:mx-4 max-h-[90vh] sm:max-h-[85vh] overflow-hidden flex flex-col rounded-t-2xl sm:rounded-2xl">
-            {/* Cart Header */}
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#F0A500]/20">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#1B1A17]">Kikapu Chako</h2>
-              <button
-                onClick={() => setIsCartOpen(false)}
-                className="p-2 hover:bg-[#F0A500]/10 rounded-full transition-colors"
-                aria-label="Close cart"
-              >
-                <X className="w-5 h-5 sm:w-6 sm:h-6 text-[#1B1A17]" />
-              </button>
-            </div>
+          <div className="relative bg-white w-full sm:max-w-lg sm:mx-4 max-h-[100vh] sm:max-h-[90vh] overflow-hidden rounded-t-2xl sm:rounded-2xl flex flex-col">
+            <div className="p-4 sm:p-6 overflow-y-auto flex-1">
+              {/* Cart Header */}
+              <div className="flex items-center justify-between mb-4 sm:mb-6 sticky top-0 bg-white pb-2">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1B1A17]">Cart Yako</h3>
+                <button
+                  onClick={() => setIsCartOpen(false)}
+                  className="p-2 hover:bg-[#F0A500]/10 active:bg-[#F0A500]/20 rounded-full touch-manipulation"
+                  aria-label="Close cart"
+                >
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-[#1B1A17]" />
+                </button>
+              </div>
 
-            {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+              {/* Cart Items */}
               {cart.length === 0 ? (
                 <div className="text-center py-8 sm:py-12">
-                  <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-[#1B1A17]/20 mx-auto mb-4" />
-                  <p className="text-[#1B1A17]/60">Kikapu chako ni tupu</p>
+                  <ShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-[#1B1A17]/30 mx-auto mb-3 sm:mb-4" />
+                  <p className="text-[#1B1A17]/60 text-sm sm:text-base">Cart yako haina bidhaa</p>
                 </div>
               ) : (
-                <div className="space-y-3 sm:space-y-4">
-                  {cart.map((item) => (
-                    <div key={item.id} className="flex gap-3 sm:gap-4 p-3 sm:p-4 bg-[#FAFAF8] rounded-xl">
-                      <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden flex-shrink-0">
-                        <Image
-                          src={item.images[0] || "/placeholder.svg"}
-                          alt={item.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-[#1B1A17] text-sm sm:text-base truncate">{item.name}</h3>
-                        <p className="text-[#F0A500] font-bold text-sm sm:text-base">
-                          TZS {item.price.toLocaleString()}
-                        </p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="p-1 bg-[#1B1A17] text-white rounded"
-                            aria-label="Decrease quantity"
-                          >
-                            <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </button>
-                          <span className="w-6 sm:w-8 text-center text-[#1B1A17] font-medium text-sm sm:text-base">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="p-1 bg-[#1B1A17] text-white rounded"
-                            aria-label="Increase quantity"
-                          >
-                            <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </button>
-                          <button
-                            onClick={() => removeFromCart(item.id)}
-                            className="ml-auto p-1 text-[#E53935] hover:bg-[#E53935]/10 rounded"
-                            aria-label="Remove item"
-                          >
-                            <X className="w-4 h-4 sm:w-5 sm:h-5" />
-                          </button>
+                <>
+                  <div className="space-y-3 sm:space-y-4 max-h-[35vh] sm:max-h-[40vh] overflow-y-auto">
+                    {cart.map((item) => (
+                      <div key={item.id} className="flex gap-3 sm:gap-4 p-2.5 sm:p-3 bg-[#FAFAF8] rounded-xl">
+                        <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg overflow-hidden flex-shrink-0">
+                          <Image
+                            src={item.images[0] || "/placeholder.svg"}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex-grow min-w-0">
+                          <h4 className="font-semibold text-[#1B1A17] text-xs sm:text-sm md:text-base truncate">
+                            {item.name}
+                          </h4>
+                          <p className="text-[#F0A500] font-bold text-xs sm:text-sm md:text-base">
+                            TZS {item.price.toLocaleString()}
+                          </p>
+                          <div className="flex items-center gap-1.5 sm:gap-2 mt-1.5 sm:mt-2">
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              className="p-1.5 sm:p-1 bg-[#1B1A17]/10 hover:bg-[#1B1A17]/20 active:bg-[#1B1A17]/30 rounded touch-manipulation"
+                              aria-label="Decrease quantity"
+                            >
+                              <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1B1A17]" />
+                            </button>
+                            <span className="text-[#1B1A17] font-medium w-6 sm:w-8 text-center text-xs sm:text-sm">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="p-1.5 sm:p-1 bg-[#1B1A17]/10 hover:bg-[#1B1A17]/20 active:bg-[#1B1A17]/30 rounded touch-manipulation"
+                              aria-label="Increase quantity"
+                            >
+                              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1B1A17]" />
+                            </button>
+                            <button
+                              onClick={() => removeFromCart(item.id)}
+                              className="ml-auto p-1.5 sm:p-1 text-[#E53935] hover:bg-[#E53935]/10 active:bg-[#E53935]/20 rounded touch-manipulation"
+                              aria-label="Remove item"
+                            >
+                              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    ))}
+                  </div>
+
+                  {/* Cart Total */}
+                  <div className="border-t border-[#1B1A17]/10 mt-4 sm:mt-6 pt-4 sm:pt-6">
+                    <div className="flex justify-between items-center mb-4 sm:mb-6">
+                      <span className="text-sm sm:text-base md:text-lg font-medium text-[#1B1A17]">Jumla:</span>
+                      <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#F0A500]">
+                        TZS {cartTotal.toLocaleString()}
+                      </span>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            {/* Cart Footer */}
-            {cart.length > 0 && (
-              <div className="border-t border-[#F0A500]/20 p-4 sm:p-6">
-                <div className="flex justify-between items-center mb-4 sm:mb-6">
-                  <span className="text-base sm:text-lg font-medium text-[#1B1A17]">Jumla:</span>
-                  <span className="text-xl sm:text-2xl font-bold text-[#F0A500]">TZS {cartTotal.toLocaleString()}</span>
-                </div>
+                    {!showPaymentOptions ? (
+                      <Button
+                        onClick={() => setShowPaymentOptions(true)}
+                        className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] font-semibold py-4 sm:py-5 md:py-6 text-sm sm:text-base touch-manipulation"
+                      >
+                        Endelea Kulipa
+                      </Button>
+                    ) : (
+                      <div className="space-y-2.5 sm:space-y-3">
+                        <p className="text-[#1B1A17] font-medium text-center mb-2 text-sm sm:text-base">
+                          Chagua Njia ya Malipo:
+                        </p>
 
-                {!showPaymentOptions ? (
-                  <Button
-                    onClick={() => setShowPaymentOptions(true)}
-                    className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 text-[#1B1A17] font-semibold py-5 sm:py-6 text-base sm:text-lg"
-                  >
-                    Endelea Kulipa
-                  </Button>
-                ) : (
-                  <div className="space-y-2 sm:space-y-3">
-                    <p className="text-center text-[#1B1A17]/70 mb-2 sm:mb-3 text-sm sm:text-base">
-                      Chagua njia ya malipo:
-                    </p>
+                        {/* WhatsApp Payment */}
+                        <Button
+                          onClick={() => {
+                            setPaymentMethod("whatsapp")
+                            handleWhatsAppOrder()
+                          }}
+                          className="w-full bg-[#25D366] hover:bg-[#25D366]/90 active:bg-[#25D366]/80 text-white font-semibold py-3.5 sm:py-4 md:py-5 text-sm sm:text-base touch-manipulation"
+                        >
+                          <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                          Order via WhatsApp
+                        </Button>
 
-                    {/* WhatsApp */}
-                    <Button
-                      onClick={handleWhatsAppOrder}
-                      className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white font-medium py-4 sm:py-5 text-sm sm:text-base"
-                    >
-                      <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                      Agiza kupitia WhatsApp
-                    </Button>
+                        {/* Bank Transfer */}
+                        <Button
+                          onClick={() => {
+                            setPaymentMethod("bank")
+                            setShowBankDetails(true)
+                            setShowLipaNamba(false)
+                          }}
+                          className="w-full bg-[#1B1A17] hover:bg-[#1B1A17]/90 active:bg-[#1B1A17]/80 text-[#FAFAF8] font-semibold py-3.5 sm:py-4 md:py-5 text-sm sm:text-base touch-manipulation"
+                        >
+                          Lipa via Bank Transfer
+                        </Button>
 
-                    {/* Bank Transfer */}
-                    <Button
-                      onClick={() => setShowBankDetails(!showBankDetails)}
-                      className="w-full bg-[#1B1A17] hover:bg-[#1B1A17]/90 text-[#FAFAF8] font-medium py-4 sm:py-5 text-sm sm:text-base"
-                    >
-                      <Building2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                      Lipa kupitia Benki
-                    </Button>
+                        {/* Lipa Namba */}
+                        <Button
+                          onClick={() => {
+                            setPaymentMethod("lipa-namba")
+                            setShowLipaNamba(true)
+                            setShowBankDetails(false)
+                          }}
+                          className="w-full bg-[#FFD700] hover:bg-[#FFD700]/90 active:bg-[#FFD700]/80 text-[#1B1A17] font-semibold py-3.5 sm:py-4 md:py-5 text-sm sm:text-base touch-manipulation"
+                        >
+                          Lipa Namba (Scan QR)
+                        </Button>
+                      </div>
+                    )}
 
+                    {/* Bank Details */}
                     {showBankDetails && (
-                      <div className="bg-[#FAFAF8] p-3 sm:p-4 rounded-xl space-y-2 sm:space-y-3">
-                        <div className="flex items-center gap-3 mb-3">
+                      <div className="mt-4 p-3 sm:p-4 bg-[#FAFAF8] rounded-xl">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                           <Image
                             src="/goddess-glow/nbc-logo.png"
                             alt="NBC Bank"
-                            width={60}
-                            height={40}
-                            className="h-8 sm:h-10 w-auto"
+                            width={50}
+                            height={35}
+                            className="object-contain w-[40px] sm:w-[50px] md:w-[60px]"
                           />
-                          <span className="font-semibold text-[#1B1A17] text-sm sm:text-base">
-                            National Bank of Commerce
-                          </span>
+                          <div>
+                            <p className="font-bold text-[#1B1A17] text-sm sm:text-base">National Bank of Commerce</p>
+                            <p className="text-xs sm:text-sm text-[#1B1A17]/70">Bank Transfer</p>
+                          </div>
                         </div>
-                        <div className="space-y-1 text-xs sm:text-sm">
+                        <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
                           <p className="text-[#1B1A17]">
-                            <span className="text-[#1B1A17]/60">Account:</span>{" "}
-                            <span className="font-mono font-bold">048174113791</span>
+                            <span className="font-medium">Account Name:</span> MICHAEL C ELIA
                           </p>
                           <p className="text-[#1B1A17]">
-                            <span className="text-[#1B1A17]/60">Name:</span>{" "}
-                            <span className="font-bold">MICHAEL C ELIA</span>
+                            <span className="font-medium">Account Number:</span> 048174113791
+                          </p>
+                          <p className="text-[#1B1A17]">
+                            <span className="font-medium">Amount:</span> TZS {cartTotal.toLocaleString()}
                           </p>
                         </div>
                         <button
                           onClick={() => setShowConfirmationForm(true)}
-                          className="text-[#F0A500] text-xs sm:text-sm font-medium hover:underline mt-2"
+                          className="w-full mt-3 sm:mt-4 text-[#F0A500] hover:text-[#F0A500]/80 active:text-[#F0A500]/70 font-semibold text-xs sm:text-sm underline touch-manipulation py-2"
                         >
                           Malipo yamekamilika? Bofya hapa!
                         </button>
@@ -629,17 +571,12 @@ export default function GoddessGlowPage() {
                     )}
 
                     {/* Lipa Namba */}
-                    <Button
-                      onClick={() => setShowLipaNamba(!showLipaNamba)}
-                      className="w-full bg-[#FFD700] hover:bg-[#FFD700]/90 text-[#1B1A17] font-medium py-4 sm:py-5 text-sm sm:text-base"
-                    >
-                      <QrCode className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                      Lipa Namba (Scan QR)
-                    </Button>
-
                     {showLipaNamba && (
-                      <div className="bg-[#FAFAF8] p-3 sm:p-4 rounded-xl">
-                        <div className="relative aspect-square max-w-[200px] sm:max-w-[250px] mx-auto">
+                      <div className="mt-4 p-3 sm:p-4 bg-[#FAFAF8] rounded-xl text-center">
+                        <p className="font-bold text-[#1B1A17] mb-2 sm:mb-3 text-sm sm:text-base">
+                          Scan QR Code Kulipa
+                        </p>
+                        <div className="relative w-40 h-40 sm:w-44 sm:h-44 md:w-48 md:h-48 mx-auto mb-2 sm:mb-3">
                           <Image
                             src="/goddess-glow/lipa-namba.png"
                             alt="Lipa Namba QR Code"
@@ -647,34 +584,37 @@ export default function GoddessGlowPage() {
                             className="object-contain"
                           />
                         </div>
-                        <p className="text-center text-[#1B1A17]/70 text-xs sm:text-sm mt-2">Scan QR code kulipa</p>
+                        <p className="text-xs sm:text-sm text-[#1B1A17]/70 mb-1.5 sm:mb-2">Lipa Namba: 22068435</p>
+                        <p className="text-[#1B1A17] font-medium text-sm sm:text-base">
+                          Amount: TZS {cartTotal.toLocaleString()}
+                        </p>
                         <button
                           onClick={() => setShowConfirmationForm(true)}
-                          className="block w-full text-center text-[#F0A500] text-xs sm:text-sm font-medium hover:underline mt-2"
+                          className="w-full mt-3 sm:mt-4 text-[#F0A500] hover:text-[#F0A500]/80 active:text-[#F0A500]/70 font-semibold text-xs sm:text-sm underline touch-manipulation py-2"
                         >
                           Malipo yamekamilika? Bofya hapa!
                         </button>
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      {/* Payment Confirmation Form Modal */}
+      {/* Confirmation Form Modal */}
       {showConfirmationForm && (
         <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
           <div className="absolute inset-0 bg-black/60" onClick={() => setShowConfirmationForm(false)} />
-          <div className="relative bg-white w-full sm:max-w-md sm:mx-4 max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl">
-            <div className="p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 className="text-lg sm:text-xl font-bold text-[#1B1A17]">Thibitisha Malipo</h3>
+          <div className="relative bg-white w-full sm:max-w-md sm:mx-4 max-h-[100vh] sm:max-h-[90vh] overflow-hidden rounded-t-2xl sm:rounded-2xl flex flex-col">
+            <div className="p-4 sm:p-6 overflow-y-auto flex-1">
+              <div className="flex items-center justify-between mb-4 sm:mb-6 sticky top-0 bg-white pb-2">
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#1B1A17]">Thibitisha Malipo</h3>
                 <button
                   onClick={() => setShowConfirmationForm(false)}
-                  className="p-2 hover:bg-[#F0A500]/10 rounded-full"
+                  className="p-2 hover:bg-[#F0A500]/10 active:bg-[#F0A500]/20 rounded-full touch-manipulation"
                   aria-label="Close form"
                 >
                   <X className="w-5 h-5 text-[#1B1A17]" />
@@ -683,61 +623,72 @@ export default function GoddessGlowPage() {
 
               <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Jina Lako</label>
+                  <label className="block text-xs sm:text-sm font-medium text-[#1B1A17] mb-1 sm:mb-1.5">
+                    Jina Lako *
+                  </label>
                   <Input
                     value={confirmationData.name}
                     onChange={(e) => setConfirmationData((prev) => ({ ...prev, name: e.target.value }))}
                     placeholder="Ingiza jina lako"
-                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40 h-11 sm:h-10 text-base sm:text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Namba ya Simu</label>
+                  <label className="block text-xs sm:text-sm font-medium text-[#1B1A17] mb-1 sm:mb-1.5">
+                    Namba ya Simu *
+                  </label>
                   <Input
                     value={confirmationData.phone}
                     onChange={(e) => setConfirmationData((prev) => ({ ...prev, phone: e.target.value }))}
                     placeholder="0712 345 678"
-                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
+                    type="tel"
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40 h-11 sm:h-10 text-base sm:text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Mahali Unapoishi</label>
+                  <label className="block text-xs sm:text-sm font-medium text-[#1B1A17] mb-1 sm:mb-1.5">
+                    Mahali Unapoishi *
+                  </label>
                   <Input
                     value={confirmationData.location}
                     onChange={(e) => setConfirmationData((prev) => ({ ...prev, location: e.target.value }))}
                     placeholder="Mfano: Kinondoni, Dar es Salaam"
-                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40 h-11 sm:h-10 text-base sm:text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Maelezo ya Ziada</label>
-                  <Textarea
-                    value={confirmationData.description}
-                    onChange={(e) => setConfirmationData((prev) => ({ ...prev, description: e.target.value }))}
-                    placeholder="Maelezo mengine kuhusu order yako..."
-                    rows={2}
-                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-[#1B1A17] mb-1">Transaction ID / Reference</label>
+                  <label className="block text-xs sm:text-sm font-medium text-[#1B1A17] mb-1 sm:mb-1.5">
+                    Transaction ID / Reference
+                  </label>
                   <Input
                     value={confirmationData.transactionId}
                     onChange={(e) => setConfirmationData((prev) => ({ ...prev, transactionId: e.target.value }))}
-                    placeholder="Namba ya muamala"
-                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40"
+                    placeholder="Namba ya transaction"
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40 h-11 sm:h-10 text-base sm:text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-[#1B1A17] mb-1 sm:mb-1.5">
+                    Maelezo Zaidi
+                  </label>
+                  <Textarea
+                    value={confirmationData.description}
+                    onChange={(e) => setConfirmationData((prev) => ({ ...prev, description: e.target.value }))}
+                    placeholder="Maelezo yoyote ya ziada..."
+                    rows={3}
+                    className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40 text-base sm:text-sm resize-none"
                   />
                 </div>
 
                 <Button
                   onClick={handleConfirmationSubmit}
-                  className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 text-[#1B1A17] font-semibold py-5 sm:py-6 text-sm sm:text-base mt-2"
+                  className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] font-semibold py-4 sm:py-5 text-sm sm:text-base mt-2 touch-manipulation"
                 >
-                  <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Tuma Uthibitisho
                 </Button>
               </div>
@@ -746,7 +697,6 @@ export default function GoddessGlowPage() {
         </div>
       )}
 
-      {/* Footer component */}
       <Footer />
     </div>
   )
