@@ -539,14 +539,16 @@ export default function GoddessGlowPage() {
                       <div className="mt-4 p-3 sm:p-4 bg-[#FAFAF8] rounded-xl">
                         <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                           <Image
-                            src="/goddess-glow/nbc-logo.png"
-                            alt="NBC Bank"
-                            width={50}
-                            height={35}
-                            className="object-contain w-[40px] sm:w-[50px] md:w-[60px]"
+                            src="/goddess-glow/nmb-logo.png"
+                            alt="NMB Bank"
+                            width={60}
+                            height={40}
+                            className="object-contain w-[50px] sm:w-[60px] md:w-[70px]"
                           />
                           <div>
-                            <p className="font-bold text-[#1B1A17] text-sm sm:text-base">National Bank of Commerce</p>
+                            <p className="font-bold text-[#1B1A17] text-sm sm:text-base">
+                              National Microfinance Bank (NMB)
+                            </p>
                             <p className="text-xs sm:text-sm text-[#1B1A17]/70">Bank Transfer</p>
                           </div>
                         </div>
@@ -555,7 +557,7 @@ export default function GoddessGlowPage() {
                             <span className="font-medium">Account Name:</span> MICHAEL C ELIA
                           </p>
                           <p className="text-[#1B1A17]">
-                            <span className="font-medium">Account Number:</span> 048174113791
+                            <span className="font-medium">Account Number:</span> 23110057723
                           </p>
                           <p className="text-[#1B1A17]">
                             <span className="font-medium">Amount:</span> TZS {cartTotal.toLocaleString()}
