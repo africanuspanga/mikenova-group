@@ -122,7 +122,6 @@ export default function GoddessGlowPage() {
   const [showPaymentOptions, setShowPaymentOptions] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState<string>("")
   const [showBankDetails, setShowBankDetails] = useState(false)
-  const [showLipaNamba, setShowLipaNamba] = useState(false)
   const [showConfirmationForm, setShowConfirmationForm] = useState(false)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const [confirmationData, setConfirmationData] = useState({
@@ -513,23 +512,10 @@ export default function GoddessGlowPage() {
                           onClick={() => {
                             setPaymentMethod("bank")
                             setShowBankDetails(true)
-                            setShowLipaNamba(false)
                           }}
                           className="w-full bg-[#1B1A17] hover:bg-[#1B1A17]/90 active:bg-[#1B1A17]/80 text-[#FAFAF8] font-semibold py-3.5 sm:py-4 md:py-5 text-sm sm:text-base touch-manipulation"
                         >
                           Lipa via Bank Transfer
-                        </Button>
-
-                        {/* Lipa Namba */}
-                        <Button
-                          onClick={() => {
-                            setPaymentMethod("lipa-namba")
-                            setShowLipaNamba(true)
-                            setShowBankDetails(false)
-                          }}
-                          className="w-full bg-[#FFD700] hover:bg-[#FFD700]/90 active:bg-[#FFD700]/80 text-[#1B1A17] font-semibold py-3.5 sm:py-4 md:py-5 text-sm sm:text-base touch-manipulation"
-                        >
-                          Lipa Namba (Scan QR)
                         </Button>
                       </div>
                     )}
@@ -563,33 +549,6 @@ export default function GoddessGlowPage() {
                             <span className="font-medium">Amount:</span> TZS {cartTotal.toLocaleString()}
                           </p>
                         </div>
-                        <button
-                          onClick={() => setShowConfirmationForm(true)}
-                          className="w-full mt-3 sm:mt-4 text-[#F0A500] hover:text-[#F0A500]/80 active:text-[#F0A500]/70 font-semibold text-xs sm:text-sm underline touch-manipulation py-2"
-                        >
-                          Malipo yamekamilika? Bofya hapa!
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Lipa Namba */}
-                    {showLipaNamba && (
-                      <div className="mt-4 p-3 sm:p-4 bg-[#FAFAF8] rounded-xl text-center">
-                        <p className="font-bold text-[#1B1A17] mb-2 sm:mb-3 text-sm sm:text-base">
-                          Scan QR Code Kulipa
-                        </p>
-                        <div className="relative w-40 h-40 sm:w-44 sm:h-44 md:w-48 md:h-48 mx-auto mb-2 sm:mb-3">
-                          <Image
-                            src="/goddess-glow/lipa-namba.png"
-                            alt="Lipa Namba QR Code"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                        <p className="text-xs sm:text-sm text-[#1B1A17]/70 mb-1.5 sm:mb-2">Lipa Namba: 22068435</p>
-                        <p className="text-[#1B1A17] font-medium text-sm sm:text-base">
-                          Amount: TZS {cartTotal.toLocaleString()}
-                        </p>
                         <button
                           onClick={() => setShowConfirmationForm(true)}
                           className="w-full mt-3 sm:mt-4 text-[#F0A500] hover:text-[#F0A500]/80 active:text-[#F0A500]/70 font-semibold text-xs sm:text-sm underline touch-manipulation py-2"
