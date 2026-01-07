@@ -108,7 +108,7 @@ function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart: 
           className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] font-semibold py-4 sm:py-5 md:py-6 text-sm sm:text-base touch-manipulation"
         >
           <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-          Ongeza Kwenye Cart
+          Add to Cart
         </Button>
       </CardContent>
     </Card>
@@ -141,14 +141,14 @@ export default function GoddessGlowPage() {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id)
       if (existingItem) {
-        toast.success(`${product.name} - Idadi imeongezwa!`, {
+        toast.success(`${product.name} - Quantity increased!`, {
           icon: <CheckCircle className="w-5 h-5 text-green-500" />,
           position: "top-center",
           duration: 2000,
         })
         return prevCart.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item))
       }
-      toast.success(`${product.name} imeongezwa kwenye cart!`, {
+      toast.success(`${product.name} added to cart!`, {
         icon: <CheckCircle className="w-5 h-5 text-green-500" />,
         position: "top-center",
         duration: 2000,
@@ -167,7 +167,7 @@ export default function GoddessGlowPage() {
 
   const removeFromCart = useCallback((id: string) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id))
-    toast.success("Bidhaa imeondolewa", {
+    toast.success("Item removed", {
       position: "top-center",
       duration: 1500,
     })
@@ -180,18 +180,18 @@ export default function GoddessGlowPage() {
     const orderDetails = cart
       .map((item) => `• ${item.name} x${item.quantity} - TZS ${(item.price * item.quantity).toLocaleString()}`)
       .join("\n")
-    const message = `🛒 *Order Mpya - Goddess Glow*\n\n${orderDetails}\n\n💰 *Jumla: TZS ${cartTotal.toLocaleString()}*\n\nNataka kununua bidhaa hizi.`
+    const message = `🛒 *New Order - Goddess Glow*\n\n${orderDetails}\n\n💰 *Total: TZS ${cartTotal.toLocaleString()}*\n\nI would like to purchase these products.`
     window.open(`https://wa.me/255623821175?text=${encodeURIComponent(message)}`, "_blank")
   }, [cart, cartTotal])
 
   const handleConfirmationSubmit = useCallback(() => {
     if (!confirmationData.name || !confirmationData.phone || !confirmationData.location) {
-      toast.error("Tafadhali jaza taarifa zote zinazohitajika")
+      toast.error("Please fill all required information")
       return
     }
 
     const orderDetails = cart.map((item) => `• ${item.name} x${item.quantity}`).join("\n")
-    const message = `✅ *Uthibitisho wa Malipo - Goddess Glow*\n\n👤 *Jina:* ${confirmationData.name}\n📱 *Simu:* ${confirmationData.phone}\n📍 *Mahali:* ${confirmationData.location}\n\n🛒 *Bidhaa:*\n${orderDetails}\n\n💰 *Jumla:* TZS ${cartTotal.toLocaleString()}\n\n💳 *Njia ya Malipo:* ${paymentMethod === "bank" ? "Bank Transfer" : "Lipa Namba"}\n🔢 *Transaction ID:* ${confirmationData.transactionId || "N/A"}\n\n📝 *Maelezo:* ${confirmationData.description || "Hakuna"}`
+    const message = `✅ *Payment Confirmation - Goddess Glow*\n\n👤 *Name:* ${confirmationData.name}\n📱 *Phone:* ${confirmationData.phone}\n📍 *Location:* ${confirmationData.location}\n\n🛒 *Products:*\n${orderDetails}\n\n💰 *Total:* TZS ${cartTotal.toLocaleString()}\n\n💳 *Payment Method:* Bank Transfer\n🔢 *Transaction ID:* ${confirmationData.transactionId || "N/A"}\n\n📝 *Details:* ${confirmationData.description || "None"}`
     window.open(`https://wa.me/255623821175?text=${encodeURIComponent(message)}`, "_blank")
 
     setShowConfirmationForm(false)
@@ -202,8 +202,8 @@ export default function GoddessGlowPage() {
       description: "",
       transactionId: "",
     })
-    toast.success("Asante! Tutawasiliana nawe hivi karibuni.")
-  }, [cart, cartTotal, confirmationData, paymentMethod])
+    toast.success("Thank you! We will contact you soon.")
+  }, [cart, cartTotal, confirmationData])
 
   return (
     <div className="min-h-screen bg-[#FAFAF8]">
@@ -243,8 +243,8 @@ export default function GoddessGlowPage() {
           </h1>
 
           <p className="text-sm sm:text-base md:text-lg lg:text-xl text-[#FAFAF8]/90 max-w-3xl mx-auto mb-5 sm:mb-6 md:mb-8 leading-relaxed px-2">
-            Gundua siri ya ngozi inayong&apos;aa na bidhaa zetu za asili. Brightening cream, oil, na soap zilizoundwa
-            kutoa matokeo ya kushangaza.
+            Enhance your skin with our premium Goddess Glow products. Brightening cream, oil, and soap for a radiant
+            glow.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
@@ -253,7 +253,7 @@ export default function GoddessGlowPage() {
               className="bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] font-semibold px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base md:text-lg touch-manipulation"
             >
               <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              Nunua Sasa
+              Shop Now
             </Button>
             <Link href="/contact" className="w-full sm:w-auto">
               <Button
@@ -261,7 +261,7 @@ export default function GoddessGlowPage() {
                 className="border-[#FAFAF8] text-[#FAFAF8] hover:bg-[#FAFAF8]/10 active:bg-[#FAFAF8]/20 px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base md:text-lg w-full bg-transparent touch-manipulation"
               >
                 <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                Wasiliana Nasi
+                Contact Us
               </Button>
             </Link>
           </div>
@@ -273,11 +273,10 @@ export default function GoddessGlowPage() {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1B1A17] mb-3 sm:mb-4 md:mb-6">
-              Kuhusu Goddess Glow
+              About Goddess Glow
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-[#1B1A17]/80 leading-relaxed">
-              Furahia ngozi inayong&apos;aa na bidhaa zetu bora kuanzia Goddess Glow Body Cream, Goddess Glow Body Oil
-              na Goddess Glow Bar Soap.
+              Discover our premium Goddess Glow products that bring out the best in your skin.
             </p>
           </div>
         </div>
@@ -288,10 +287,10 @@ export default function GoddessGlowPage() {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="text-center mb-6 sm:mb-8 md:mb-12">
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[#1B1A17] mb-2 sm:mb-3 md:mb-4">
-              Bidhaa Zetu <span className="text-[#F0A500]">Maarufu</span>
+              Our <span className="text-[#F0A500]">Products</span>
             </h2>
             <p className="text-[#1B1A17]/70 text-xs sm:text-sm md:text-base max-w-2xl mx-auto px-2">
-              Chagua bidhaa unayoipenda na uongeze kwenye cart. Bei nafuu na ubora wa hali ya juu.
+              Choose your favorite products and add them to your cart. Enjoy premium quality at unbeatable prices.
             </p>
           </div>
 
@@ -307,30 +306,30 @@ export default function GoddessGlowPage() {
       <section className="py-10 sm:py-12 md:py-16 bg-gradient-to-b from-[#1B1A17] to-[#2A2825]">
         <div className="container mx-auto px-4 sm:px-6">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FAFAF8] text-center mb-6 sm:mb-8 md:mb-12">
-            Kwa Nini <span className="text-[#F0A500]">Goddess Glow?</span>
+            Why <span className="text-[#F0A500]">Goddess Glow?</span>
           </h2>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {[
               {
                 icon: Sparkles,
-                title: "Kung'aa Asili",
-                desc: "Matokeo ya asili yanayoonekana",
+                title: "Premium Quality",
+                desc: "Our products are of the highest quality",
               },
               {
                 icon: Shield,
-                title: "Salama 100%",
-                desc: "Bila kemikali hatari",
+                title: "100% Safe",
+                desc: "No harmful chemicals",
               },
               {
                 icon: Droplets,
-                title: "Unyevu wa Kina",
-                desc: "Ngozi laini siku nzima",
+                title: "Long-lasting Moisture",
+                desc: "Hydrates your skin for days",
               },
               {
                 icon: Sun,
-                title: "Kinga ya Jua",
-                desc: "Ulinzi dhidi ya UV",
+                title: "UVA Protection",
+                desc: "Protects your skin from UV rays",
               },
             ].map((item, index) => (
               <Card
@@ -350,7 +349,7 @@ export default function GoddessGlowPage() {
       <section className="py-10 sm:py-12 md:py-16 bg-[#1B1A17]">
         <div className="container mx-auto px-4 sm:px-6">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FAFAF8] text-center mb-6 sm:mb-8 md:mb-12">
-            Tazama <span className="text-[#F0A500]">Video Yetu</span>
+            Watch <span className="text-[#F0A500]">Our Video</span>
           </h2>
 
           <div className="max-w-4xl mx-auto">
@@ -406,7 +405,7 @@ export default function GoddessGlowPage() {
             <div className="p-4 sm:p-6 overflow-y-auto flex-1">
               {/* Cart Header */}
               <div className="flex items-center justify-between mb-4 sm:mb-6 sticky top-0 bg-white pb-2">
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1B1A17]">Cart Yako</h3>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1B1A17]">Your Cart</h3>
                 <button
                   onClick={() => setIsCartOpen(false)}
                   className="p-2 hover:bg-[#F0A500]/10 active:bg-[#F0A500]/20 rounded-full touch-manipulation"
@@ -420,7 +419,7 @@ export default function GoddessGlowPage() {
               {cart.length === 0 ? (
                 <div className="text-center py-8 sm:py-12">
                   <ShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-[#1B1A17]/30 mx-auto mb-3 sm:mb-4" />
-                  <p className="text-[#1B1A17]/60 text-sm sm:text-base">Cart yako haina bidhaa</p>
+                  <p className="text-[#1B1A17]/60 text-sm sm:text-base">Your cart is empty</p>
                 </div>
               ) : (
                 <>
@@ -476,7 +475,7 @@ export default function GoddessGlowPage() {
                   {/* Cart Total */}
                   <div className="border-t border-[#1B1A17]/10 mt-4 sm:mt-6 pt-4 sm:pt-6">
                     <div className="flex justify-between items-center mb-4 sm:mb-6">
-                      <span className="text-sm sm:text-base md:text-lg font-medium text-[#1B1A17]">Jumla:</span>
+                      <span className="text-sm sm:text-base md:text-lg font-medium text-[#1B1A17]">Total:</span>
                       <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#F0A500]">
                         TZS {cartTotal.toLocaleString()}
                       </span>
@@ -487,12 +486,12 @@ export default function GoddessGlowPage() {
                         onClick={() => setShowPaymentOptions(true)}
                         className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] font-semibold py-4 sm:py-5 md:py-6 text-sm sm:text-base touch-manipulation"
                       >
-                        Endelea Kulipa
+                        Proceed to Payment
                       </Button>
                     ) : (
                       <div className="space-y-2.5 sm:space-y-3">
                         <p className="text-[#1B1A17] font-medium text-center mb-2 text-sm sm:text-base">
-                          Chagua Njia ya Malipo:
+                          Choose Payment Method:
                         </p>
 
                         {/* WhatsApp Payment */}
@@ -515,7 +514,7 @@ export default function GoddessGlowPage() {
                           }}
                           className="w-full bg-[#1B1A17] hover:bg-[#1B1A17]/90 active:bg-[#1B1A17]/80 text-[#FAFAF8] font-semibold py-3.5 sm:py-4 md:py-5 text-sm sm:text-base touch-manipulation"
                         >
-                          Lipa via Bank Transfer
+                          Pay via Bank Transfer
                         </Button>
                       </div>
                     )}
@@ -553,7 +552,7 @@ export default function GoddessGlowPage() {
                           onClick={() => setShowConfirmationForm(true)}
                           className="w-full mt-3 sm:mt-4 text-[#F0A500] hover:text-[#F0A500]/80 active:text-[#F0A500]/70 font-semibold text-xs sm:text-sm underline touch-manipulation py-2"
                         >
-                          Malipo yamekamilika? Bofya hapa!
+                          Payment completed? Click here!
                         </button>
                       </div>
                     )}
@@ -572,7 +571,7 @@ export default function GoddessGlowPage() {
           <div className="relative bg-white w-full sm:max-w-md sm:mx-4 max-h-[100vh] sm:max-h-[90vh] overflow-hidden rounded-t-2xl sm:rounded-2xl flex flex-col">
             <div className="p-4 sm:p-6 overflow-y-auto flex-1">
               <div className="flex items-center justify-between mb-4 sm:mb-6 sticky top-0 bg-white pb-2">
-                <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#1B1A17]">Thibitisha Malipo</h3>
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#1B1A17]">Confirm Payment</h3>
                 <button
                   onClick={() => setShowConfirmationForm(false)}
                   className="p-2 hover:bg-[#F0A500]/10 active:bg-[#F0A500]/20 rounded-full touch-manipulation"
@@ -585,19 +584,19 @@ export default function GoddessGlowPage() {
               <div className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-[#1B1A17] mb-1 sm:mb-1.5">
-                    Jina Lako *
+                    Your Name *
                   </label>
                   <Input
                     value={confirmationData.name}
                     onChange={(e) => setConfirmationData((prev) => ({ ...prev, name: e.target.value }))}
-                    placeholder="Ingiza jina lako"
+                    placeholder="Enter your name"
                     className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40 h-11 sm:h-10 text-base sm:text-sm"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-[#1B1A17] mb-1 sm:mb-1.5">
-                    Namba ya Simu *
+                    Phone Number *
                   </label>
                   <Input
                     value={confirmationData.phone}
@@ -610,12 +609,12 @@ export default function GoddessGlowPage() {
 
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-[#1B1A17] mb-1 sm:mb-1.5">
-                    Mahali Unapoishi *
+                    Your Location *
                   </label>
                   <Input
                     value={confirmationData.location}
                     onChange={(e) => setConfirmationData((prev) => ({ ...prev, location: e.target.value }))}
-                    placeholder="Mfano: Kinondoni, Dar es Salaam"
+                    placeholder="Example: Kinondoni, Dar es Salaam"
                     className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40 h-11 sm:h-10 text-base sm:text-sm"
                   />
                 </div>
@@ -627,19 +626,19 @@ export default function GoddessGlowPage() {
                   <Input
                     value={confirmationData.transactionId}
                     onChange={(e) => setConfirmationData((prev) => ({ ...prev, transactionId: e.target.value }))}
-                    placeholder="Namba ya transaction"
+                    placeholder="Transaction number"
                     className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40 h-11 sm:h-10 text-base sm:text-sm"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-[#1B1A17] mb-1 sm:mb-1.5">
-                    Maelezo Zaidi
+                    Additional Details
                   </label>
                   <Textarea
                     value={confirmationData.description}
                     onChange={(e) => setConfirmationData((prev) => ({ ...prev, description: e.target.value }))}
-                    placeholder="Maelezo yoyote ya ziada..."
+                    placeholder="Any additional details..."
                     rows={3}
                     className="bg-white text-[#1B1A17] border-[#F0A500]/30 placeholder:text-[#1B1A17]/40 text-base sm:text-sm resize-none"
                   />
@@ -650,7 +649,7 @@ export default function GoddessGlowPage() {
                   className="w-full bg-[#F0A500] hover:bg-[#F0A500]/90 active:bg-[#F0A500]/80 text-[#1B1A17] font-semibold py-4 sm:py-5 text-sm sm:text-base mt-2 touch-manipulation"
                 >
                   <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  Tuma Uthibitisho
+                  Submit Confirmation
                 </Button>
               </div>
             </div>
