@@ -1,39 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage -->
   <url>
     <loc>https://www.mikenovagroup.co.tz/</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-  <url>
-    <loc>https://www.mikenovagroup.co.tz/about</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.mikenovagroup.co.tz/services</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.mikenovagroup.co.tz/products</loc>
-    <lastmod>2025-10-17</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
+  
+  <!-- Goddess Glow - Primary Product Page (High Priority for SEO) -->
   <url>
     <loc>https://www.mikenovagroup.co.tz/goddess-glow</loc>
-    <lastmod>2025-10-17</lastmod>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.mikenovagroup.co.tz/goddess-glow/body-cream-1.jpeg</image:loc>
+      <image:title>Goddess Glow Brightening Body Cream</image:title>
+      <image:caption>Premium brightening body cream for radiant glowing skin - Buy online Tanzania</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.mikenovagroup.co.tz/goddess-glow/body-oil-1.jpeg</image:loc>
+      <image:title>Goddess Glow Body Oil</image:title>
+      <image:caption>Nourishing body oil for smooth radiant skin - MIKENOVA GROUP Tanzania</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.mikenovagroup.co.tz/goddess-glow/bar-soap-1.jpeg</image:loc>
+      <image:title>Goddess Glow Bar Soap</image:title>
+      <image:caption>Brightening bar soap for daily skincare routine - Buy online Tanzania</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Products Page -->
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/products</loc>
+    <lastmod>2026-01-08</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Services Page -->
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/services</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  
+  <!-- About Page -->
   <url>
-    <loc>https://www.mikenovagroup.co.tz/contact</loc>
-    <lastmod>2025-10-17</lastmod>
+    <loc>https://www.mikenovagroup.co.tz/about</loc>
+    <lastmod>2026-01-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  
+  <!-- Blog Page -->
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/blog</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Contact Page -->
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/contact</loc>
+    <lastmod>2026-01-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
 </urlset>
