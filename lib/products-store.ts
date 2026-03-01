@@ -41,6 +41,24 @@ const defaultProducts: Product[] = [
       "Natural brightening bar soap infused with fruit extracts. Cleanses and brightens for a refreshed glow.",
     images: ["/goddess-glow/bar-soap-1.jpeg", "/goddess-glow/bar-soap-2.jpeg"],
   },
+  {
+    id: "sunscreen",
+    name: "Goddess Glow Sunscreen",
+    price: 45000,
+    originalPrice: 56250,
+    description:
+      "Premium sunscreen with broad spectrum protection. Shields your skin from harmful UV rays while keeping it moisturized and radiant.",
+    images: ["/images/GODDESS GLOW SUNSCREEN .jpeg", "/images/GODDESS GLOW SUNSCREEN  2.jpeg", "/images/GODDESS GLOW SUNSCREEN  3.jpeg"],
+  },
+  {
+    id: "showergel",
+    name: "Goddess Glow Showergel",
+    price: 35000,
+    originalPrice: 43750,
+    description:
+      "Luxurious shower gel that cleanses and brightens your skin. Infused with nourishing ingredients for a refreshing glow.",
+    images: ["/images/goddes glow shower gel.jpeg", "/images/goddess glow shower gel.jpeg"],
+  },
 ]
 
 export function getProducts(): Product[] {
