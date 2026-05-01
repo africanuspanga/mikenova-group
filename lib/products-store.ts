@@ -10,6 +10,8 @@ export interface Product {
 }
 
 const PRODUCTS_KEY = "goddess-glow-products"
+const PRODUCTS_VERSION_KEY = "goddess-glow-products-version"
+const CURRENT_PRODUCTS_VERSION = "3"
 const AUTH_KEY = "goddess-glow-admin-auth"
 
 // Default products
@@ -17,17 +19,17 @@ const defaultProducts: Product[] = [
   {
     id: "body-cream",
     name: "Goddess Glow Body Cream",
-    price: 55000,
-    originalPrice: 68750,
+    price: 65000,
+    originalPrice: 81250,
     description:
       "Brightening body cream that reveals smooth, even, radiant skin. Dermatologist approved formula trusted by thousands.",
-    images: ["/goddess-glow/body-cream-beach.png", "/goddess-glow/body-cream-hand.jpeg"],
+    images: ["/goddess-glow/Body-cream 2.png", "/goddess-glow/Body cream -main.png"],
   },
   {
     id: "body-oil",
     name: "Goddess Glow Body Oil",
-    price: 30000,
-    originalPrice: 37500,
+    price: 45000,
+    originalPrice: 56250,
     description:
       "Luxurious body oil that nourishes and gives your skin a luminous, healthy glow. Perfect for all skin types.",
     images: ["/goddess-glow/body-oil-hero.jpeg", "/goddess-glow/body-oil-product.jpeg"],
@@ -35,38 +37,24 @@ const defaultProducts: Product[] = [
   {
     id: "bar-soap",
     name: "Goddess Glow Bar Soap",
-    price: 10000,
-    originalPrice: 12500,
+    price: 15000,
+    originalPrice: 18750,
     description:
       "Natural brightening bar soap infused with fruit extracts. Cleanses and brightens for a refreshed glow.",
     images: ["/goddess-glow/bar-soap-1.jpeg", "/goddess-glow/bar-soap-2.jpeg"],
-  },
-  {
-    id: "sunscreen",
-    name: "Goddess Glow Sunscreen",
-    price: 45000,
-    originalPrice: 56250,
-    description:
-      "Premium sunscreen with broad spectrum protection. Shields your skin from harmful UV rays while keeping it moisturized and radiant.",
-    images: ["/images/GODDESS GLOW SUNSCREEN .jpeg", "/images/GODDESS GLOW SUNSCREEN  2.jpeg", "/images/GODDESS GLOW SUNSCREEN  3.jpeg"],
-  },
-  {
-    id: "showergel",
-    name: "Goddess Glow Showergel",
-    price: 35000,
-    originalPrice: 43750,
-    description:
-      "Luxurious shower gel that cleanses and brightens your skin. Infused with nourishing ingredients for a refreshing glow.",
-    images: ["/images/goddes glow shower gel.jpeg", "/images/goddess glow shower gel.jpeg"],
   },
 ]
 
 export function getProducts(): Product[] {
   if (typeof window === "undefined") return defaultProducts
 
+  const storedVersion = localStorage.getItem(PRODUCTS_VERSION_KEY)
   const stored = localStorage.getItem(PRODUCTS_KEY)
-  if (!stored) {
+
+  // If no stored data or version mismatch, re-seed with latest defaults
+  if (!stored || storedVersion !== CURRENT_PRODUCTS_VERSION) {
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify(defaultProducts))
+    localStorage.setItem(PRODUCTS_VERSION_KEY, CURRENT_PRODUCTS_VERSION)
     return defaultProducts
   }
   return JSON.parse(stored)
@@ -75,6 +63,7 @@ export function getProducts(): Product[] {
 export function saveProducts(products: Product[]): void {
   if (typeof window === "undefined") return
   localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products))
+  localStorage.setItem(PRODUCTS_VERSION_KEY, CURRENT_PRODUCTS_VERSION)
 }
 
 export function addProduct(product: Omit<Product, "id">): Product {

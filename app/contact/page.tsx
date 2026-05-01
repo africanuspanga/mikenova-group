@@ -149,7 +149,7 @@ export default function ContactPage() {
                     <Phone className="h-6 w-6 text-[#F0A500] flex-shrink-0 mt-1" />
                     <div>
                       <h3 className="font-medium text-[#1B1A17] mb-1 tracking-wider">PHONE</h3>
-                      <p className="text-[#6B6A67]">+255 675 622 238</p>
+                      <p className="text-[#6B6A67]">+255 623 821 175</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">

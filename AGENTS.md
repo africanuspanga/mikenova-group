@@ -1,169 +1,708 @@
-# MIKENOVA GROUP - Agent Documentation
+# MIKENOVA GROUP - Comprehensive Agent Documentation
 
-## Project Overview
+> Last updated: 2026-05-01
+> This document is the single source of truth for AI agents working on this codebase.
 
-MIKENOVA GROUP is a multi-divisional business portfolio website featuring:
-- **Main Corporate Site**: Company information, services, about, blog, contact
-- **Goddess Glow Store**: E-commerce page for skincare products with shopping cart and checkout
+---
 
-## Tech Stack
+## 1. Project Overview
 
-- **Framework**: Next.js 15 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS 4.x with custom theme
-- **UI Components**: Radix UI primitives + custom shadcn/ui components
-- **State Management**: React hooks + localStorage for product persistence
-- **Icons**: Lucide React
-- **Notifications**: Sonner toast
+MIKENOVA GROUP is a multi-divisional business portfolio website for a Tanzanian holding company. It serves two primary purposes:
 
-## Project Structure
+1. **Corporate Showcase** (`/`, `/about`, `/services`, `/products`, `/blog`, `/contact`) — Company info, divisions, brand partners, testimonials
+2. **Goddess Glow E-commerce** (`/goddess-glow`, `/admin/*`) — Skincare product store with shopping cart, payment via WhatsApp/Bank Transfer
+
+### Production URL
+`https://www.mikenovagroup.co.tz`
+
+### Contact Info (used everywhere)
+- **WhatsApp (orders & contact):** `+255 623 821 175`
+- **Phone:** `+255 623 821 175`
+- **Email:** `mikenovagroup@gmail.com`
+- **Address:** P.O BOX 20950, DAR ES SALAAM, Tanzania
+- **Bank Transfer:** NMB Bank, Account `23110057723`, Name `MICHAEL C ELIA`
+
+---
+
+## 2. Tech Stack
+
+| Layer | Technology | Version |
+|-------|------------|---------|
+| Framework | Next.js | 15.2.8 (App Router) |
+| React | React | 19 |
+| Language | TypeScript | 5 |
+| Styling | Tailwind CSS | 4.1.9 (CSS-based config, NO `tailwind.config.js`) |
+| UI Components | shadcn/ui | New York style, `neutral` base |
+| UI Primitives | Radix UI | Full suite installed |
+| Icons | Lucide React | ^0.454.0 |
+| Forms | React Hook Form + Zod | — |
+| Themes | next-themes | ^0.4.6 |
+| Notifications | sonner | Toast notifications |
+| Analytics | @vercel/analytics | — |
+| Package Manager | pnpm | (use `pnpm`, NOT npm/yarn) |
+
+### Key Configuration
+- **No `tailwind.config.*` file** — Tailwind v4 uses CSS-based config in `app/globals.css`
+- **Images are unoptimized** (`next.config.mjs`: `images: { unoptimized: true }`)
+- **ESLint and TypeScript errors are ignored during builds** (permissive mode)
+- **Path alias:** `@/` → project root
+- **No `output: 'export'`** — Requires Node.js server (has `/api/chat` route)
+
+---
+
+## 3. Complete Project Structure
 
 ```
 /
-├── app/                    # Next.js app router pages
-│   ├── page.tsx           # Home page
-│   ├── about/             # About page
-│   ├── services/          # Services page
-│   ├── products/          # Products catalog (inquiry-based)
-│   ├── goddess-glow/      # E-commerce store with cart
-│   ├── blog/              # Blog with MDX content
-│   ├── contact/           # Contact form
-│   ├── admin/             # Admin pages
-│   └── api/               # API routes
-├── components/            # React components
-│   ├── ui/               # shadcn/ui components
-│   ├── navigation.tsx    # Site navigation
-│   └── footer.tsx        # Site footer
-├── lib/                   # Utilities and stores
-│   ├── utils.ts          # Utility functions
-│   └── products-store.ts # Product data & localStorage
-├── public/               # Static assets
-│   ├── images/           # Product images
-│   ├── goddess-glow/     # Goddess Glow product images
-│   ├── products/         # Product catalog images
-│   └── blog/             # Blog images
-└── styles/               # Global styles
+├── app/                              # Next.js App Router
+│   ├── layout.tsx                    # Root layout: fonts, metadata, GTM, Chatbot, Analytics
+│   ├── page.tsx                      # Homepage (extensive, ~964 lines)
+│   ├── globals.css                   # Tailwind v4 theme + custom animations
+│   ├── not-found.tsx                 # 404 page
+│   │
+│   ├── about/
+│   │   ├── layout.tsx                # Metadata wrapper
+│   │   └── page.tsx                  # About page: mission, vision, values
+│   │
+│   ├── services/
+│   │   ├── layout.tsx                # Metadata wrapper
+│   │   └── page.tsx                  # Services page: 12 divisions grid
+│   │
+│   ├── products/
+│   │   ├── layout.tsx                # Metadata wrapper
+│   │   └── page.tsx                  # Product catalog: 36 inquiry-based products, filterable
+│   │
+│   ├── goddess-glow/
+│   │   ├── layout.tsx                # Heavy SEO metadata (Swahili keywords)
+│   │   └── page.tsx                  # E-commerce store (~663 lines, "use client")
+│   │
+│   ├── blog/
+│   │   ├── layout.tsx                # Metadata wrapper
+│   │   ├── page.tsx                  # Blog listing: 5 posts
+│   │   └── [slug]/
+│   │       ├── layout.tsx            # Dynamic metadata per post
+│   │       └── page.tsx              # Blog post detail (~1165 lines, hardcoded HTML content)
+│   │
+│   ├── contact/
+│   │   ├── layout.tsx                # Metadata wrapper
+│   │   └── page.tsx                  # Contact form (submits via WhatsApp)
+│   │
+│   ├── admin-login/
+│   │   └── page.tsx                  # Admin login form ("use client")
+│   │
+│   ├── admin/
+│   │   └── goddess-glow/
+│   │       └── page.tsx              # Admin dashboard ("use client")
+│   │
+│   └── api/
+│       └── chat/
+│           └── route.ts              # OpenAI GPT-4o-mini chatbot API
+│
+├── components/
+│   ├── ui/                           # shadcn/ui components (ONLY 4 files!)
+│   │   ├── button.tsx                # Button with CVA variants
+│   │   ├── card.tsx                  # Card + CardHeader + CardTitle + CardContent + CardFooter + CardAction
+│   │   ├── input.tsx                 # Styled input
+│   │   └── textarea.tsx              # Styled textarea
+│   ├── chatbot.tsx                   # Floating AI chat widget
+│   ├── footer.tsx                    # Site footer (4 columns)
+│   ├── navigation.tsx                # Fixed top nav with mobile hamburger
+│   └── theme-provider.tsx            # next-themes wrapper
+│
+├── lib/
+│   ├── utils.ts                      # `cn()` utility (clsx + tailwind-merge)
+│   └── products-store.ts             # Product data model + localStorage CRUD + admin auth
+│
+├── public/                           # Static assets (see full listing below)
+│   ├── arrivals/                     # 8 new arrival images
+│   ├── brands/                       # 16 partner brand logos
+│   ├── divisions/                    # 5 division display images
+│   ├── goddess-glow/                 # 14 Goddess Glow images + marketing
+│   ├── images/                       # 11 general/product images
+│   ├── products/                     # 23 product catalog images
+│   ├── services/                     # 12 service category images
+│   ├── favicon.png                   # Site favicon
+│   ├── logo-new.png                  # Main logo (280×90, displayed at h-14)
+│   ├── mike-avatar.png               # Chatbot avatar
+│   ├── hero-bg.jpg                   # Homepage hero background
+│   ├── robots.txt                    # Crawler rules
+│   └── sitemap.xml                   # Sitemap (7 URLs)
+│
+├── styles/
+│   └── globals.css                   # OLD/DEFAULT file — NOT used by app
+│
+├── next.config.mjs                   # Next.js config
+├── package.json                      # Dependencies
+├── pnpm-lock.yaml                    # Lockfile
+├── tsconfig.json                     # TypeScript config
+├── components.json                   # shadcn/ui config
+└── postcss.config.mjs                # PostCSS config (@tailwindcss/postcss)
 ```
 
-## Color Scheme
+---
 
-- **Primary Gold**: `#F0A500` - Buttons, accents, highlights
-- **Dark Background**: `#1B1A17` - Headers, dark sections
-- **Light Background**: `#FAFAF8` - Main content areas
-- **Text Dark**: `#1B1A17` - Body text on light backgrounds
-- **Text Light**: `#FAFAF8` - Text on dark backgrounds
-- **Muted Text**: `#A8A6A1`, `#6B6A67` - Secondary text
+## 4. Color Scheme & Design System
 
-## Goddess Glow Product System
+### Brand Colors (HARD RULE: Never change these)
 
-### Product Data Model
+| Token | Hex | Usage |
+|-------|-----|-------|
+| **Primary Gold** | `#F0A500` | Buttons, accents, highlights, CTAs |
+| **Secondary Gold** | `#D4AF37` | Alternate gold (used in homepage featured products section only) |
+| **Dark Background** | `#1B1A17` | Headers, nav, dark sections, footer |
+| **Light Background** | `#FAFAF8` | Main content areas |
+| **Card Dark** | `#252320` | Cards on dark backgrounds |
+| **Border Dark** | `#3A3835` | Borders on dark backgrounds |
+| **Muted Text** | `#A8A6A1` | Secondary text on dark |
+| **Muted Text 2** | `#6B6A67` | Secondary text on light, footer copyright |
+| **Text Dark** | `#1B1A17` | Body text on light backgrounds |
+| **Text Light** | `#FAFAF8` | Text on dark backgrounds |
+| **Discount Red** | `#E53935` | Discount badges, sale indicators |
+| **WhatsApp Green** | `#25D366` | WhatsApp order button |
 
-```typescript
-interface Product {
-  id: string           // Unique identifier (e.g., "body-cream")
-  name: string         // Product display name
-  price: number        // Sale price in TZS
-  originalPrice: number // Original price (for discount display)
-  description: string  // Product description
-  images: string[]     // Array of image paths
+### CSS Variables (from `app/globals.css`)
+
+```css
+:root {
+  --background: #fafaf8;
+  --foreground: #1b1a17;
+  --card: #ffffff;
+  --card-foreground: #1b1a17;
+  --primary: #f0a500;
+  --primary-foreground: #1b1a17;
+  --secondary: #1b1a17;
+  --secondary-foreground: #fafaf8;
+  --muted: #e8e6e1;
+  --muted-foreground: #6b6a67;
+  --accent: #f0a500;
+  --accent-foreground: #1b1a17;
+  --border: #d4d2cc;
+  --input: #d4d2cc;
+  --ring: #f0a500;
+  --radius: 0rem;        /* SHARP edges — luxury aesthetic */
 }
 ```
 
-### Default Products (in lib/products-store.ts)
+### Custom Utility Classes (defined in `app/globals.css`)
 
-| ID | Name | Price (TZS) | Original Price (TZS) |
-|----|------|-------------|---------------------|
-| body-cream | Goddess Glow Body Cream | 55,000 | 68,750 |
-| body-oil | Goddess Glow Body Oil | 30,000 | 37,500 |
-| bar-soap | Goddess Glow Bar Soap | 10,000 | 12,500 |
-| sunscreen | Goddess Glow Sunscreen | 45,000 | 56,250 |
-| showergel | Goddess Glow Showergel | 35,000 | 43,750 |
+```css
+.animate-fade-in     /* Fade in + slide up, 1s ease-out */
+.hover-glow          /* Gold box-shadow on hover */
+.luxury-card-hover   /* translateY(-8px) + deep shadow on hover */
+.scrollbar-hide      /* Hide scrollbar (webkit + firefox) */
+```
 
-### Product Images Location
+### Fonts
+- **Sans:** Montserrat (variable: `--font-sans`)
+- **Serif:** Playfair Display (variable: `--font-serif`)
+- **Mono:** Geist Mono (variable: `--font-mono`)
 
-Place product images in:
-- `public/images/` - For general product images
-- `public/goddess-glow/` - For Goddess Glow specific images
+Apply serif with `font-serif`, sans with `font-sans`.
 
-Reference format in code:
-- `/images/image-name.jpeg` - For images in public/images/
-- `/goddess-glow/image-name.jpeg` - For images in public/goddess-glow/
+---
 
-### E-commerce Features
+## 5. Route Inventory
 
-The `/goddess-glow` page includes:
-1. **Product Grid**: Displays all products with image carousel
-2. **Shopping Cart**: Fixed floating cart button with item count
-3. **Cart Modal**: View items, update quantities, remove items
-4. **Payment Options**:
-   - WhatsApp Order (direct message)
-   - Bank Transfer (NMB Bank: 23110057723, MICHAEL C ELIA)
-5. **Payment Confirmation Form**: Name, phone, location, transaction ID
+| Route | File | Type | Description |
+|-------|------|------|-------------|
+| `/` | `app/page.tsx` | Server | Homepage: hero, stats, featured products (5 divisions), Goddess Glow teaser, divisions grid, brand partners, latest arrivals, testimonials |
+| `/about` | `app/about/page.tsx` | Server | About: company overview, mission/vision, 4 core values |
+| `/services` | `app/services/page.tsx` | Server | Services: 12 divisions with descriptions |
+| `/products` | `app/products/page.tsx` | Server | Product catalog: 36 inquiry products, category filter |
+| `/goddess-glow` | `app/goddess-glow/page.tsx` | **Client** | E-commerce: product grid, cart, payment flow |
+| `/blog` | `app/blog/page.tsx` | Server | Blog listing: 5 posts |
+| `/blog/[slug]` | `app/blog/[slug]/page.tsx` | Server | Blog post: 8 hardcoded posts with HTML content |
+| `/contact` | `app/contact/page.tsx` | Server | Contact form (submits via WhatsApp) |
+| `/admin-login` | `app/admin-login/page.tsx` | **Client** | Admin login page |
+| `/admin/goddess-glow` | `app/admin/goddess-glow/page.tsx` | **Client** | Admin dashboard: CRUD products |
+| `/api/chat` | `app/api/chat/route.ts` | API | OpenAI GPT-4o-mini chatbot |
+| `/*` | `app/not-found.tsx` | Server | 404 page |
 
-### Shopping Flow
+### Why some pages are `"use client"`
+Any page/component that reads from `localStorage` (products, cart, admin auth) MUST be a Client Component. The server cannot access `localStorage`.
 
-1. User clicks "Add to Cart" on product
-2. Cart icon shows item count (fixed bottom-right)
-3. User clicks cart to view items
-4. User clicks "Proceed to Payment"
-5. Choose payment method:
-   - **WhatsApp**: Opens WhatsApp with pre-filled order message
-   - **Bank Transfer**: Shows bank details + confirmation form
-6. After bank payment, user fills confirmation form
-7. Form submits via WhatsApp message
+---
 
-## Adding New Products
+## 6. Shared Components
 
-To add a new Goddess Glow product:
+### Navigation (`components/navigation.tsx`)
+- Fixed top, `z-50`, semi-transparent dark bg with backdrop blur
+- Logo: `/logo-new.png` (h-14, w-auto)
+- Desktop: horizontal nav links + CONTACT button
+- Mobile: hamburger menu with collapsible drawer
+- **navLinks array:** `[{href: "/", label: "HOME"}, {href: "/about", label: "ABOUT"}, {href: "/services", label: "SERVICES"}, {href: "/products", label: "PRODUCTS"}, {href: "/goddess-glow", label: "GLOW"}, {href: "/blog", label: "BLOG"}]`
+- Contact button is SEPARATE from navLinks (styled CTA)
 
-1. **Add product images** to `public/images/` or `public/goddess-glow/`
+### Footer (`components/footer.tsx`)
+- 4-column grid: About | Quick Links | Divisions | Contact
+- Quick Links: Home, About, Services, Products, Goddess Glow, Contact
+- Divisions: Beauty & Cosmetics, Fashion & Accessories, Home Furniture, Pharmacy Services, Real Estate
+- Contact: Address, email, phone, WhatsApp link
 
-2. **Update `lib/products-store.ts`** - Add to `defaultProducts` array:
+### Chatbot (`components/chatbot.tsx`)
+- Floating bottom-right button (bounces on load)
+- Hidden on `/goddess-glow`, `/admin-login`, `/admin/*`
+- Connects to `/api/chat` (OpenAI GPT-4o-mini)
+- Avatar: `/mike-avatar.png`
+- Auto-scrolls, loading spinner, fallback error message
 
+---
+
+## 7. UI Components (`components/ui/`)
+
+Only 4 shadcn/ui components exist. **Do NOT assume others are available.** If you need Dialog, Select, Sheet, Toast, etc., you must install them.
+
+### Button (`button.tsx`)
+```tsx
+import { Button } from "@/components/ui/button"
+// Variants: default, destructive, outline, secondary, ghost, link
+// Sizes: default, sm, lg, icon, icon-sm, icon-lg
+// asChild: boolean (use with next/link)
+<Button variant="outline" size="sm" asChild><Link href="/">Text</Link></Button>
+```
+
+### Card System (`card.tsx`)
+```tsx
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardAction } from "@/components/ui/card"
+```
+
+### Input (`input.tsx`)
+```tsx
+import { Input } from "@/components/ui/input"
+// Standard HTML input props, styled with gold focus ring
+```
+
+### Textarea (`textarea.tsx`)
+```tsx
+import { Textarea } from "@/components/ui/textarea"
+// Standard HTML textarea props, styled with gold focus ring
+```
+
+---
+
+## 8. Data Architecture
+
+### CRITICAL: No Database
+**Everything is client-side.** No Prisma, no Supabase, no database. Product data lives entirely in `localStorage`.
+
+### Product Data Flow
+
+```
+lib/products-store.ts (defaultProducts[]) ──► localStorage ("goddess-glow-products")
+                                              ▲                    │
+                                              │                    ▼
+                                     Admin Page (/admin/goddess-glow)  Goddess Glow Shop (/goddess-glow)
+                                     (add/edit/delete via FileReader)   (read via getProducts())
+```
+
+### Product Interface (`lib/products-store.ts`)
+```typescript
+export interface Product {
+  id: string           // "body-cream" or auto-generated "product-${Date.now()}"
+  name: string
+  price: number        // Sale price in TZS
+  originalPrice: number // "Original" price (25% markup = 20% discount display)
+  description: string
+  images: string[]     // ["/goddess-glow/image.jpeg", "/images/image.jpeg"]
+}
+```
+
+### localStorage Keys
+| Key | Data | Written By |
+|-----|------|------------|
+| `"goddess-glow-products"` | Product array | `products-store.ts` functions, Admin page |
+| `"goddess-glow-admin-auth"` | `"authenticated"` string | `login()` function |
+
+### CRUD Functions (`lib/products-store.ts`)
+```typescript
+getProducts(): Product[]        // Reads localStorage, falls back to defaults
+saveProducts(products): void    // Writes to localStorage
+addProduct(product): Product    // Generates ID, appends, saves
+updateProduct(id, updates): Product | null  // Merges updates
+deleteProduct(id): boolean      // Removes product
+```
+
+### Admin Auth (`lib/products-store.ts`)
+```typescript
+login(email, password): boolean   // Hardcoded: admin@mikenova.co.tz / Mike@Nova@1961
+logout(): void
+isAuthenticated(): boolean
+```
+
+### Cart State
+- Cart is **pure React state** (`useState`) in `/goddess-glow/page.tsx`
+- **NOT persisted to localStorage** — cart is lost on page refresh
+- This is intentional (keeps it simple)
+
+---
+
+## 9. E-commerce System (`/goddess-glow`)
+
+### Page Architecture (`app/goddess-glow/page.tsx`)
+The page is a single large Client Component (~663 lines) containing:
+
+1. **ProductCard** (local component) — Image carousel, discount badge, add-to-cart button
+2. **Hero Section** — Background image, title, CTA buttons
+3. **About Section** — Brief description
+4. **Shop Section** — Product grid using `getProducts()`
+5. **Benefits Section** — 4 benefit cards (dark bg)
+6. **Video Section** — Embedded video with play button overlay
+7. **Floating Cart Button** — Fixed bottom-right with item count badge
+8. **Cart Modal** — Slide-up overlay with items, quantities, remove, total
+9. **Payment Options** — WhatsApp or Bank Transfer
+10. **Bank Details Panel** — NMB bank info
+11. **Confirmation Form Modal** — Name, phone, location, transaction ID
+
+### Payment Flow
+```
+Add to Cart → Floating cart button (item count)
+  → Click cart → Cart modal opens
+    → "Proceed to Payment"
+      → Choose method:
+        ├─ WhatsApp: Opens wa.me link with pre-filled order
+        └─ Bank Transfer: Shows bank details
+           → "Payment completed? Click here!"
+             → Confirmation form
+               → Submits via WhatsApp message
+```
+
+### Discount Calculation
+```typescript
+const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+// Prices are set with 25% markup: originalPrice = price * 1.25
+// This displays as 20% OFF
+```
+
+---
+
+## 10. Blog System (`/blog`)
+
+### Structure
+- **Blog listing** (`/blog/page.tsx`): Grid of 5 posts with image, title, excerpt, date
+- **Blog post** (`/blog/[slug]/page.tsx`): Individual post with hero image, key takeaways, HTML content
+
+### Blog Data Model
+```typescript
+type BlogPost = {
+  slug: string
+  title: string
+  excerpt: string
+  image: string
+  date: string
+  readTime: string
+  category: string
+  keyTakeaways: string[]
+  content: string  // HTML STRING!
+}
+```
+
+### CRITICAL: Blog Content is HTML Strings
+All blog content is stored as **raw HTML strings** inside `blogContent` record in `/blog/[slug]/page.tsx`. It is NOT MDX, NOT CMS content. The HTML uses custom CSS classes like:
+- `lead-paragraph`
+- `content-section`
+- `highlight-box`
+- `quote-callout`
+- `info-box`
+- `stats-grid`
+- `testimonial-card`
+- `timeline-section`
+- `week-card`
+- `step-card`
+- `routine-section`
+
+These classes are styled via inline `<style jsx>` in the page component.
+
+### Available Blog Posts (8 total)
+| Slug | Title |
+|------|-------|
+| `10-signs-your-skin-needs-goddess-glow` | 10 Signs Your Skin Needs Goddess Glow |
+| `science-behind-goddess-glow` | The Science Behind Goddess Glow |
+| `dark-spots-be-gone-real-stories` | Dark Spots Be Gone: Real Stories |
+| `complete-skincare-routine-goddess-glow` | Complete Guide: How to Use Goddess Glow |
+| `30-day-journey-glowing-skin` | 30-Day Journey to Glowing Skin |
+| `bridal-glow-mikenova` | Bridal Glow: Preparing for Your Big Day |
+| `goddess-glow-vs-competitors` | Goddess Glow vs. Competitors |
+| `skin-brightening-guide` | The Ultimate Skin Brightening Guide |
+
+### SEO Strategy
+Blog posts are heavily optimized for Swahili beauty keywords: `vipodozi`, `duka la vipodozi`, `vipodozi bei rahisi`, `vipodozi salama`, `vipodozi Dar es Salaam`, etc.
+
+---
+
+## 11. Chatbot System (`/api/chat`)
+
+### API Route (`app/api/chat/route.ts`)
+- **Method:** POST
+- **Body:** `{ messages: Array<{role, content}> }`
+- **Model:** `gpt-4o-mini`
+- **Max tokens:** 250
+- **Temperature:** 0.7
+- **System prompt:** "Mike" — virtual assistant for MIKENOVA GROUP
+- **Requires:** `OPENAI_API_KEY` env var
+- **Fallback:** Friendly error with contact info if key missing
+
+### Chatbot Widget (`components/chatbot.tsx`)
+- Floating button bottom-right
+- Hidden on `/goddess-glow`, `/admin-login`, `/admin/*`
+- Expands into chat modal when clicked
+- Avatar: `/mike-avatar.png`
+
+---
+
+## 12. Public Assets Reference
+
+### Root Level
+| File | Purpose |
+|------|---------|
+| `/favicon.png` | Site favicon |
+| `/logo-new.png` | Main logo (280×90) |
+| `/logo.png` | Alternative logo |
+| `/mike-avatar.png` | Chatbot avatar |
+| `/hero-bg.jpg` | Hero background |
+| `/apple-icon.png` | Apple touch icon |
+| `/placeholder.jpg` | Generic placeholder |
+| `/placeholder.svg` | SVG placeholder |
+| `/robots.txt` | Crawler rules (blocks /admin, /admin-login, /api) |
+| `/sitemap.xml` | Sitemap (7 URLs) |
+
+### `/public/goddess-glow/` (14 files)
+| File | Purpose |
+|------|---------|
+| `body-cream-beach.png` | Body Cream product image |
+| `body-cream-hand.jpeg` | Body Cream product image |
+| `body-oil-hero.jpeg` | Body Oil product + hero image |
+| `body-oil-product.jpeg` | Body Oil product image |
+| `bar-soap-1.jpeg` | Bar Soap product image |
+| `bar-soap-2.jpeg` | Bar Soap product image |
+| `hero-beach.png` | Marketing/hero image |
+| `luxury-horse.png` | Marketing image |
+| `natural-beauty.png` | Marketing image (used as bg) |
+| `wedding-party.png` | Marketing image |
+| `lipa-namba.png` | Mobile payment graphic |
+| `nbc-logo.png` | NBC Bank logo |
+| `nmb-logo.png` | NMB Bank logo |
+
+### `/public/images/` (11 files)
+| File | Purpose |
+|------|---------|
+| `GODDESS GLOW SUNSCREEN .jpeg` | Sunscreen image |
+| `GODDESS GLOW SUNSCREEN  2.jpeg` | Sunscreen image |
+| `GODDESS GLOW SUNSCREEN  3.jpeg` | Sunscreen image |
+| `goddes glow shower gel.jpeg` | Showergel image (note: typo "goddes") |
+| `goddess glow shower gel.jpeg` | Showergel image |
+| `goddess-glow-application.png` | Blog image |
+| `goddess-glow-beach.png` | Blog image |
+| `goddess-glow-portrait.png` | Blog image |
+| `goddess-glow-product.jpg` | Blog image |
+| `goddess-glow-wedding.png` | Blog image |
+
+### `/public/products/` (23 files)
+Product catalog images for the inquiry-based `/products` page.
+
+### `/public/services/` (12 files)
+Service category images for `/services` page.
+
+### `/public/divisions/` (5 files)
+Division display images for homepage divisions grid.
+
+### `/public/brands/` (16 files)
+Partner brand logos for homepage brand partners section.
+
+### `/public/arrivals/` (8 files)
+Latest arrivals product images for homepage.
+
+---
+
+## 13. Common Patterns & Code Snippets
+
+### Image Carousel Pattern (used on product cards)
+```tsx
+const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+// Navigation
+const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % product.images.length)
+const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length)
+
+// In JSX
+<div className="relative h-[280px] overflow-hidden">
+  <Image src={product.images[currentImageIndex]} alt={product.name} fill className="object-cover" />
+  <button onClick={prevImage}><ChevronLeft /></button>
+  <button onClick={nextImage}><ChevronRight /></button>
+  <div className="flex gap-2">
+    {product.images.map((_, idx) => (
+      <button key={idx} onClick={() => setCurrentImageIndex(idx)}
+        className={`w-2 h-2 rounded-full ${idx === currentImageIndex ? "bg-[#F0A500] w-4" : "bg-white/70"}`}
+      />
+    ))}
+  </div>
+</div>
+```
+
+### Modal/Overlay Pattern
+```tsx
+{isOpen && (
+  <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+    <div className="absolute inset-0 bg-black/60" onClick={() => setIsOpen(false)} />
+    <div className="relative bg-white w-full sm:max-w-lg sm:mx-4 rounded-t-2xl sm:rounded-2xl">
+      {/* Content */}
+    </div>
+  </div>
+)}
+```
+
+### WhatsApp Link Pattern
+```tsx
+const message = `Hello, I'd like to inquire about...`
+window.open(`https://wa.me/255623821175?text=${encodeURIComponent(message)}`, "_blank")
+```
+
+### Toast Notification Pattern
+```tsx
+import { toast, Toaster } from "sonner"
+
+// In JSX (at top level of page)
+<Toaster richColors />
+
+// Usage
+toast.success("Item added to cart!", {
+  icon: <CheckCircle className="w-5 h-5 text-green-500" />,
+  position: "top-center",
+  duration: 2000,
+})
+toast.error("Please fill all required fields")
+```
+
+### Mobile-First Responsive Pattern
+All components use mobile-first responsive classes:
+```tsx
+// Base styles apply to mobile, sm/md/lg apply to larger screens
+<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+<button className="p-3.5 sm:p-4 text-sm sm:text-base">
+```
+
+### Touch-Friendly Interactive Elements
+ALL interactive elements MUST have `touch-manipulation` class:
+```tsx
+<button className="touch-manipulation">Click me</button>
+```
+
+---
+
+## 14. How To Guides
+
+### Add a New Page
+1. Create folder: `app/[page-name]/`
+2. Create `page.tsx` (and `layout.tsx` if needed)
+3. Add link to `components/navigation.tsx` in `navLinks` array
+4. Add link to `components/footer.tsx` in Quick Links section
+5. Add to `public/sitemap.xml` if applicable
+
+### Add a Goddess Glow Product
+1. Add product images to `public/images/` or `public/goddess-glow/`
+2. Edit `lib/products-store.ts` — add to `defaultProducts` array:
 ```typescript
 {
   id: "unique-id",
   name: "Product Name",
   price: 45000,
-  originalPrice: 56250, // 25% markup for discount display
+  originalPrice: 56250,  // price * 1.25
   description: "Product description here",
   images: ["/images/product-image.jpeg", "/images/product-image-2.jpeg"]
 }
 ```
+3. Clear browser localStorage (`"goddess-glow-products"`) or test in incognito
 
-3. **Clear localStorage** (products are cached there) - or use incognito mode to test
-
-## Admin Panel
-
-- **URL**: `/admin-login` → `/admin/goddess-glow`
-- **Purpose**: Manage Goddess Glow products (add, edit, delete)
-- **Auth**: localStorage-based authentication
-
-## Common Tasks
-
-### Add a new page
-
-1. Create folder in `app/[page-name]/`
-2. Create `page.tsx` and `layout.tsx`
-3. Add link to `components/navigation.tsx`
-4. Add link to `components/footer.tsx`
-
-### Update site navigation
-
-Edit `components/navigation.tsx` - modify `navLinks` array.
-
-### Update footer links
-
-Edit `components/footer.tsx` - modify Quick Links section.
-
-### Change contact information
-
-Update in:
+### Update Contact Information
+Update in ALL of these files:
 - `components/footer.tsx`
 - `app/contact/page.tsx`
 - `app/goddess-glow/page.tsx` (WhatsApp number for orders)
+- `app/api/chat/route.ts` (chatbot system prompt)
 
-## Build & Deploy
+### Add a Blog Post
+1. Edit `app/blog/[slug]/page.tsx`
+2. Add new entry to `blogContent` record with a unique slug
+3. Add post to `app/blog/page.tsx` listing array
+4. Add to `app/blog/[slug]/layout.tsx` if needed
+
+### Update Navigation
+Edit `components/navigation.tsx` — modify `navLinks` array:
+```typescript
+const navLinks = [
+  { href: "/", label: "HOME" },
+  { href: "/about", label: "ABOUT" },
+  // ...add your link here
+]
+```
+
+### Update Footer Links
+Edit `components/footer.tsx`:
+- Quick Links: modify the array in the second column
+- Divisions: modify the `<ul>` in the third column
+- Contact: modify the `<ul>` in the fourth column
+
+### Install New shadcn/ui Components
+```bash
+# Example: install dialog and select
+npx shadcn@latest add dialog select
+```
+
+---
+
+## 15. Important Gotchas & Warnings
+
+### ⚠️ CRITICAL: Homepage has its OWN hardcoded product array
+The homepage (`app/page.tsx`) has a local `goddessGlowProducts` array with ONLY 3 products. This is SEPARATE from `lib/products-store.ts`. If you add a new product to the store, it won't automatically appear on the homepage teaser section.
+
+### ⚠️ Image filename inconsistencies
+Several image files have typos or extra spaces:
+- `"GODDESS GLOW SUNSCREEN .jpeg"` (trailing space)
+- `"GODDESS GLOW SUNSCREEN  2.jpeg"` (double space)
+- `"goddes glow shower gel.jpeg"` (missing second 's')
+
+Always reference the EXACT filename as stored. Use tab-completion or `ls` to verify.
+
+### ⚠️ Sitemap references outdated image filenames
+`public/sitemap.xml` references `body-cream-1.jpeg` and `body-oil-1.jpeg` which no longer exist. Current filenames are `body-cream-beach.png` and `body-oil-hero.jpeg`.
+
+### ⚠️ Two different gold colors
+- `#F0A500` is the PRIMARY gold (used everywhere)
+- `#D4AF37` is used ONLY in the homepage "Goddess Glow Collection" section button
+- Do NOT introduce a third gold. If adding new gold elements, default to `#F0A500`.
+
+### ⚠️ Admin images are stored as base64 in localStorage
+When admin uploads images, `FileReader.readAsDataURL()` stores base64 strings directly in the product object. This can bloat localStorage quickly. There is NO server-side image handling.
+
+### ⚠️ No image optimization
+`next.config.mjs` has `images: { unoptimized: true }`. Next.js Image Optimization API is disabled. Images are served as static files.
+
+### ⚠️ Cart is NOT persisted
+The shopping cart is pure React state. Refreshing the page clears the cart. This is intentional but important to know.
+
+### ⚠️ No real backend
+- No database, no CMS, no REST API for products
+- Only backend is `/api/chat` which calls OpenAI
+- All product data is static or localStorage
+
+### ⚠️ Admin auth is client-side only
+Credentials are hardcoded in plaintext in `lib/products-store.ts`. This is NOT secure for production but works for the current use case.
+
+### ⚠️ `styles/globals.css` is NOT used
+The active global CSS is `app/globals.css`. `styles/globals.css` is an old/default file.
+
+### ⚠️ Root layout has `className="dark"`
+The `<html>` element in `app/layout.tsx` has `className="dark"`, forcing dark mode. The `next-themes` ThemeProvider exists but the root is hardcoded to dark.
+
+### ⚠️ GTM ID is hardcoded
+Google Tag Manager ID `GTM-MMPKG2F7` is hardcoded in `app/layout.tsx`.
+
+### ⚠️ Google Search Console verification
+Meta verification token `0P0--FJbylHfizoCQREuyNgyfURig8g-D2qiUcCcA-8` is in root metadata.
+
+---
+
+## 16. Build & Deploy
 
 ```bash
 # Development
@@ -172,16 +711,86 @@ pnpm dev
 # Build
 pnpm build
 
-# Start production
+# Production
 pnpm start
+
+# Lint
+pnpm lint
 ```
 
-## Notes for Agents
+### Environment Variables
+Only one env var is used:
+- `OPENAI_API_KEY` — Required for chatbot. If missing, chatbot falls back to contact info.
 
-- Always maintain the existing color scheme (`#F0A500`, `#1B1A17`, `#FAFAF8`)
-- Use Tailwind's responsive prefixes: `sm:`, `md:`, `lg:`, `xl:`
-- Test both mobile and desktop views
-- When adding products, include multiple images if available
-- Product prices should be in Tanzanian Shillings (TZS)
-- WhatsApp number for orders: +255 623 821 175
-- Bank details for transfers: NMB Bank, 23110057723, MICHAEL C ELIA
+---
+
+## 17. File Checklist When Making Changes
+
+Use this checklist to ensure consistency:
+
+- [ ] Color scheme maintained (`#F0A500`, `#1B1A17`, `#FAFAF8`)
+- [ ] Mobile-first responsive prefixes (`sm:`, `md:`, `lg:`, `xl:`)
+- [ ] `touch-manipulation` on all interactive elements
+- [ ] Sharp edges (`rounded-none` or no rounding, matching `--radius: 0rem`)
+- [ ] Fonts: headings use `font-serif`, body uses `font-sans`
+- [ ] WhatsApp number is `+255 623 821 175`
+- [ ] Bank details: NMB Bank, `23110057723`, `MICHAEL C ELIA`
+- [ ] Prices in TZS with `.toLocaleString()` formatting
+- [ ] Discount calculation: `Math.round(((original - price) / original) * 100)`
+- [ ] If adding products: update `defaultProducts` AND consider homepage teaser
+- [ ] If adding pages: update navigation AND footer
+- [ ] Test both mobile and desktop views
+
+---
+
+## 18. Quick Reference: All Default Products
+
+```typescript
+// From lib/products-store.ts
+const defaultProducts = [
+  {
+    id: "body-cream",
+    name: "Goddess Glow Body Cream",
+    price: 55000,
+    originalPrice: 68750,
+    description: "Brightening body cream that reveals smooth, even, radiant skin. Dermatologist approved formula trusted by thousands.",
+    images: ["/goddess-glow/body-cream-beach.png", "/goddess-glow/body-cream-hand.jpeg"],
+  },
+  {
+    id: "body-oil",
+    name: "Goddess Glow Body Oil",
+    price: 30000,
+    originalPrice: 37500,
+    description: "Luxurious body oil that nourishes and gives your skin a luminous, healthy glow. Perfect for all skin types.",
+    images: ["/goddess-glow/body-oil-hero.jpeg", "/goddess-glow/body-oil-product.jpeg"],
+  },
+  {
+    id: "bar-soap",
+    name: "Goddess Glow Bar Soap",
+    price: 10000,
+    originalPrice: 12500,
+    description: "Natural brightening bar soap infused with fruit extracts. Cleanses and brightens for a refreshed glow.",
+    images: ["/goddess-glow/bar-soap-1.jpeg", "/goddess-glow/bar-soap-2.jpeg"],
+  },
+  {
+    id: "sunscreen",
+    name: "Goddess Glow Sunscreen",
+    price: 45000,
+    originalPrice: 56250,
+    description: "Premium sunscreen with broad spectrum protection. Shields your skin from harmful UV rays while keeping it moisturized and radiant.",
+    images: ["/images/GODDESS GLOW SUNSCREEN .jpeg", "/images/GODDESS GLOW SUNSCREEN  2.jpeg", "/images/GODDESS GLOW SUNSCREEN  3.jpeg"],
+  },
+  {
+    id: "showergel",
+    name: "Goddess Glow Showergel",
+    price: 35000,
+    originalPrice: 43750,
+    description: "Luxurious shower gel that cleanses and brightens your skin. Infused with nourishing ingredients for a refreshing glow.",
+    images: ["/images/goddes glow shower gel.jpeg", "/images/goddess glow shower gel.jpeg"],
+  },
+]
+```
+
+---
+
+*End of AGENTS.md — When modifying files/styles/structures mentioned here, update this document to keep it current.*

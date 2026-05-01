@@ -21,6 +21,7 @@ import {
   Sun,
   Play,
   CheckCircle,
+  Clock,
 } from "lucide-react"
 import { getProducts, type Product } from "@/lib/products-store"
 import { Navigation } from "@/components/navigation"
@@ -298,6 +299,72 @@ export default function GoddessGlowPage() {
             {products.map((product) => (
               <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
             ))}
+            {/* Coming Soon Card - Shower Gel */}
+            <Card className="!bg-white overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="relative h-[280px] sm:h-[320px] md:h-[350px] overflow-hidden">
+                <Image
+                  src="/goddess-glow/Goddess Glow - Shower Gel.png"
+                  alt="Goddess Glow Shower Gel - Coming Soon"
+                  fill
+                  className="object-cover blur-sm scale-110"
+                />
+                <div className="absolute inset-0 bg-[#1B1A17]/60 flex flex-col items-center justify-center">
+                  <Clock className="w-10 h-10 sm:w-12 sm:h-12 text-[#F0A500] mb-3" />
+                  <span className="text-[#FAFAF8] text-xl sm:text-2xl md:text-3xl font-bold tracking-wider">
+                    COMING SOON
+                  </span>
+                  <div className="mt-3 h-px w-16 bg-[#F0A500]" />
+                </div>
+              </div>
+              <CardContent className="p-4 sm:p-5 md:p-6">
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#1B1A17] mb-1.5 sm:mb-2">
+                  Goddess Glow Shower Gel
+                </h3>
+                <p className="text-[#1B1A17]/70 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
+                  Our newest shower gel formulation is on its way. Stay tuned for the launch!
+                </p>
+                <Button
+                  disabled
+                  className="w-full bg-[#1B1A17]/20 text-[#1B1A17]/40 font-semibold py-4 sm:py-5 md:py-6 text-sm sm:text-base cursor-not-allowed"
+                >
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  Coming Soon
+                </Button>
+              </CardContent>
+            </Card>
+            {/* Coming Soon Card - Sunscreen */}
+            <Card className="!bg-white overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="relative h-[280px] sm:h-[320px] md:h-[350px] overflow-hidden">
+                <Image
+                  src="/images/GODDESS GLOW SUNSCREEN .jpeg"
+                  alt="Goddess Glow Sunscreen - Coming Soon"
+                  fill
+                  className="object-cover blur-sm scale-110"
+                />
+                <div className="absolute inset-0 bg-[#1B1A17]/60 flex flex-col items-center justify-center">
+                  <Clock className="w-10 h-10 sm:w-12 sm:h-12 text-[#F0A500] mb-3" />
+                  <span className="text-[#FAFAF8] text-xl sm:text-2xl md:text-3xl font-bold tracking-wider">
+                    COMING SOON
+                  </span>
+                  <div className="mt-3 h-px w-16 bg-[#F0A500]" />
+                </div>
+              </div>
+              <CardContent className="p-4 sm:p-5 md:p-6">
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#1B1A17] mb-1.5 sm:mb-2">
+                  Goddess Glow Sunscreen
+                </h3>
+                <p className="text-[#1B1A17]/70 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
+                  Premium sunscreen with broad spectrum protection. Launching soon!
+                </p>
+                <Button
+                  disabled
+                  className="w-full bg-[#1B1A17]/20 text-[#1B1A17]/40 font-semibold py-4 sm:py-5 md:py-6 text-sm sm:text-base cursor-not-allowed"
+                >
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  Coming Soon
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
