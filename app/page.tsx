@@ -348,14 +348,19 @@ export default function HomePage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
-        style={{
-          backgroundImage: "url(/images/hero-20background-20image.jpg)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Video Background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover"
+          poster="/goddess-glow/natural-beauty.png"
+        >
+          <source src="/Goddess%20Glow%20BG.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-b from-[#1B1A17]/80 via-[#1B1A17]/60 to-[#1B1A17]/90" />
         <div className="relative z-10 container mx-auto px-4 lg:px-8 text-center">
           <div className="max-w-4xl mx-auto">
