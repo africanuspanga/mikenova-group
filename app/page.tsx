@@ -161,6 +161,20 @@ function HomeProductCard({ product }: { product: Product }) {
 
 export default function HomePage() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [highlightIndex, setHighlightIndex] = useState(0)
+
+  const highlightImages = [
+    "/Coming soon section/Coming soon 1.png",
+    "/Coming soon section/Coming soon 2.png",
+    "/Coming soon section/Coming soon 3.PNG",
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHighlightIndex((prev) => (prev + 1) % highlightImages.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [highlightImages.length])
 
   // Scroll reveal effect
   useEffect(() => {
@@ -605,6 +619,75 @@ export default function HomePage() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Product Highlights Section */}
+      <section className="py-28 bg-[#1B1A17] relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F0A500]/40 to-transparent" />
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="text-center mb-16 reveal">
+            <div className="h-px w-16 bg-[#F0A500] mx-auto mb-6" />
+            <h2 className="font-serif text-4xl md:text-5xl text-[#F0A500] mb-4">Product Highlights</h2>
+            <p className="text-lg text-[#A8A6A1] max-w-2xl mx-auto leading-relaxed">
+              A sneak peek at what&apos;s coming next from MIKENOVA GROUP
+            </p>
+          </div>
+
+          <div className="relative max-w-5xl mx-auto reveal">
+            <div className="relative aspect-[16/9] overflow-hidden shadow-2xl border border-[#3A3835]">
+              {highlightImages.map((src, index) => (
+                <div
+                  key={src}
+                  className={`absolute inset-0 transition-opacity duration-1000 ${
+                    index === highlightIndex ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <Image
+                    src={src}
+                    alt={`Coming soon ${index + 1}`}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={() =>
+                setHighlightIndex((prev) => (prev - 1 + highlightImages.length) % highlightImages.length)
+              }
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm p-2 sm:p-3 transition-all duration-300 border border-white/20 touch-manipulation"
+              aria-label="Previous highlight"
+            >
+              <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 text-[#FAFAF8]" />
+            </button>
+            <button
+              onClick={() => setHighlightIndex((prev) => (prev + 1) % highlightImages.length)}
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm p-2 sm:p-3 transition-all duration-300 border border-white/20 touch-manipulation"
+              aria-label="Next highlight"
+            >
+              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 text-[#FAFAF8]" />
+            </button>
+
+            {/* Dots Indicator */}
+            <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 sm:gap-3">
+              {highlightImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setHighlightIndex(index)}
+                  className={`h-2 sm:h-2.5 transition-all duration-500 touch-manipulation ${
+                    index === highlightIndex
+                      ? "bg-[#F0A500] w-6 sm:w-8"
+                      : "bg-white/40 w-2 sm:w-2.5 hover:bg-white/60"
+                  }`}
+                  aria-label={`Go to highlight ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
