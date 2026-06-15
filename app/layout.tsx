@@ -41,10 +41,10 @@ export const metadata: Metadata = {
       "A distinctive portfolio of businesses that set a global benchmark for quality in consumer luxury, health access, specialized trade, and critical infrastructure.",
     images: [
       {
-        url: "/favicon.png",
+        url: "/golden-edition.png",
         width: 1200,
         height: 630,
-        alt: "MIKENOVA GROUP",
+        alt: "MIKENOVA GROUP - Luxury Conglomerate & Goddess Glow Skincare",
       },
     ],
   },
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     title: "MIKENOVA GROUP - Curated Excellence",
     description:
       "A distinctive portfolio of businesses that set a global benchmark for quality in consumer luxury, health access, specialized trade, and critical infrastructure.",
-    images: ["/favicon.png"],
+    images: ["/golden-edition.png"],
   },
 }
 

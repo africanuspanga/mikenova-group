@@ -15,7 +15,7 @@ const CURRENT_PRODUCTS_VERSION = "3"
 const AUTH_KEY = "goddess-glow-admin-auth"
 
 // Default products
-const defaultProducts: Product[] = [
+export const defaultProducts: Product[] = [
   {
     id: "body-cream",
     name: "Goddess Glow Body Cream",

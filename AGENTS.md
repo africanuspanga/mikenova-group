@@ -1,6 +1,6 @@
 # MIKENOVA GROUP - Comprehensive Agent Documentation
 
-> Last updated: 2026-05-01
+> Last updated: 2026-06-15
 > This document is the single source of truth for AI agents working on this codebase.
 
 ---
@@ -39,6 +39,7 @@ MIKENOVA GROUP is a multi-divisional business portfolio website for a Tanzanian 
 | Themes | next-themes | ^0.4.6 |
 | Notifications | sonner | Toast notifications |
 | Analytics | @vercel/analytics | — |
+| Animation | framer-motion | Scroll reveals, parallax, carousels |
 | Package Manager | pnpm | (use `pnpm`, NOT npm/yarn) |
 
 ### Key Configuration
@@ -56,9 +57,27 @@ MIKENOVA GROUP is a multi-divisional business portfolio website for a Tanzanian 
 /
 ├── app/                              # Next.js App Router
 │   ├── layout.tsx                    # Root layout: fonts, metadata, GTM, Chatbot, Analytics
-│   ├── page.tsx                      # Homepage (extensive, ~964 lines)
+│   ├── page.tsx                      # Homepage: orchestrates section components
 │   ├── globals.css                   # Tailwind v4 theme + custom animations
 │   ├── not-found.tsx                 # 404 page
+│   ├── sections/                     # Reusable section components
+│   │   ├── hero.tsx                  # Multi-video cinematic hero slider
+│   │   ├── philosophy.tsx            # Brand story / "House of MIKENOVA"
+│   │   ├── flagship-brand.tsx        # Goddess Glow signature brand feature
+│   │   ├── product-collection.tsx    # Goddess Glow product grid
+│   │   ├── golden-edition-promo.tsx  # Golden Edition promotional feature
+│   │   ├── authenticity-guide.tsx    # Original product authenticity guide
+│   │   ├── divisions-showcase.tsx    # 12-division horizontal gallery
+│   │   ├── partners-marquee.tsx      # Infinite brand partner marquee
+│   │   ├── testimonials.tsx          # Featured testimonial carousel
+│   │   └── cta-contact.tsx           # Final editorial CTA
+│   ├── hooks/                        # Shared custom hooks
+│   ├── components/animation/         # Reusable animation primitives
+│   │   ├── section-label.tsx
+│   │   ├── animated-text.tsx
+│   │   ├── gold-line.tsx
+│   │   ├── magnetic-button.tsx
+│   │   └── luxury-product-card.tsx
 │   │
 │   ├── about/
 │   │   ├── layout.tsx                # Metadata wrapper
@@ -147,10 +166,12 @@ MIKENOVA GROUP is a multi-divisional business portfolio website for a Tanzanian 
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| **Primary Gold** | `#F0A500` | Buttons, accents, highlights, CTAs |
-| **Secondary Gold** | `#D4AF37` | Alternate gold (used in homepage featured products section only) |
-| **Dark Background** | `#1B1A17` | Headers, nav, dark sections, footer |
-| **Light Background** | `#FAFAF8` | Main content areas |
+| **Primary Gold** | `#F0A500` | Buttons, accents, highlights, CTAs (use sparingly) |
+| **Secondary Gold** | `#D4AF37` | Alternate gold, subtle foil highlights |
+| **Deep Background** | `#0F0E0C` | Primary dark sections (hero, flagship, divisions, CTA) |
+| **Dark Background** | `#1B1A17` | Secondary dark sections, cards, footer |
+| **Light Background** | `#FAFAF8` | Primary light content areas |
+| **Warm Ivory** | `#F5F3EE` | Secondary light sections, product grid background |
 | **Card Dark** | `#252320` | Cards on dark backgrounds |
 | **Border Dark** | `#3A3835` | Borders on dark backgrounds |
 | **Muted Text** | `#A8A6A1` | Secondary text on dark |
@@ -187,8 +208,14 @@ MIKENOVA GROUP is a multi-divisional business portfolio website for a Tanzanian 
 
 ```css
 .animate-fade-in     /* Fade in + slide up, 1s ease-out */
+.animate-ken-burns  /* Slow scale 1 → 1.08 over 20s (hero video) */
+.animate-marquee     /* Infinite horizontal scroll (partners) */
 .hover-glow          /* Gold box-shadow on hover */
 .luxury-card-hover   /* translateY(-8px) + deep shadow on hover */
+.luxury-card         /* Premium card lift with soft shadow */
+.noise-overlay       /* Subtle grain texture overlay */
+.magnetic-button     /* Spring-based magnetic hover wrapper */
+.border-gradient-gold /* Gold gradient border image */
 .scrollbar-hide      /* Hide scrollbar (webkit + firefox) */
 ```
 
@@ -205,7 +232,7 @@ Apply serif with `font-serif`, sans with `font-sans`.
 
 | Route | File | Type | Description |
 |-------|------|------|-------------|
-| `/` | `app/page.tsx` | Server | Homepage: hero, stats, featured products (5 divisions), Goddess Glow teaser, divisions grid, brand partners, latest arrivals, testimonials |
+| `/` | `app/page.tsx` | Server | Homepage: multi-video hero, philosophy, Goddess Glow flagship, collection, Golden Edition promo, authenticity guide, divisions, partners, testimonials, CTA |
 | `/about` | `app/about/page.tsx` | Server | About: company overview, mission/vision, 4 core values |
 | `/services` | `app/services/page.tsx` | Server | Services: 12 divisions with descriptions |
 | `/products` | `app/products/page.tsx` | Server | Product catalog: 36 inquiry products, category filter |
@@ -226,12 +253,12 @@ Any page/component that reads from `localStorage` (products, cart, admin auth) M
 ## 6. Shared Components
 
 ### Navigation (`components/navigation.tsx`)
-- Fixed top, `z-50`, semi-transparent dark bg with backdrop blur
-- Logo: `/logo-new.png` (h-14, w-auto)
-- Desktop: horizontal nav links + CONTACT button
-- Mobile: hamburger menu with collapsible drawer
-- **navLinks array:** `[{href: "/", label: "HOME"}, {href: "/about", label: "ABOUT"}, {href: "/services", label: "SERVICES"}, {href: "/products", label: "PRODUCTS"}, {href: "/goddess-glow", label: "GLOW"}, {href: "/blog", label: "BLOG"}]`
-- Contact button is SEPARATE from navLinks (styled CTA)
+- Fixed top, `z-50`, transparent on hero, dark glassmorphic bg on scroll
+- Logo: `/logo-new.png` (h-12 on mobile, h-14 on desktop, white inverted)
+- Desktop: horizontal nav links + SHOP + CONTACT button
+- Mobile: animated hamburger drawer with Shop + Contact CTAs
+- **navLinks array:** `[{href: "/", label: "Home"}, {href: "/about", label: "About"}, {href: "/services", label: "Divisions"}, {href: "/products", label: "Products"}, {href: "/goddess-glow", label: "Goddess Glow"}, {href: "/blog", label: "Journal"}]`
+- Uses Framer Motion for entrance and mobile menu animations
 
 ### Footer (`components/footer.tsx`)
 - 4-column grid: About | Quick Links | Divisions | Contact
@@ -293,6 +320,9 @@ lib/products-store.ts (defaultProducts[]) ──► localStorage ("goddess-glow-
                                               │                    ▼
                                      Admin Page (/admin/goddess-glow)  Goddess Glow Shop (/goddess-glow)
                                      (add/edit/delete via FileReader)   (read via getProducts())
+                                              │
+                                              └──────────── Homepage (/)
+                                                            (read via getProducts())
 ```
 
 ### Product Interface (`lib/products-store.ts`)
@@ -315,6 +345,7 @@ export interface Product {
 
 ### CRUD Functions (`lib/products-store.ts`)
 ```typescript
+export const defaultProducts: Product[]  // Exported default catalog
 getProducts(): Product[]        // Reads localStorage, falls back to defaults
 saveProducts(products): void    // Writes to localStorage
 addProduct(product): Product    // Generates ID, appends, saves
@@ -352,6 +383,7 @@ The page is a single large Client Component (~663 lines) containing:
 9. **Payment Options** — WhatsApp or Bank Transfer
 10. **Bank Details Panel** — NMB bank info
 11. **Confirmation Form Modal** — Name, phone, location, transaction ID
+12. **Authenticity Guide** — Original vs Fake Goddess Glow product comparison
 
 ### Payment Flow
 ```
@@ -457,6 +489,7 @@ Blog posts are heavily optimized for Swahili beauty keywords: `vipodozi`, `duka 
 | `/favicon.png` | Site favicon |
 | `/logo-new.png` | Main logo (280×90) |
 | `/logo.png` | Alternative logo |
+| `/golden-edition.png` | Goddess Glow Golden Edition promo image |
 | `/mike-avatar.png` | Chatbot avatar |
 | `/hero-bg.jpg` | Hero background |
 | `/apple-icon.png` | Apple touch icon |
@@ -464,6 +497,12 @@ Blog posts are heavily optimized for Swahili beauty keywords: `vipodozi`, `duka 
 | `/placeholder.svg` | SVG placeholder |
 | `/robots.txt` | Crawler rules (blocks /admin, /admin-login, /api) |
 | `/sitemap.xml` | Sitemap (7 URLs) |
+| `/FAKE.png` | Counterfeit Goddess Glow product reference image (legacy) |
+| `/OG.PNG` | Authentic Goddess Glow product reference image |
+| `/goddess-glow-authenticity-guide.png` | Full Original vs Fake comparison infographic (legacy) |
+| `/grok-video-9737b2fa-c651-4e1b-a6c8-7066aed9170e.mp4` | Hero background video #1 — Golden Edition |
+| `/Goddess%20Glow%20BG.mp4` | Hero background video #2 — Goddess Glow |
+| `/the-golden-editoon%20promo.mp4` | Golden Edition promo video (currently unused) |
 
 ### `/public/goddess-glow/` (14 files)
 | File | Purpose |
@@ -509,7 +548,7 @@ Division display images for homepage divisions grid.
 Partner brand logos for homepage brand partners section.
 
 ### `/public/arrivals/` (8 files)
-Latest arrivals product images for homepage.
+Legacy arrival images (currently unused after homepage redesign).
 
 ---
 
@@ -652,9 +691,6 @@ npx shadcn@latest add dialog select
 
 ## 15. Important Gotchas & Warnings
 
-### ⚠️ CRITICAL: Homepage has its OWN hardcoded product array
-The homepage (`app/page.tsx`) has a local `goddessGlowProducts` array with ONLY 3 products. This is SEPARATE from `lib/products-store.ts`. If you add a new product to the store, it won't automatically appear on the homepage teaser section.
-
 ### ⚠️ Image filename inconsistencies
 Several image files have typos or extra spaces:
 - `"GODDESS GLOW SUNSCREEN .jpeg"` (trailing space)
@@ -667,9 +703,10 @@ Always reference the EXACT filename as stored. Use tab-completion or `ls` to ver
 `public/sitemap.xml` references `body-cream-1.jpeg` and `body-oil-1.jpeg` which no longer exist. Current filenames are `body-cream-beach.png` and `body-oil-hero.jpeg`.
 
 ### ⚠️ Two different gold colors
-- `#F0A500` is the PRIMARY gold (used everywhere)
-- `#D4AF37` is used ONLY in the homepage "Goddess Glow Collection" section button
-- Do NOT introduce a third gold. If adding new gold elements, default to `#F0A500`.
+- `#F0A500` is the PRIMARY gold — use as the main accent for CTAs, hover states, and key lines
+- `#D4AF37` (Champagne Gold) is a secondary accent for subtle highlights and foil effects
+- Do NOT introduce a third gold. Default to `#F0A500` for new gold elements.
+- **Design rule:** Gold should be an accent, not the default color for every heading.
 
 ### ⚠️ Admin images are stored as base64 in localStorage
 When admin uploads images, `FileReader.readAsDataURL()` stores base64 strings directly in the product object. This can bloat localStorage quickly. There is NO server-side image handling.
@@ -737,7 +774,7 @@ Use this checklist to ensure consistency:
 - [ ] Bank details: NMB Bank, `23110057723`, `MICHAEL C ELIA`
 - [ ] Prices in TZS with `.toLocaleString()` formatting
 - [ ] Discount calculation: `Math.round(((original - price) / original) * 100)`
-- [ ] If adding products: update `defaultProducts` AND consider homepage teaser
+- [ ] If adding products: update `defaultProducts` in `lib/products-store.ts` (homepage auto-syncs via `getProducts()`)
 - [ ] If adding pages: update navigation AND footer
 - [ ] Test both mobile and desktop views
 
@@ -747,46 +784,30 @@ Use this checklist to ensure consistency:
 
 ```typescript
 // From lib/products-store.ts
-const defaultProducts = [
+export const defaultProducts = [
   {
     id: "body-cream",
     name: "Goddess Glow Body Cream",
-    price: 55000,
-    originalPrice: 68750,
+    price: 65000,
+    originalPrice: 81250,
     description: "Brightening body cream that reveals smooth, even, radiant skin. Dermatologist approved formula trusted by thousands.",
-    images: ["/goddess-glow/body-cream-beach.png", "/goddess-glow/body-cream-hand.jpeg"],
+    images: ["/goddess-glow/Body-cream 2.png", "/goddess-glow/Body cream -main.png"],
   },
   {
     id: "body-oil",
     name: "Goddess Glow Body Oil",
-    price: 30000,
-    originalPrice: 37500,
+    price: 45000,
+    originalPrice: 56250,
     description: "Luxurious body oil that nourishes and gives your skin a luminous, healthy glow. Perfect for all skin types.",
     images: ["/goddess-glow/body-oil-hero.jpeg", "/goddess-glow/body-oil-product.jpeg"],
   },
   {
     id: "bar-soap",
     name: "Goddess Glow Bar Soap",
-    price: 10000,
-    originalPrice: 12500,
+    price: 15000,
+    originalPrice: 18750,
     description: "Natural brightening bar soap infused with fruit extracts. Cleanses and brightens for a refreshed glow.",
     images: ["/goddess-glow/bar-soap-1.jpeg", "/goddess-glow/bar-soap-2.jpeg"],
-  },
-  {
-    id: "sunscreen",
-    name: "Goddess Glow Sunscreen",
-    price: 45000,
-    originalPrice: 56250,
-    description: "Premium sunscreen with broad spectrum protection. Shields your skin from harmful UV rays while keeping it moisturized and radiant.",
-    images: ["/images/GODDESS GLOW SUNSCREEN .jpeg", "/images/GODDESS GLOW SUNSCREEN  2.jpeg", "/images/GODDESS GLOW SUNSCREEN  3.jpeg"],
-  },
-  {
-    id: "showergel",
-    name: "Goddess Glow Showergel",
-    price: 35000,
-    originalPrice: 43750,
-    description: "Luxurious shower gel that cleanses and brightens your skin. Infused with nourishing ingredients for a refreshing glow.",
-    images: ["/images/goddes glow shower gel.jpeg", "/images/goddess glow shower gel.jpeg"],
   },
 ]
 ```

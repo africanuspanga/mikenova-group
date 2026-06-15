@@ -26,6 +26,7 @@ import {
 import { getProducts, type Product } from "@/lib/products-store"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import { AuthenticityGuide } from "@/app/sections/authenticity-guide"
 import { toast, Toaster } from "sonner"
 
 interface CartItem extends Product {
@@ -724,6 +725,7 @@ export default function GoddessGlowPage() {
         </div>
       )}
 
+      <AuthenticityGuide />
       <Footer />
     </div>
   )

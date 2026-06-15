@@ -58,13 +58,13 @@ export const metadata: Metadata = {
     locale: "en_TZ",
     images: [
       {
-        url: "https://www.mikenovagroup.co.tz/goddess-glow/body-cream-1.jpeg",
+        url: "/goddess-glow/Body-cream%202.png",
         width: 1200,
         height: 630,
         alt: "Goddess Glow Brightening Body Cream - Premium Skincare Tanzania",
       },
       {
-        url: "https://www.mikenovagroup.co.tz/goddess-glow/body-oil-1.jpeg",
+        url: "/goddess-glow/body-oil-hero.jpeg",
         width: 1200,
         height: 630,
         alt: "Goddess Glow Body Oil - Radiant Skin Tanzania",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     title: "Goddess Glow - Brightening Body Cream, Oil & Soap | Tanzania",
     description:
       "Premium brightening skincare products. Body Cream, Body Oil & Bar Soap for radiant glowing skin. Buy online with free delivery.",
-    images: ["https://www.mikenovagroup.co.tz/goddess-glow/body-cream-1.jpeg"],
+    images: ["/goddess-glow/Body-cream%202.png"],
   },
   robots: {
     index: true,
