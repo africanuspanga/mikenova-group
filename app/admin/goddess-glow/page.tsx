@@ -185,7 +185,7 @@ export default function AdminGoddessGlowPage() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <Link href="/goddess-glow" target="_blank">
+            <Link href="/goddess-glow/" target="_blank">
               <Button
                 variant="outline"
                 size="sm"

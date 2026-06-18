@@ -11,7 +11,7 @@ export interface Product {
 
 const PRODUCTS_KEY = "goddess-glow-products"
 const PRODUCTS_VERSION_KEY = "goddess-glow-products-version"
-const CURRENT_PRODUCTS_VERSION = "3"
+const CURRENT_PRODUCTS_VERSION = "4"
 const AUTH_KEY = "goddess-glow-admin-auth"
 
 // Default products
@@ -23,7 +23,7 @@ export const defaultProducts: Product[] = [
     originalPrice: 81250,
     description:
       "Brightening body cream that reveals smooth, even, radiant skin. Dermatologist approved formula trusted by thousands.",
-    images: ["/goddess-glow/Body-cream 2.png", "/goddess-glow/Body cream -main.png"],
+    images: ["/New Goddess Glow.PNG", "/New model goddess glow.png"],
   },
   {
     id: "body-oil",

@@ -14,9 +14,12 @@ export const metadata: Metadata = {
     title: "About Us - MIKENOVA GROUP | Curated Excellence in Tanzania",
     description:
       "Learn about MIKENOVA GROUP, a distinctive holding company in Tanzania with 12 specialized divisions unified by uncompromising standards of luxury, precision, and excellence.",
-    url: "https://www.mikenovagroup.co.tz/about",
+    url: "https://www.mikenovagroup.co.tz/about/",
     siteName: "MIKENOVA GROUP",
     type: "website",
+  },
+  alternates: {
+    canonical: "https://www.mikenovagroup.co.tz/about/",
   },
 }
 
@@ -156,7 +159,7 @@ export default function AboutPage() {
               size="lg"
               className="bg-[#F0A500] text-[#1B1A17] hover:bg-[#F0A500]/90 font-medium tracking-wider text-lg px-10 py-6 transition-all duration-300 hover:scale-105"
             >
-              <Link href="/contact">
+              <Link href="/contact/">
                 CONTACT US
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

@@ -37,7 +37,7 @@ export default function NotFound() {
             variant="outline"
             className="border-[#C9A227] text-[#C9A227] hover:bg-[#C9A227] hover:text-[#1B1A17] px-6 py-3 bg-transparent"
           >
-            <Link href="/goddess-glow">
+            <Link href="/goddess-glow/">
               <ShoppingBag className="w-4 h-4 mr-2" />
               Shop Goddess Glow
             </Link>

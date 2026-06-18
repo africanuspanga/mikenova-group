@@ -113,7 +113,7 @@ export function AuthenticityGuide({ className = "" }: AuthenticityGuideProps) {
               asChild
               className="bg-[#F0A500] text-[#0F0E0C] hover:bg-[#F0A500]/90 font-semibold text-xs uppercase tracking-[0.15em] px-8 py-6 transition-all duration-300 shadow-[0_0_30px_rgba(240,165,0,0.2)] touch-manipulation"
             >
-              <Link href="/goddess-glow">Shop Authentic Goddess Glow</Link>
+              <Link href="/goddess-glow/">Shop Authentic Goddess Glow</Link>
             </Button>
           </motion.div>
         </div>
@@ -149,7 +149,7 @@ export function AuthenticityGuide({ className = "" }: AuthenticityGuideProps) {
         >
           <p className="text-[#6B6A67] text-base sm:text-lg leading-relaxed">
             Always purchase Goddess Glow products from{" "}
-            <Link href="/goddess-glow" className="text-[#F0A500] hover:underline font-medium">
+            <Link href="/goddess-glow/" className="text-[#F0A500] hover:underline font-medium">
               our official store
             </Link>{" "}
             or authorized MIKENOVA retailers to guarantee authenticity and safety.

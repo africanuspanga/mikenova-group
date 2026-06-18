@@ -8,15 +8,21 @@ import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionLabel } from "@/app/components/animation/section-label"
 import { MagneticButton } from "@/app/components/animation/magnetic-button"
+import { useIsMobile } from "@/app/hooks/use-mobile"
 
 export function FlagshipBrand() {
   const sectionRef = useRef<HTMLDivElement>(null)
+  const isMobile = useIsMobile()
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   })
 
-  const imageY = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"])
+  const imageY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    isMobile ? ["0%", "0%"] : ["-5%", "5%"]
+  )
 
   return (
     <section
@@ -34,7 +40,7 @@ export function FlagshipBrand() {
             className="lg:col-span-7 relative"
           >
             <div className="relative aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] overflow-hidden">
-              <motion.div style={{ y: imageY }} className="absolute inset-[-10%] w-[120%] h-[120%]">
+              <motion.div style={{ y: imageY }} className="absolute inset-[-10%] w-[120%] h-[120%] will-change-transform">
                 <Image
                   src="/goddess-glow/hero-beach.png"
                   alt="Goddess Glow - Signature Skincare Brand"
@@ -56,7 +62,7 @@ export function FlagshipBrand() {
               className="hidden lg:flex absolute -right-8 bottom-20 gap-3"
             >
               {[
-                "/goddess-glow/Body-cream 2.png",
+                "/New Goddess Glow.PNG",
                 "/goddess-glow/body-oil-hero.jpeg",
                 "/goddess-glow/bar-soap-1.jpeg",
               ].map((src, index) => (
@@ -136,7 +142,7 @@ export function FlagshipBrand() {
                   size="lg"
                   className="bg-[#F0A500] text-[#0F0E0C] hover:bg-[#F0A500]/90 font-semibold text-xs sm:text-sm uppercase tracking-[0.15em] px-8 sm:px-10 py-6 sm:py-7 transition-all duration-300 shadow-[0_0_40px_rgba(240,165,0,0.25)] touch-manipulation"
                 >
-                  <Link href="/goddess-glow">
+                  <Link href="/goddess-glow/">
                     Shop the Collection
                     <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Link>

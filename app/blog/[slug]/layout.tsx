@@ -10,10 +10,23 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     "30-day-journey-glowing-skin": "30-Day Journey to Glowing Skin with Goddess Glow | MIKENOVA GROUP",
   }
 
+  const canonicalUrl = `https://www.mikenovagroup.co.tz/blog/${params.slug}/`
+
   return {
     title: titles[params.slug] || "Blog | MIKENOVA GROUP",
     description:
       "Expert skincare advice and real transformation stories. Learn about vipodozi salama (safe cosmetics) from duka la vipodozi na urembo in Dar es Salaam.",
+    openGraph: {
+      title: titles[params.slug] || "Blog | MIKENOVA GROUP",
+      description:
+        "Expert skincare advice and real transformation stories from MIKENOVA GROUP.",
+      url: canonicalUrl,
+      siteName: "MIKENOVA GROUP",
+      type: "article",
+    },
+    alternates: {
+      canonical: canonicalUrl,
+    },
   }
 }
 

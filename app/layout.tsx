@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description:
     "A distinctive portfolio of businesses that set a global benchmark for quality in consumer luxury, health access, specialized trade, and critical infrastructure.",
   generator: "v0.app",
-  metadataBase: new URL("https://www.mikenovagroup.co.tz"),
+  metadataBase: new URL("https://www.mikenovagroup.co.tz/"),
   verification: {
     google: "0P0--FJbylHfizoCQREuyNgyfURig8g-D2qiUcCcA-8",
   },
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.mikenovagroup.co.tz",
+    url: "https://www.mikenovagroup.co.tz/",
     siteName: "MIKENOVA GROUP",
     title: "MIKENOVA GROUP - Curated Excellence",
     description:

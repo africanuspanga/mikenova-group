@@ -5,6 +5,24 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { ArrowRight } from "lucide-react"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Journal | MIKENOVA GROUP — Beauty & Skincare Insights",
+  description:
+    "Expert skincare advice, product guides, and real stories from MIKENOVA GROUP. Your trusted source for authentic beauty wisdom in Tanzania.",
+  openGraph: {
+    title: "Journal | MIKENOVA GROUP — Beauty & Skincare Insights",
+    description:
+      "Expert skincare advice, product guides, and real stories from MIKENOVA GROUP.",
+    url: "https://www.mikenovagroup.co.tz/blog/",
+    siteName: "MIKENOVA GROUP",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://www.mikenovagroup.co.tz/blog/",
+  },
+}
 
 const blogPosts = [
   {
@@ -134,7 +152,7 @@ export default function BlogPage() {
               size="lg"
               className="bg-[#F0A500] text-[#1B1A17] hover:bg-[#F0A500]/90 font-semibold tracking-wider px-8"
             >
-              <Link href="/goddess-glow">Shop Goddess Glow</Link>
+              <Link href="/goddess-glow/">Shop Goddess Glow</Link>
             </Button>
           </div>
         </section>

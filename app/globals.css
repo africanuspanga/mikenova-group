@@ -129,6 +129,18 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Prevent horizontal rubber-banding and keep mobile scroll stable */
+  body {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* Luxury brand tokens (additive — do not remove existing vars) */

@@ -1,6 +1,6 @@
 # MIKENOVA GROUP - Comprehensive Agent Documentation
 
-> Last updated: 2026-06-15
+> Last updated: 2026-06-18
 > This document is the single source of truth for AI agents working on this codebase.
 
 ---
@@ -45,6 +45,8 @@ MIKENOVA GROUP is a multi-divisional business portfolio website for a Tanzanian 
 ### Key Configuration
 - **No `tailwind.config.*` file** — Tailwind v4 uses CSS-based config in `app/globals.css`
 - **Images are unoptimized** (`next.config.mjs`: `images: { unoptimized: true }`)
+- **Trailing slash enabled** (`next.config.mjs`: `trailingSlash: true`) — All canonical URLs and internal links use trailing slashes
+- **Apex domain redirect** (`next.config.mjs`) — `mikenovagroup.co.tz` redirects to `www.mikenovagroup.co.tz`
 - **ESLint and TypeScript errors are ignored during builds** (permissive mode)
 - **Path alias:** `@/` → project root
 - **No `output: 'export'`** — Requires Node.js server (has `/api/chat` route)
@@ -101,6 +103,10 @@ MIKENOVA GROUP is a multi-divisional business portfolio website for a Tanzanian 
 │   │   └── [slug]/
 │   │       ├── layout.tsx            # Dynamic metadata per post
 │   │       └── page.tsx              # Blog post detail (~1165 lines, hardcoded HTML content)
+│   │
+│   ├── videos/
+│   │   ├── layout.tsx                # Metadata wrapper
+│   │   └── page.tsx                  # YouTube channel video gallery
 │   │
 │   ├── contact/
 │   │   ├── layout.tsx                # Metadata wrapper
@@ -239,6 +245,7 @@ Apply serif with `font-serif`, sans with `font-sans`.
 | `/goddess-glow` | `app/goddess-glow/page.tsx` | **Client** | E-commerce: product grid, cart, payment flow |
 | `/blog` | `app/blog/page.tsx` | Server | Blog listing: 5 posts |
 | `/blog/[slug]` | `app/blog/[slug]/page.tsx` | Server | Blog post: 8 hardcoded posts with HTML content |
+| `/videos` | `app/videos/page.tsx` | Server | Videos: YouTube channel gallery with modal player |
 | `/contact` | `app/contact/page.tsx` | Server | Contact form (submits via WhatsApp) |
 | `/admin-login` | `app/admin-login/page.tsx` | **Client** | Admin login page |
 | `/admin/goddess-glow` | `app/admin/goddess-glow/page.tsx` | **Client** | Admin dashboard: CRUD products |
@@ -257,7 +264,7 @@ Any page/component that reads from `localStorage` (products, cart, admin auth) M
 - Logo: `/logo-new.png` (h-12 on mobile, h-14 on desktop, white inverted)
 - Desktop: horizontal nav links + SHOP + CONTACT button
 - Mobile: animated hamburger drawer with Shop + Contact CTAs
-- **navLinks array:** `[{href: "/", label: "Home"}, {href: "/about", label: "About"}, {href: "/services", label: "Divisions"}, {href: "/products", label: "Products"}, {href: "/goddess-glow", label: "Goddess Glow"}, {href: "/blog", label: "Journal"}]`
+- **navLinks array:** `[{href: "/", label: "Home"}, {href: "/about", label: "About"}, {href: "/services", label: "Divisions"}, {href: "/products", label: "Products"}, {href: "/goddess-glow", label: "Goddess Glow"}, {href: "/videos", label: "Videos"}, {href: "/blog", label: "Journal"}]`
 - Uses Framer Motion for entrance and mobile menu animations
 
 ### Footer (`components/footer.tsx`)
@@ -503,6 +510,8 @@ Blog posts are heavily optimized for Swahili beauty keywords: `vipodozi`, `duka 
 | `/grok-video-9737b2fa-c651-4e1b-a6c8-7066aed9170e.mp4` | Hero background video #1 — Golden Edition |
 | `/Goddess%20Glow%20BG.mp4` | Hero background video #2 — Goddess Glow |
 | `/the-golden-editoon%20promo.mp4` | Golden Edition promo video (currently unused) |
+| `/New Goddess Glow.PNG` | New Goddess Glow Body Cream product packaging |
+| `/New model goddess glow.png` | Model holding Goddess Glow Body Cream |
 
 ### `/public/goddess-glow/` (14 files)
 | File | Purpose |
@@ -756,8 +765,10 @@ pnpm lint
 ```
 
 ### Environment Variables
-Only one env var is used:
-- `OPENAI_API_KEY` — Required for chatbot. If missing, chatbot falls back to contact info.
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `OPENAI_API_KEY` | Yes | Chatbot. If missing, chatbot falls back to contact info. |
+| `YOUTUBE_API_KEY` | No | YouTube Data API v3 key for `/videos` duration and view counts. Page works without it (shows title, thumbnail, description, date from RSS). |
 
 ---
 
@@ -791,7 +802,7 @@ export const defaultProducts = [
     price: 65000,
     originalPrice: 81250,
     description: "Brightening body cream that reveals smooth, even, radiant skin. Dermatologist approved formula trusted by thousands.",
-    images: ["/goddess-glow/Body-cream 2.png", "/goddess-glow/Body cream -main.png"],
+    images: ["/New Goddess Glow.PNG", "/New model goddess glow.png"],
   },
   {
     id: "body-oil",

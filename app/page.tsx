@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: "MIKENOVA GROUP | Luxury Conglomerate & Goddess Glow Skincare",
     description:
       "A curated house of premium brands and services shaping Africa's future. Explore 12 divisions and shop Goddess Glow skincare.",
-    url: "https://www.mikenovagroup.co.tz",
+    url: "https://www.mikenovagroup.co.tz/",
     siteName: "MIKENOVA GROUP",
     type: "website",
     images: [
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     images: ["/golden-edition.png"],
   },
   alternates: {
-    canonical: "https://www.mikenovagroup.co.tz",
+    canonical: "https://www.mikenovagroup.co.tz/",
   },
   robots: {
     index: true,
@@ -63,7 +63,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "MIKENOVA GROUP",
-  url: "https://www.mikenovagroup.co.tz",
+  url: "https://www.mikenovagroup.co.tz/",
   logo: "https://www.mikenovagroup.co.tz/logo-new.png",
   description:
     "A Tanzanian luxury holding company with 12 specialized divisions, including Goddess Glow premium skincare.",

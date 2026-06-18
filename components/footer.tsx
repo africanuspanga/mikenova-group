@@ -18,13 +18,22 @@ export function Footer() {
           <div>
             <h4 className="font-medium text-[#F0A500] mb-4 tracking-wider">QUICK LINKS</h4>
             <ul className="space-y-2">
-              {["Home", "About", "Services", "Products", "Goddess Glow", "Contact"].map((item) => (
-                <li key={item}>
+              {[
+                { label: "Home", href: "/" },
+                { label: "About", href: "/about/" },
+                { label: "Services", href: "/services/" },
+                { label: "Products", href: "/products/" },
+                { label: "Goddess Glow", href: "/goddess-glow/" },
+                { label: "Videos", href: "/videos/" },
+                { label: "Journal", href: "/blog/" },
+                { label: "Contact", href: "/contact/" },
+              ].map((item) => (
+                <li key={item.label}>
                   <Link
-                    href={item === "Home" ? "/" : `/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                    href={item.href}
                     className="text-sm text-[#A8A6A1] hover:text-[#F0A500] transition-colors"
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 </li>
               ))}

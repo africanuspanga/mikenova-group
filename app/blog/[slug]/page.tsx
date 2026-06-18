@@ -932,7 +932,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           <div className="absolute inset-0 bg-gradient-to-t from-[#1B1A17]/90 via-[#1B1A17]/50 to-transparent" />
           <div className="absolute inset-0 flex items-end">
             <div className="container mx-auto max-w-5xl px-4 lg:px-8 pb-12">
-              <Link href="/blog" className="inline-block mb-6">
+              <Link href="/blog/" className="inline-block mb-6">
                 <Button variant="ghost" className="text-white hover:text-white/80 hover:bg-white/10 gap-2">
                   <ArrowLeft className="h-4 w-4" />
                   Back to Blog
@@ -1068,7 +1068,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                       size="lg"
                       className="bg-[#F0A500] text-[#1B1A17] hover:bg-[#F0A500]/90 px-8 py-6 text-lg font-semibold shadow-xl"
                     >
-                      <Link href="/goddess-glow">Shop Now</Link>
+                      <Link href="/goddess-glow/">Shop Now</Link>
                     </Button>
                     <Button
                       asChild
@@ -1076,7 +1076,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                       size="lg"
                       className="border-2 border-[#FAFAF8] text-[#FAFAF8] hover:bg-[#FAFAF8]/10 px-8 py-6 text-lg font-semibold bg-transparent"
                     >
-                      <Link href="/contact">Contact Us</Link>
+                      <Link href="/contact/">Contact Us</Link>
                     </Button>
                   </div>
                 </div>
@@ -1118,7 +1118,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                     skin.
                   </p>
                   <Button asChild size="sm" className="w-full bg-[#1B1A17] text-white hover:bg-[#1B1A17]/90">
-                    <Link href="/goddess-glow">Learn More</Link>
+                    <Link href="/goddess-glow/">Learn More</Link>
                   </Button>
                 </div>
               </Card>
@@ -1130,7 +1130,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                   <ul className="space-y-3 text-sm">
                     <li>
                       <Link
-                        href="/goddess-glow"
+                        href="/goddess-glow/"
                         className="text-[#F0A500] hover:underline font-medium flex items-center gap-2"
                       >
                         <Sparkles className="h-4 w-4" />
@@ -1138,14 +1138,14 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                       </Link>
                     </li>
                     <li>
-                      <Link href="/blog" className="text-[#F0A500] hover:underline font-medium flex items-center gap-2">
+                      <Link href="/blog/" className="text-[#F0A500] hover:underline font-medium flex items-center gap-2">
                         <Sparkles className="h-4 w-4" />
                         All Blog Posts
                       </Link>
                     </li>
                     <li>
                       <Link
-                        href="/contact"
+                        href="/contact/"
                         className="text-[#F0A500] hover:underline font-medium flex items-center gap-2"
                       >
                         <Sparkles className="h-4 w-4" />

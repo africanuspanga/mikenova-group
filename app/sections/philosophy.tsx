@@ -25,7 +25,7 @@ export function Philosophy() {
     <section className="relative py-24 sm:py-32 lg:py-40 bg-[#FAFAF8] overflow-hidden">
       {/* Watermark */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-        <span className="text-[12rem] sm:text-[18rem] lg:text-[28rem] font-serif text-[#1B1A17]/[0.03] tracking-tight whitespace-nowrap">
+        <span className="text-[8rem] sm:text-[12rem] lg:text-[28rem] font-serif text-[#1B1A17]/[0.03] tracking-tight whitespace-nowrap">
           MIKENOVA
         </span>
       </div>

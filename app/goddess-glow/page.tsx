@@ -257,7 +257,7 @@ export default function GoddessGlowPage() {
               <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Shop Now
             </Button>
-            <Link href="/contact" className="w-full sm:w-auto">
+            <Link href="/contact/" className="w-full sm:w-auto">
               <Button
                 variant="outline"
                 className="border-[#FAFAF8] text-[#FAFAF8] hover:bg-[#FAFAF8]/10 active:bg-[#FAFAF8]/20 px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base md:text-lg w-full bg-transparent touch-manipulation"

@@ -86,7 +86,7 @@ export function GoldenEditionPromo() {
                 size="lg"
                 className="bg-[#F0A500] text-[#0F0E0C] hover:bg-[#F0A500]/90 font-semibold text-xs sm:text-sm uppercase tracking-[0.15em] px-8 sm:px-10 py-6 sm:py-7 transition-all duration-300 shadow-[0_0_40px_rgba(240,165,0,0.3)] touch-manipulation"
               >
-                <Link href="/goddess-glow">
+                <Link href="/goddess-glow/">
                   <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Buy Now
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -100,7 +100,7 @@ export function GoldenEditionPromo() {
                 size="lg"
                 className="border-[#FAFAF8]/40 text-[#FAFAF8] hover:bg-[#FAFAF8]/10 hover:border-[#FAFAF8]/60 font-semibold text-xs sm:text-sm uppercase tracking-[0.15em] px-8 sm:px-10 py-6 sm:py-7 transition-all duration-300 touch-manipulation"
               >
-                <Link href="/goddess-glow">View Collection</Link>
+                <Link href="/goddess-glow/">View Collection</Link>
               </Button>
             </MagneticButton>
           </motion.div>

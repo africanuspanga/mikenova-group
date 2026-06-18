@@ -111,7 +111,7 @@ export function DivisionsShowcase() {
         </div>
 
         {/* Horizontal Scroll on Mobile / Grid on Desktop */}
-        <div className="flex lg:grid lg:grid-cols-4 gap-4 lg:gap-6 overflow-x-auto lg:overflow-visible pb-6 lg:pb-0 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0 snap-x snap-mandatory">
+        <div className="flex lg:grid lg:grid-cols-4 gap-4 lg:gap-6 overflow-x-auto lg:overflow-visible pb-6 lg:pb-0 scrollbar-hide -mx-4 px-4 lg:mx-0 lg:px-0 snap-x snap-proximity">
           {divisions.map((division, index) => (
             <motion.div
               key={division.number}
@@ -121,7 +121,7 @@ export function DivisionsShowcase() {
               transition={{ duration: 0.7, delay: (index % 4) * 0.1, ease: [0.4, 0, 0.2, 1] }}
               className="flex-shrink-0 w-[280px] lg:w-auto snap-start"
             >
-              <Link href="/services" className="group block h-full">
+              <Link href="/services/" className="group block h-full">
                 <div className="relative h-[420px] lg:h-[480px] overflow-hidden bg-[#1B1A17] border border-[#3A3835] hover:border-[#F0A500]/50 transition-colors duration-500">
                   <Image
                     src={division.image || "/placeholder.svg"}

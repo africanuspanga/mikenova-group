@@ -67,7 +67,7 @@ export function ProductCollection() {
               size="lg"
               className="border-[#1B1A17] text-[#1B1A17] hover:bg-[#1B1A17] hover:text-[#FAFAF8] font-semibold text-xs sm:text-sm uppercase tracking-[0.15em] px-8 sm:px-10 py-6 sm:py-7 transition-all duration-300 touch-manipulation"
             >
-              <Link href="/goddess-glow">
+              <Link href="/goddess-glow/">
                 View Full Collection
                 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Link>

@@ -15,9 +15,12 @@ export const metadata: Metadata = {
     title: "Our Services - MIKENOVA GROUP | 12 Divisions of Excellence",
     description:
       "Explore MIKENOVA GROUP's 12 specialized divisions offering luxury cosmetics, fashion, furniture, pharmacy services, construction, real estate, logistics, and more.",
-    url: "https://www.mikenovagroup.co.tz/services",
+    url: "https://www.mikenovagroup.co.tz/services/",
     siteName: "MIKENOVA GROUP",
     type: "website",
+  },
+  alternates: {
+    canonical: "https://www.mikenovagroup.co.tz/services/",
   },
 }
 
@@ -186,7 +189,7 @@ export default function ServicesPage() {
               size="lg"
               className="bg-[#F0A500] text-[#1B1A17] hover:bg-[#F0A500]/90 font-medium tracking-wider text-lg px-10 py-6 transition-all duration-300 hover:scale-105"
             >
-              <Link href="/contact">
+              <Link href="/contact/">
                 CONTACT US
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

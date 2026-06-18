@@ -296,7 +296,7 @@ export default function ProductsPage() {
               size="lg"
               className="bg-[#F0A500] text-[#1B1A17] hover:bg-[#F0A500]/90 font-medium tracking-wider text-lg px-10 py-6 transition-all duration-300 hover:scale-105"
             >
-              <Link href="/contact">
+              <Link href="/contact/">
                 CONTACT US
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

@@ -21,11 +21,12 @@ export function Navigation() {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/services", label: "Divisions" },
-    { href: "/products", label: "Products" },
-    { href: "/goddess-glow", label: "Goddess Glow" },
-    { href: "/blog", label: "Journal" },
+    { href: "/about/", label: "About" },
+    { href: "/services/", label: "Divisions" },
+    { href: "/products/", label: "Products" },
+    { href: "/goddess-glow/", label: "Goddess Glow" },
+    { href: "/videos/", label: "Videos" },
+    { href: "/blog/", label: "Journal" },
   ]
 
   return (
@@ -72,7 +73,7 @@ export function Navigation() {
               size="sm"
               className="text-[#FAFAF8]/80 hover:text-[#F0A500] hover:bg-transparent"
             >
-              <Link href="/goddess-glow">
+              <Link href="/goddess-glow/">
                 <ShoppingBag className="h-4 w-4 mr-2" />
                 SHOP
               </Link>
@@ -82,7 +83,7 @@ export function Navigation() {
               size="sm"
               className="bg-[#F0A500] text-[#0F0E0C] hover:bg-[#F0A500]/90 font-semibold text-[11px] uppercase tracking-[0.15em] px-6 transition-all duration-300"
             >
-              <Link href="/contact">Contact</Link>
+              <Link href="/contact/">Contact</Link>
             </Button>
           </div>
 
@@ -132,14 +133,14 @@ export function Navigation() {
                   className="w-full border-[#F0A500] text-[#F0A500] hover:bg-[#F0A500] hover:text-[#0F0E0C] font-semibold uppercase tracking-[0.15em] touch-manipulation"
                   onClick={() => setIsOpen(false)}
                 >
-                  <Link href="/goddess-glow">Shop Goddess Glow</Link>
+                  <Link href="/goddess-glow/">Shop Goddess Glow</Link>
                 </Button>
                 <Button
                   asChild
                   className="w-full bg-[#F0A500] text-[#0F0E0C] hover:bg-[#F0A500]/90 font-semibold uppercase tracking-[0.15em] touch-manipulation"
                   onClick={() => setIsOpen(false)}
                 >
-                  <Link href="/contact">Contact Us</Link>
+                  <Link href="/contact/">Contact Us</Link>
                 </Button>
               </div>
             </div>

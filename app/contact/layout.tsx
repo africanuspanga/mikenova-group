@@ -9,9 +9,12 @@ export const metadata: Metadata = {
     title: "Contact Us - MIKENOVA GROUP | Get in Touch",
     description:
       "Contact MIKENOVA GROUP for inquiries about our luxury products and services. Located in Dar es Salaam, Tanzania.",
-    url: "https://www.mikenovagroup.co.tz/contact",
+    url: "https://www.mikenovagroup.co.tz/contact/",
     siteName: "MIKENOVA GROUP",
     type: "website",
+  },
+  alternates: {
+    canonical: "https://www.mikenovagroup.co.tz/contact/",
   },
 }
 

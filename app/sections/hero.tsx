@@ -76,7 +76,7 @@ export function Hero() {
   return (
     <section className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Video Background Slider */}
-      <div className="absolute inset-0 animate-ken-burns">
+      <div className="absolute inset-0 animate-ken-burns will-change-transform">
         <AnimatePresence mode="sync">
           {heroVideos.map((video, index) =>
             index === currentIndex ? (
@@ -161,7 +161,7 @@ export function Hero() {
                 size="lg"
                 className="bg-[#F0A500] text-[#0F0E0C] hover:bg-[#F0A500]/90 font-semibold text-xs sm:text-sm uppercase tracking-[0.15em] px-8 sm:px-10 py-6 sm:py-7 transition-all duration-300 shadow-[0_0_40px_rgba(240,165,0,0.25)] touch-manipulation"
               >
-                <Link href="/goddess-glow">
+                <Link href="/goddess-glow/">
                   Explore Goddess Glow
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>

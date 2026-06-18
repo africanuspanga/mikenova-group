@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     title: "Goddess Glow - Premium Brightening Body Cream, Oil & Soap | MIKENOVA GROUP Tanzania",
     description:
       "Buy Goddess Glow brightening skincare products. Premium Body Cream TZS 30,000, Body Oil TZS 30,000 & Bar Soap TZS 8,000. Get radiant, glowing skin. Free delivery in Dar es Salaam.",
-    url: "https://www.mikenovagroup.co.tz/goddess-glow",
+    url: "https://www.mikenovagroup.co.tz/goddess-glow/",
     siteName: "MIKENOVA GROUP",
     type: "website",
     locale: "en_TZ",
@@ -90,7 +90,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://www.mikenovagroup.co.tz/goddess-glow",
+    canonical: "https://www.mikenovagroup.co.tz/goddess-glow/",
   },
   other: {
     "google-site-verification": "0P0--FJbylHfizoCQREuyNgyfURig8g-D2qiUcCcA-8",
