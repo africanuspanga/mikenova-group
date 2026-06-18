@@ -3,7 +3,9 @@ import { Mail, MapPin, Phone } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="bg-[#1B1A17] border-t border-[#F0A500]/20">
+    <footer className="bg-[#1B1A17] border-t border-[#F0A500]/30 relative">
+      {/* Gold gradient accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F0A500] to-transparent" />
       <div className="container mx-auto px-4 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* About */}

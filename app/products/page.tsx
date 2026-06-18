@@ -284,7 +284,7 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      <section className="py-24 bg-[#1B1A17]">
+      <section className="py-24 bg-[#0F0E0C]">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-serif text-3xl md:text-5xl text-[#F0A500] mb-6">Can't Find What You're Looking For?</h2>
