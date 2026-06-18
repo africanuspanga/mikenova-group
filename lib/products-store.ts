@@ -11,7 +11,7 @@ export interface Product {
 
 const PRODUCTS_KEY = "goddess-glow-products"
 const PRODUCTS_VERSION_KEY = "goddess-glow-products-version"
-const CURRENT_PRODUCTS_VERSION = "4"
+const CURRENT_PRODUCTS_VERSION = "5"
 const AUTH_KEY = "goddess-glow-admin-auth"
 
 // Default products
