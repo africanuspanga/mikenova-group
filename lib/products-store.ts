@@ -23,7 +23,7 @@ export const defaultProducts: Product[] = [
     originalPrice: 81250,
     description:
       "Brightening body cream that reveals smooth, even, radiant skin. Dermatologist approved formula trusted by thousands.",
-    images: ["/New Goddess Glow.PNG", "/New model goddess glow.png"],
+    images: ["/New model goddess glow.png", "/New Goddess Glow.PNG"],
   },
   {
     id: "body-oil",

@@ -62,7 +62,7 @@ export function FlagshipBrand() {
               className="hidden lg:flex absolute -right-8 bottom-20 gap-3"
             >
               {[
-                "/New Goddess Glow.PNG",
+                "/New model goddess glow.png",
                 "/goddess-glow/body-oil-hero.jpeg",
                 "/goddess-glow/bar-soap-1.jpeg",
               ].map((src, index) => (

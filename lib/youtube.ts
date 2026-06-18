@@ -17,6 +17,22 @@ interface ApiVideoDetails {
 }
 
 const CHANNEL_ID = "UCKOCG6Ayd4dtHMR7izgTG2Q"
+const FETCH_TIMEOUT_MS = 8000
+
+async function fetchWithTimeout(url: string, options: RequestInit = {}): Promise<Response> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    })
+    return response
+  } finally {
+    clearTimeout(timeout)
+  }
+}
 
 export async function fetchChannelVideos(): Promise<{
   videos: YouTubeVideo[]
@@ -24,7 +40,7 @@ export async function fetchChannelVideos(): Promise<{
 }> {
   try {
     const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`
-    const response = await fetch(rssUrl, {
+    const response = await fetchWithTimeout(rssUrl, {
       next: { revalidate: 3600 },
       headers: {
         Accept: "application/rss+xml, application/xml, text/xml",
@@ -99,7 +115,7 @@ async function fetchVideoDetails(ids: string[], apiKey: string): Promise<ApiVide
       url.searchParams.set("id", chunk.join(","))
       url.searchParams.set("key", apiKey)
 
-      const response = await fetch(url.toString(), {
+      const response = await fetchWithTimeout(url.toString(), {
         next: { revalidate: 3600 },
       })
 
