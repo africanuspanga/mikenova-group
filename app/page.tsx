@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer"
 import { Hero } from "@/app/sections/hero"
 import { Philosophy } from "@/app/sections/philosophy"
 import { FlagshipBrand } from "@/app/sections/flagship-brand"
+import { GlowCampaign } from "@/app/sections/glow-campaign"
 import { ProductCollection } from "@/app/sections/product-collection"
 import { GoldenEditionPromo } from "@/app/sections/golden-edition-promo"
 import { DivisionsShowcase } from "@/app/sections/divisions-showcase"
@@ -91,6 +92,7 @@ export default function HomePage() {
       <Hero />
       <Philosophy />
       <FlagshipBrand />
+      <GlowCampaign />
       <ProductCollection />
       <GoldenEditionPromo />
       <AuthenticityGuide />
