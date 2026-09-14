@@ -168,15 +168,35 @@ export async function checkSmsBalance(): Promise<{ ok: boolean; balance: number 
         })
 
     const raw = (await res.text()).trim()
-    const numeric = raw.match(/-?\d+(?:\.\d+)?/)
     const looksBlocked = /not allowed|invalid|error|denied/i.test(raw)
+    const balance = parseBalance(raw)
 
-    return {
-      ok: res.ok && !looksBlocked && numeric !== null,
-      balance: numeric ? Number(numeric[0]) : null,
-      raw: raw.slice(0, 200),
-    }
+    return { ok: res.ok && !looksBlocked && balance !== null, balance, raw: raw.slice(0, 200) }
   } catch (err) {
     return { ok: false, balance: null, raw: err instanceof Error ? err.message : "Balance check failed" }
   }
+}
+
+/**
+ * Pulls the credit figure out of Mobishastra's balance response.
+ *
+ * The live account answers `Tanzania (+255) = 10628,` — so taking the first
+ * number in the string yields 255, the dialling code, and a healthy account
+ * reads as nearly out of credit. Prefer the value after "=", and otherwise
+ * take the largest number present rather than the first.
+ */
+export function parseBalance(raw: string): number | null {
+  const afterEquals = raw.match(/=\s*([\d,]+(?:\.\d+)?)/)
+  if (afterEquals) {
+    const n = Number(afterEquals[1].replace(/,/g, ""))
+    if (Number.isFinite(n)) return n
+  }
+
+  // Ignore anything that looks like a country code in parentheses or after a +.
+  const cleaned = raw.replace(/\(\s*\+?\d+\s*\)|\+\d+/g, " ")
+  const numbers = [...cleaned.matchAll(/\d[\d,]*(?:\.\d+)?/g)]
+    .map((m) => Number(m[0].replace(/,/g, "")))
+    .filter(Number.isFinite)
+
+  return numbers.length ? Math.max(...numbers) : null
 }

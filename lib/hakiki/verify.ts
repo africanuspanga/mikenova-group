@@ -24,6 +24,12 @@ export interface VerifyOutput extends EngineResult {
   verdict: ReturnType<typeof webCopy>["verdict"]
   copy: ReturnType<typeof webCopy>
   smsSent: boolean
+  /**
+   * True when this was a replayed gateway callback that we had already
+   * handled. Callers must not send another SMS for it — the customer was
+   * answered the first time, and this result carries no product detail.
+   */
+  deduplicated?: boolean
 }
 
 const SUPPORT_FALLBACK = process.env.NEXT_PUBLIC_HAKIKI_SUPPORT_PHONE ?? "+255623821175"
@@ -79,7 +85,10 @@ export async function verifyUnit(input: VerifyInput): Promise<VerifyOutput> {
     // A duplicate provider_message_id means the SMS gateway retried a
     // callback we already handled. That is success, not failure.
     if (error.code === "23505" && input.providerMessageId) {
-      return decorate({ result: "GENUINE_REPEAT" }, false)
+      // Already processed this exact callback. Nothing was written a second
+      // time, so there is no product detail to report — flag it and let the
+      // caller stay silent rather than texting a half-empty message.
+      return { ...decorate({ result: "GENUINE_REPEAT" }, false), deduplicated: true }
     }
     console.error("[HAKIKI] verification engine error", error)
     throw new Error("Verification failed")

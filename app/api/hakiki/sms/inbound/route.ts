@@ -122,6 +122,12 @@ export async function POST(request: Request) {
       notifyBySms: false, // we reply below so the response body is logged once
     })
 
+    // A replayed callback was already answered — sending again would both
+    // confuse the customer and spend credit for nothing.
+    if (result.deduplicated) {
+      return NextResponse.json({ ok: true, result: result.result, deduplicated: true })
+    }
+
     await sendSms({
       to: from,
       body: smsBody(result, result.support_phone || SUPPORT),

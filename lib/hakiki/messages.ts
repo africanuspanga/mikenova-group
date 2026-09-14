@@ -52,18 +52,26 @@ export const VERDICT: Record<VerificationResult, Verdict> = {
  * symbols live on the web screen and the SMS stays text.
  */
 export function smsBody(r: EngineResult, supportPhone: string): string {
-  const product = [r.product, r.product_size].filter(Boolean).join(" ")
+  // Every field here is optional in practice, and a message reading
+  // "imehakikiwa mara undefined" destroys trust faster than no message at all.
+  const product = [r.product, r.product_size].filter(Boolean).join(" ") || "bidhaa yako"
   const batch = r.batch_code ? ` Batch ${r.batch_code}.` : ""
+  const times = r.verification_number
+  const people = r.distinct_verifiers
 
   switch (r.result) {
     case "GENUINE_FIRST":
       return `HAKIKI: HALISI. ${product}.${batch} Hii ni mara ya KWANZA code hii kuthibitishwa. Asante kwa kuhakiki bidhaa yako.`
 
     case "GENUINE_REPEAT":
-      return `HAKIKI: HALISI. ${product}.${batch} Umehakiki bidhaa hii mara ${r.verification_number}. Kila kitu ni sawa.`
+      return times
+        ? `HAKIKI: HALISI. ${product}.${batch} Umehakiki bidhaa hii mara ${times}. Kila kitu ni sawa.`
+        : `HAKIKI: HALISI. ${product}.${batch} Bidhaa hii ni halisi.`
 
     case "SUSPICIOUS_DUPLICATE":
-      return `HAKIKI: TAHADHARI. Code hii ni halali lakini imeshathibitishwa mara ${r.verification_number} na watu ${r.distinct_verifiers} tofauti. Inawezekana imenakiliwa. USITUMIE. Piga ${supportPhone}`
+      return times && people
+        ? `HAKIKI: TAHADHARI. Code hii ni halali lakini imeshathibitishwa mara ${times} na watu ${people} tofauti. Inawezekana imenakiliwa. USITUMIE. Piga ${supportPhone}`
+        : `HAKIKI: TAHADHARI. Code hii imeshathibitishwa na watu wengi tofauti. Inawezekana imenakiliwa. USITUMIE. Piga ${supportPhone}`
 
     case "NOT_ACTIVATED":
       return `HAKIKI: TAHADHARI. Code ipo kwenye mfumo lakini bidhaa hii HAIJAIDHINISHWA kwa mauzo. Usitumie. Piga ${supportPhone}`
