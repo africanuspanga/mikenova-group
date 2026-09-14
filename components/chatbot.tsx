@@ -25,7 +25,9 @@ export function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const hiddenPaths = ["/goddess-glow", "/admin-login", "/admin"]
+  // "/verify" also covers "/verify-admin": a sales chatbot has no place in a
+  // security check, and on mobile it sits right on top of the console's tab bar.
+  const hiddenPaths = ["/goddess-glow", "/admin-login", "/admin", "/verify"]
   const shouldHide = hiddenPaths.some((path) => pathname?.startsWith(path))
 
   const scrollToBottom = () => {

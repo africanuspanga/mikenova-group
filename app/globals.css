@@ -334,3 +334,52 @@
     display: none;
   }
 }
+
+/* ============================================================
+   HAKIKI console — light theme
+   The site root is <html class="dark">, so the console opts out by
+   redefining the tokens on its own wrapper. Everything inside uses
+   semantic classes (bg-card, text-muted-foreground, border) and picks
+   these up instead of the luxury dark palette.
+   ============================================================ */
+.hakiki-console {
+  --background: #f7f7f5;
+  --foreground: #1b1a17;
+  --card: #ffffff;
+  --card-foreground: #1b1a17;
+  --popover: #ffffff;
+  --popover-foreground: #1b1a17;
+  --primary: #f0a500;
+  --primary-foreground: #1b1a17;
+  --secondary: #f2f1ee;
+  --secondary-foreground: #1b1a17;
+  --muted: #f2f1ee;
+  --muted-foreground: #73716c;
+  --accent: #fdf4e0;
+  --accent-foreground: #1b1a17;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e7e5e1;
+  --input: #e7e5e1;
+  --ring: #f0a500;
+  /* The marketing site uses square corners; the console is soft and modern. */
+  --radius: 0.75rem;
+
+  --hakiki-success: #15803d;
+  --hakiki-success-bg: #f0fdf4;
+  --hakiki-warning: #b45309;
+  --hakiki-warning-bg: #fffbeb;
+  --hakiki-danger: #b91c1c;
+  --hakiki-danger-bg: #fef2f2;
+
+  background-color: var(--background);
+  color: var(--foreground);
+  color-scheme: light;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Figures in a console should line up in columns. */
+.hakiki-console .num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}

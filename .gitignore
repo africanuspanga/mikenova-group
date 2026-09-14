@@ -26,3 +26,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 *.DS_Store
+
+# Operational runbook — contains live gateway credentials and the relay secret
+HAKIKI-VPS-SETUP.md
+HAKIKI-VERCEL-ENV.md
