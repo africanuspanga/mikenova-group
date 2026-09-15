@@ -49,7 +49,7 @@ export function LabelSheetControls({
 
       <p style={{ width: "100%", margin: 0, fontSize: 11, color: "#F0A500", opacity: .8 }}>
         These sheets show the scratch codes in plain text. For real production the code
-        goes under a scratch panel — use “Mask codes” if anyone else can see the screen.
+        goes under a scratch panel. Use “Mask codes” if anyone else can see the screen.
       </p>
     </div>
   )

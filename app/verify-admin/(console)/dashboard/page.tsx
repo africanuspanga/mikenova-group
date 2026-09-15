@@ -69,10 +69,10 @@ export default function DashboardPage() {
         <StatCard label="Codes issued" value={s.generatedUnits} hint={`${s.batches} batches`} />
       </div>
 
-      {/* 30 day trend — plain CSS bars; no chart library needed at this size */}
+      {/* 30 day trend, plain CSS bars; no chart library needed at this size */}
       <Card className="mt-6 p-4 sm:p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <SectionTitle>Verifications — last 30 days</SectionTitle>
+          <SectionTitle>Verifications (last 30 days)</SectionTitle>
           <div className="flex gap-3 text-[11px] text-muted-foreground">
             <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-sm bg-[var(--hakiki-success)]" /> Genuine</span>
             <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-sm bg-primary" /> Suspicious</span>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
 
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {[
-              ["Credits left", sms.balance.balance?.toLocaleString() ?? "—",
+              ["Credits left", sms.balance.balance?.toLocaleString() ?? "-",
                 sms.balance.balance !== null && sms.balance.balance < 1000 ? "text-[var(--hakiki-danger)]" : "text-foreground"],
               ["Sent", sms.counts.sent.toLocaleString(), "text-foreground"],
               ["Failed", sms.counts.failed.toLocaleString(),
@@ -163,7 +163,7 @@ export default function DashboardPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="num text-sm font-medium text-foreground">
-                      {alert.auth_units?.serial_number ?? "—"}
+                      {alert.auth_units?.serial_number ?? "-"}
                     </span>
                     <Badge tone={STATUS_TONE[alert.severity]}>{alert.severity}</Badge>
                   </div>

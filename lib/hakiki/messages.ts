@@ -43,6 +43,9 @@ export const VERDICT: Record<VerificationResult, Verdict> = {
   RATE_LIMITED: "WARNING",
 }
 
+/** One GSM-7 segment is 160 characters; HAKIKI ships well inside that. */
+export const SMS_MAX_CHARS = 150
+
 /**
  * SMS copy is deliberately plain ASCII.
  *
@@ -51,47 +54,122 @@ export const VERDICT: Record<VerificationResult, Verdict> = {
  * doubles the send cost. On a 50,000 unit pilot that is a real bill, so the
  * symbols live on the web screen and the SMS stays text.
  */
+function plain(text: string): string {
+  return text
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2013\u2014]/g, "-")
+    .replace(/\u2026/g, "...")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+/**
+ * Compose to a fixed budget.
+ *
+ * `head` is the part a customer must receive: verdict, product, and for a
+ * warning the instruction and the phone number. Everything after it is detail
+ * that earns its place only if the message still fits, so an unusually long
+ * product name costs a reference line rather than a second segment.
+ */
+function fit(head: string, ...extras: string[]): string {
+  let out = plain(head)
+  for (const extra of extras) {
+    const part = plain(extra)
+    if (part && out.length + 1 + part.length <= SMS_MAX_CHARS) out += " " + part
+  }
+  return out.length <= SMS_MAX_CHARS ? out : out.slice(0, SMS_MAX_CHARS).trimEnd()
+}
+
+/** Product name plus size, clipped at a word boundary so it cannot blow the budget. */
+function productName(r: EngineResult, limit = 38): string {
+  const full = plain([r.product, r.product_size].filter(Boolean).join(" "))
+  if (!full) return "Bidhaa hii"
+  if (full.length <= limit) return full
+  const cut = full.slice(0, limit)
+  const space = cut.lastIndexOf(" ")
+  return space > 12 ? cut.slice(0, space) : cut
+}
+
+/**
+ * The receipt.
+ *
+ * This message is the only part of HAKIKI a customer keeps, and it may be
+ * shown to a shopkeeper as proof, so it reads like an official notice: who is
+ * speaking, which product, the verdict, a reference number, and for anything
+ * short of genuine, one instruction and one number to call.
+ */
 export function smsBody(r: EngineResult, supportPhone: string): string {
-  // Every field here is optional in practice, and a message reading
-  // "imehakikiwa mara undefined" destroys trust faster than no message at all.
-  const product = [r.product, r.product_size].filter(Boolean).join(" ") || "bidhaa yako"
-  const batch = r.batch_code ? ` Batch ${r.batch_code}.` : ""
+  const product = productName(r)
+  // After a preposition ("code ya ...", "lebo ya ...") a capitalised fallback
+  // reads like a proper noun, so the genitive form stays lower case.
+  const productRef = r.product ? product : "bidhaa hii"
+  const ref = r.serial ? `Kumb: ${r.serial}.` : ""
+  const issuer = r.company ? `Imesajiliwa na ${r.company}.` : ""
   const times = r.verification_number
   const people = r.distinct_verifiers
 
   switch (r.result) {
     case "GENUINE_FIRST":
-      return `HAKIKI: HALISI. ${product}.${batch} Hii ni mara ya KWANZA code hii kuthibitishwa. Asante kwa kuhakiki bidhaa yako.`
+      return fit(
+        `HAKIKI: ${product} ni HALISI.`,
+        ref,
+        "Hii ni mara ya kwanza code hii kuthibitishwa.",
+        issuer,
+      )
 
     case "GENUINE_REPEAT":
-      return times
-        ? `HAKIKI: HALISI. ${product}.${batch} Umehakiki bidhaa hii mara ${times}. Kila kitu ni sawa.`
-        : `HAKIKI: HALISI. ${product}.${batch} Bidhaa hii ni halisi.`
+      return fit(
+        `HAKIKI: ${product} ni HALISI.`,
+        ref,
+        times ? `Code hii imethibitishwa mara ${times}.` : "",
+        issuer,
+      )
 
     case "SUSPICIOUS_DUPLICATE":
-      return times && people
-        ? `HAKIKI: TAHADHARI. Code hii ni halali lakini imeshathibitishwa mara ${times} na watu ${people} tofauti. Inawezekana imenakiliwa. USITUMIE. Piga ${supportPhone}`
-        : `HAKIKI: TAHADHARI. Code hii imeshathibitishwa na watu wengi tofauti. Inawezekana imenakiliwa. USITUMIE. Piga ${supportPhone}`
+      return fit(
+        `HAKIKI: TAHADHARI. ${product}: code hii huenda imenakiliwa. USITUMIE. Piga ${supportPhone}.`,
+        times && people ? `Imethibitishwa mara ${times} na watu ${people}.` : "",
+        ref,
+      )
 
     case "NOT_ACTIVATED":
-      return `HAKIKI: TAHADHARI. Code ipo kwenye mfumo lakini bidhaa hii HAIJAIDHINISHWA kwa mauzo. Usitumie. Piga ${supportPhone}`
+      return fit(
+        `HAKIKI: TAHADHARI. ${product} haijaidhinishwa kwa mauzo rasmi. Usitumie. Piga ${supportPhone}.`,
+        ref,
+      )
 
     case "RECALLED":
-      return `HAKIKI: ONYO. Bidhaa hii imeondolewa sokoni. USITUMIE. Wasiliana na ${r.company ?? "mtengenezaji"}: ${supportPhone}`
+      return fit(
+        `HAKIKI: ONYO RASMI. ${product} imeondolewa sokoni. USITUMIE. Piga ${supportPhone}.`,
+        ref,
+        issuer,
+      )
 
     case "REVOKED":
     case "VOIDED":
-      return `HAKIKI: ONYO. Code hii imefutwa na haitumiki. Bidhaa inaweza kuwa BANDIA. Usitumie. Piga ${supportPhone}`
+      return fit(
+        `HAKIKI: ONYO. Code ya ${productRef} imefutwa rasmi na haitumiki. Huenda ni bandia. Usitumie. Piga ${supportPhone}.`,
+        ref,
+      )
 
     case "INVALID_SECRET":
-      return `HAKIKI: Code uliyoweka hailingani na lebo hii. Hakikisha umeandika tarakimu vizuri na ujaribu tena.`
+      return fit(
+        `HAKIKI: Code uliyoweka hailingani na lebo ya ${productRef}. Angalia tarakimu na ujaribu tena.`,
+        `Msaada: ${supportPhone}.`,
+      )
 
     case "RATE_LIMITED":
-      return `HAKIKI: Umejaribu mara nyingi mfululizo. Tafadhali subiri dakika chache kisha ujaribu tena.`
+      return fit(
+        "HAKIKI: Majaribio mengi kwa muda mfupi. Kwa usalama, subiri dakika 10 kisha ujaribu tena.",
+        `Msaada: ${supportPhone}.`,
+      )
 
     case "INVALID_CODE":
     default:
-      return `HAKIKI: Code hii HAIJATAMBULIKA. Hakikisha umeandika tarakimu vizuri. Ikiwa ni sahihi, bidhaa inaweza kuwa BANDIA. Usitumie. Piga ${supportPhone}`
+      return fit(
+        `HAKIKI: Code hii HAITAMBULIKI kwenye mfumo rasmi. Angalia tarakimu. Ikiwa ni sahihi, bidhaa huenda ni bandia. Usitumie. Piga ${supportPhone}.`,
+      )
   }
 }
 
@@ -124,7 +202,7 @@ export function webCopy(r: EngineResult): {
       return {
         verdict: "WARNING",
         titleSw: "TAHADHARI",
-        titleEn: "Warning — code may be copied",
+        titleEn: "Warning: code may be copied",
         bodySw: `Code hii ni halali, lakini imeshathibitishwa mara ${r.verification_number} na watu ${r.distinct_verifiers} tofauti. Inawezekana imenakiliwa kwenye bidhaa bandia. Usitumie kama una mashaka.`,
         bodyEn: `This code is valid, but it has been verified ${r.verification_number} times by ${r.distinct_verifiers} different people. It has likely been copied onto counterfeit products. Do not use the product if you have any doubt.`,
       }
@@ -177,8 +255,8 @@ export function webCopy(r: EngineResult): {
         verdict: "INVALID",
         titleSw: "CODE HAITAMBULIKI",
         titleEn: "Code not recognised",
-        bodySw: "HAKIKI haijatambua code hii. Hakikisha umeandika tarakimu vizuri. Ikiwa code ni sahihi, bidhaa inaweza kuwa bandia — usitumie hadi uthibitishe na mtengenezaji.",
-        bodyEn: "HAKIKI does not recognise this code. Please check the digits carefully. If the code is correct, the product may be counterfeit — do not use it until you confirm with the manufacturer.",
+        bodySw: "HAKIKI haijatambua code hii. Hakikisha umeandika tarakimu vizuri. Ikiwa code ni sahihi, bidhaa inaweza kuwa bandia. Usitumie hadi uthibitishe na mtengenezaji.",
+        bodyEn: "HAKIKI does not recognise this code. Please check the digits carefully. If the code is correct, the product may be counterfeit. Do not use it until you confirm with the manufacturer.",
       }
   }
 }

@@ -13,7 +13,7 @@ import crypto from "node:crypto"
 
 function requireSecret(name: string): string {
   const value = process.env[name]
-  if (!value) throw new Error(`${name} is not set — HAKIKI cannot run without it`)
+  if (!value) throw new Error(`${name} is not set. HAKIKI cannot run without it`)
   return value
 }
 

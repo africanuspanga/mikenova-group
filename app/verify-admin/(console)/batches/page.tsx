@@ -77,7 +77,7 @@ export default function BatchesPage() {
               <select className={inputClass} value={form.product_id}
                 onChange={(e) => setForm({ ...form, product_id: e.target.value })}>
                 <option value="">Select a product</option>
-                {products.map((p) => <option key={p.id} value={p.id}>{p.name} — {p.sku}</option>)}
+                {products.map((p) => <option key={p.id} value={p.id}>{p.name} · {p.sku}</option>)}
               </select>
             </div>
             <div>
@@ -112,7 +112,7 @@ export default function BatchesPage() {
             <label className="mb-1 block text-xs font-medium text-foreground">Scratch code length</label>
             <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
               Shorter codes are easier to type on a feature phone. But a counterfeiter
-              doesn&apos;t crack anything — they print invented digits and hope some verify.
+              doesn&apos;t crack anything. They print invented digits and hope some verify.
               This is the odds of an invented code hitting a real one in this batch.
             </p>
             <div className="grid grid-cols-4 gap-2">
@@ -157,7 +157,7 @@ export default function BatchesPage() {
                 </strong>{" "}
                 With {quantity.toLocaleString()} units on {form.code_length} digits, roughly{" "}
                 <strong>1 in {risk.oneIn.toLocaleString()}</strong> invented codes would come back as genuine.
-                {riskStyle.tone === "danger" && " At that rate counterfeiters can print codes at random and still pass verification — which defeats the entire system."}
+                {riskStyle.tone === "danger" && " At that rate counterfeiters can print codes at random and still pass verification, which defeats the entire system."}
               </p>
             </div>
           </div>

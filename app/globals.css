@@ -383,3 +383,32 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
 }
+
+/* ============================================================
+   HAKIKI customer verification (/verify)
+   ------------------------------------------------------------
+   Same opt-out as the console: the site root is <html class="dark">,
+   so the customer-facing verification pages redefine the tokens on
+   their own wrapper to sit on light paper. color-scheme keeps the
+   native select and checkbox light too, which matters on the cheap
+   Android phones this page is actually used on.
+   ============================================================ */
+.hakiki-verify {
+  --background: #fafaf8;
+  --foreground: #1b1a17;
+  --card: #ffffff;
+  --card-foreground: #1b1a17;
+  --popover: #ffffff;
+  --popover-foreground: #1b1a17;
+  --primary: #f0a500;
+  --primary-foreground: #1b1a17;
+  --muted: #f2f1ee;
+  --muted-foreground: #6b6a67;
+  --border: #e7e5e1;
+  --input: #e7e5e1;
+  --ring: #f0a500;
+
+  background-color: var(--background);
+  color: var(--foreground);
+  color-scheme: light;
+}

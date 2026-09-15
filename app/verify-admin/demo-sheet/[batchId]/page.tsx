@@ -28,7 +28,7 @@ export default async function DemoSheetPage({
   if (!admin) redirect("/verify-admin")
   if (admin.role !== "ADMIN") {
     return <main style={{ padding: 40, fontFamily: "system-ui", color: "#b91c1c" }}>
-      Only an ADMIN can open the demo sheet — it contains live scratch codes.
+      Only an ADMIN can open the demo sheet. It contains live scratch codes.
     </main>
   }
 
@@ -169,14 +169,14 @@ export default async function DemoSheetPage({
           <h1>Prove any product is real, in ten seconds</h1>
           <p className="sub">
             Every {product?.name ?? "product"} carries its own secret identity. Scan the code below,
-            enter the hidden digits, and HAKIKI tells you whether that exact item is genuine —
+            enter the hidden digits, and HAKIKI tells you whether that exact item is genuine,
             and warns you if the same code has been copied onto counterfeits.
           </p>
         </div>
 
         <div className="steps">
           {[
-            ["Scan", "Point your camera at the QR code. It opens the product's HAKIKI page — but this alone proves nothing."],
+            ["Scan", "Point your camera at the QR code. It opens the product's HAKIKI page, but this alone proves nothing."],
             ["Scratch", "On a real product you scratch a silver panel to reveal the hidden digits. They are printed here for the demo."],
             ["Hakiki", "Enter the digits. Only the true holder of that credential gets a green result."],
           ].map(([t, d], i) => (
@@ -188,7 +188,7 @@ export default async function DemoSheetPage({
         </div>
 
         <div className="band">
-          <p className="band-title">Try these — {labels.length} genuine products, never verified before</p>
+          <p className="band-title">Try these: {labels.length} genuine products, never verified before</p>
           <div className="grid">
             {labels.map((l) => (
               <div className="card" key={l.serial}>
@@ -208,7 +208,7 @@ export default async function DemoSheetPage({
               <h3>Now try a fake</h3>
               <p>Scan this, then type any invented number:</p>
               <div className="cd">4821 9037 55</div>
-              <p>HAKIKI refuses it — the code does not exist. This is what a counterfeit looks like.</p>
+              <p>HAKIKI refuses it. The code does not exist. This is what a counterfeit looks like.</p>
             </div>
           </div>
 
@@ -219,7 +219,7 @@ export default async function DemoSheetPage({
                 <h3>Now try a copied code</h3>
                 <p>A real code, but already used on {dupe.distinct_verifiers} products:</p>
                 <div className="cd">{formatScratchCode(dupeCode)}</div>
-                <p>HAKIKI warns that it has been duplicated — catching counterfeits that clone a real label.</p>
+                <p>HAKIKI warns that it has been duplicated, catching counterfeits that clone a real label.</p>
               </div>
             </div>
           ) : (
@@ -243,7 +243,7 @@ export default async function DemoSheetPage({
           </div>
           <div>
             <b>No internet?</b><br />
-            Text your code — HAKIKI replies by SMS.
+            Text your code. HAKIKI replies by SMS.
           </div>
           <div style={{ textAlign: "right" }}>
             <b>{company?.name ?? "MIKENOVA GROUP"}</b><br />

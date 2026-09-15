@@ -25,7 +25,7 @@ export default function VerificationsPage() {
     <div className="p-4 sm:p-6 lg:p-8">
       <PageHeader
         title="Verifications"
-        subtitle="Every attempt is logged — including the ones that failed."
+        subtitle="Every attempt is logged, including the ones that failed."
         action={<Button variant="outline" onClick={load}><RefreshCw className="h-4 w-4" /> Refresh</Button>}
       />
 

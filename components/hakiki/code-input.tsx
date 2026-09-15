@@ -41,7 +41,7 @@ export function CodeInput({
       autoFocus={autoFocus}
       placeholder="0000 0000 0000"
       aria-label="Security code from the scratch panel"
-      className="w-full bg-[#0F0E0C] border border-[#F0A500]/30 px-4 py-5 text-center font-mono text-2xl sm:text-3xl tracking-[0.18em] text-[#FAFAF8] placeholder:text-[#FAFAF8]/20 focus:border-[#F0A500] focus:outline-none focus:ring-1 focus:ring-[#F0A500] transition-colors"
+      className="w-full bg-white border border-[#D8D4CB] px-4 py-5 text-center font-mono text-2xl sm:text-3xl tracking-[0.18em] text-[#1B1A17] placeholder:text-[#B3AFA6] focus:border-[#F0A500] focus:outline-none focus:ring-1 focus:ring-[#F0A500] transition-colors"
     />
   )
 }

@@ -33,7 +33,7 @@ export default function AlertsPage() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <PageHeader title="Fraud alerts" subtitle="Deterministic rules — every alert can be read back and defended." />
+      <PageHeader title="Fraud alerts" subtitle="Deterministic rules. Every alert can be read back and defended." />
 
       <select className={`${inputClass} mb-4 sm:max-w-xs`} value={status} onChange={(e) => setStatus(e.target.value)}>
         <option value="OPEN">Open</option>
@@ -58,7 +58,7 @@ export default function AlertsPage() {
             <Card key={a.id} className="p-4 sm:p-5">
               <div className="flex flex-wrap items-center gap-2.5">
                 <ShieldAlert className={`h-4 w-4 ${a.severity === "WARNING" ? "text-[var(--hakiki-warning)]" : "text-[var(--hakiki-danger)]"}`} />
-                <span className="num text-sm font-medium text-foreground">{a.auth_units?.serial_number ?? "—"}</span>
+                <span className="num text-sm font-medium text-foreground">{a.auth_units?.serial_number ?? "-"}</span>
                 <Badge tone={STATUS_TONE[a.severity]}>{a.severity}</Badge>
                 <Badge>{a.alert_type.replace(/_/g, " ")}</Badge>
                 <Badge tone={STATUS_TONE[a.status]}>{a.status}</Badge>

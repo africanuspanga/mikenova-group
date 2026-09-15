@@ -143,7 +143,7 @@ export default function BatchDetailPage() {
         <SectionTitle>Step 1 · Generate identities</SectionTitle>
         <p className="mb-4 mt-1.5 text-sm leading-relaxed text-muted-foreground">
           Creates one serial, QR token and hidden scratch code per unit. Codes are stored
-          hashed — the plain text exists only inside the print file.
+          hashed. The plain text exists only inside the print file.
         </p>
 
         {progress && (
@@ -180,7 +180,7 @@ export default function BatchDetailPage() {
         </div>
         {batch.generated_quantity > 0 && (
           <p className="mt-3 text-xs leading-relaxed text-[var(--hakiki-warning)]">
-            The print file contains every scratch code in plain text — send it to the security
+            The print file contains every scratch code in plain text. Send it to the security
             printer over an encrypted channel and delete local copies afterwards. “Printable
             labels” renders finished labels with QR codes for pilot runs you print yourself.
           </p>
@@ -192,7 +192,7 @@ export default function BatchDetailPage() {
         <SectionTitle>Step 2 · Reconcile and activate</SectionTitle>
         <p className="mb-4 mt-1.5 text-sm leading-relaxed text-muted-foreground">
           Nothing verifies as genuine until it is activated. Activate only what was actually
-          applied to a product — the rest stay inert, so a stolen label roll is worthless.
+          applied to a product. The rest stay inert, so a stolen label roll is worthless.
         </p>
 
         <div className="mb-4 flex gap-2">
@@ -214,7 +214,7 @@ export default function BatchDetailPage() {
               onChange={(e) => setActivateQty(e.target.value)}
               placeholder={`How many labels were applied? (max ${unactivated.toLocaleString()})`} />
             <p className="mt-2 text-xs text-muted-foreground">
-              Activates that many codes in serial order — matches a printer working sequentially off the roll.
+              Activates that many codes in serial order, matching a printer working sequentially off the roll.
             </p>
           </>
         ) : (
@@ -297,7 +297,7 @@ export default function BatchDetailPage() {
                     {u.distinct_verifiers}
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
-                    {u.last_verified_at ? new Date(u.last_verified_at).toLocaleString("en-GB") : "—"}
+                    {u.last_verified_at ? new Date(u.last_verified_at).toLocaleString("en-GB") : "-"}
                   </td>
                 </tr>
               ))}

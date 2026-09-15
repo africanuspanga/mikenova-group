@@ -34,7 +34,7 @@ export default async function LabelSheetPage({
   if (admin.role !== "ADMIN") {
     return (
       <main style={{ padding: 40, fontFamily: "system-ui", color: "#E53935" }}>
-        Only an ADMIN can view printable labels — they contain the scratch codes.
+        Only an ADMIN can view printable labels. They contain the scratch codes.
       </main>
     )
   }
