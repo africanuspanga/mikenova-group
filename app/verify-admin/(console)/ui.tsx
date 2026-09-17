@@ -87,6 +87,7 @@ export const STATUS_TONE: Record<string, string> = {
   ACTIVE: "success", CLOSED: "neutral", RECALLED: "danger",
   GENERATED: "neutral", VOIDED: "neutral", REVOKED: "danger",
   GENUINE_FIRST: "success", GENUINE_REPEAT: "success",
+  CHECKED_MANY_TIMES: "warning",
   SUSPICIOUS_DUPLICATE: "warning", NOT_ACTIVATED: "warning",
   INVALID_CODE: "danger", INVALID_SECRET: "danger", RATE_LIMITED: "warning",
   WARNING: "warning", HIGH: "danger", CRITICAL: "danger",

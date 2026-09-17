@@ -10,6 +10,8 @@ import {
 import { CodeInput } from "@/components/hakiki/code-input"
 import { HakikiWordmark } from "@/components/hakiki/brand"
 import { TZ_REGIONS } from "@/lib/hakiki/regions"
+import { DEFAULT_CODE_LENGTH } from "@/lib/hakiki/risk"
+import { MIN_CODE_LENGTH } from "@/lib/hakiki/format"
 import type { UnitPublicInfo } from "@/lib/hakiki/queries"
 
 interface VerifyResponse {
@@ -79,9 +81,19 @@ export function VerifyClient({ unit }: { unit?: UnitPublicInfo | null }) {
 
   const supportPhone = result?.supportPhone ?? unit?.supportPhone ?? "+255623821175"
 
+  // A QR scan tells us which batch this label came from, so we know exactly
+  // how many digits are under its scratch panel and can hold the field to
+  // that. Manual entry has no label to ask, so it shows the house default and
+  // stays open to any length a batch may legally carry.
+  const codeLength = unit?.codeLength ?? DEFAULT_CODE_LENGTH
+  const strictLength = Boolean(unit)
+  const required = strictLength ? codeLength : MIN_CODE_LENGTH
+
   async function submit() {
-    if (code.length < 6) {
-      setError("Weka code kamili kutoka kwenye lebo / Enter the full code from your label")
+    if (code.length < required) {
+      setError(
+        `Weka tarakimu zote ${codeLength} kutoka kwenye lebo / Enter all ${codeLength} digits from your label`,
+      )
       return
     }
     setBusy(true)
@@ -267,16 +279,23 @@ export function VerifyClient({ unit }: { unit?: UnitPublicInfo | null }) {
 
       {/* The distinction the whole system rests on. */}
       <p className="mb-6 border-l-2 border-[#F0A500] bg-[#FDF6E7] px-4 py-3 text-sm leading-relaxed text-[#1B1A17]">
-        Kwarua sehemu ya usalama kwenye lebo, kisha weka tarakimu zilizofichwa.
+        Kwarua sehemu ya usalama kwenye lebo, kisha weka tarakimu {codeLength} zilizofichwa.
         <span className="mt-1 block text-[#6B6A67]">
-          Scratch the security panel on the label and enter the hidden digits.
+          Scratch the security panel on the label and enter the {codeLength} hidden digits.
         </span>
       </p>
 
       <label className="mb-2 block text-[10px] uppercase tracking-[0.22em] text-[#8A6000]">
         Code ya usalama / Security code
       </label>
-      <CodeInput value={code} onChange={setCode} maxLength={14} onEnter={submit} autoFocus={!!unit} />
+      <CodeInput
+        value={code}
+        onChange={setCode}
+        length={codeLength}
+        strict={strictLength}
+        onEnter={submit}
+        autoFocus={!!unit}
+      />
 
       <label className="mt-6 mb-2 block text-[10px] uppercase tracking-[0.22em] text-[#8A6000]">
         Namba ya simu / Phone number
@@ -344,7 +363,7 @@ export function VerifyClient({ unit }: { unit?: UnitPublicInfo | null }) {
 
       <button
         onClick={submit}
-        disabled={busy || code.length < 6}
+        disabled={busy || code.length < required}
         className="mt-6 flex w-full items-center justify-center gap-2.5 bg-[#F0A500] px-6 py-5 text-sm font-bold uppercase tracking-[0.2em] text-[#1B1A17] transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[#E7E5E1] disabled:text-[#A8A6A1]"
       >
         {busy ? (

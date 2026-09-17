@@ -24,7 +24,7 @@ export async function GET() {
         count("verification_events", (q) => q),
         count("verification_events", (q) => q.eq("result", "GENUINE_FIRST")),
         count("verification_events", (q) => q.eq("result", "GENUINE_REPEAT")),
-        count("verification_events", (q) => q.eq("result", "SUSPICIOUS_DUPLICATE")),
+        count("verification_events", (q) => q.in("result", ["SUSPICIOUS_DUPLICATE", "CHECKED_MANY_TIMES"])),
         count("verification_events", (q) => q.in("result", ["INVALID_CODE", "INVALID_SECRET"])),
         count("fraud_alerts", (q) => q.eq("status", "OPEN")),
         count("products", (q) => q),
@@ -50,7 +50,7 @@ export async function GET() {
       const key = (row.created_at as string).slice(0, 10)
       const bucket = buckets.get(key)
       if (!bucket) continue
-      if (row.result === "SUSPICIOUS_DUPLICATE") bucket.suspicious++
+      if (row.result === "SUSPICIOUS_DUPLICATE" || row.result === "CHECKED_MANY_TIMES") bucket.suspicious++
       else if (String(row.result).startsWith("GENUINE")) bucket.genuine++
       else if (String(row.result).startsWith("INVALID")) bucket.invalid++
     }

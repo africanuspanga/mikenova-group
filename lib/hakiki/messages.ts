@@ -1,6 +1,7 @@
 export type VerificationResult =
   | "GENUINE_FIRST"
   | "GENUINE_REPEAT"
+  | "CHECKED_MANY_TIMES"
   | "SUSPICIOUS_DUPLICATE"
   | "INVALID_CODE"
   | "INVALID_SECRET"
@@ -33,6 +34,7 @@ export interface EngineResult {
 export const VERDICT: Record<VerificationResult, Verdict> = {
   GENUINE_FIRST: "GENUINE",
   GENUINE_REPEAT: "GENUINE",
+  CHECKED_MANY_TIMES: "WARNING",
   SUSPICIOUS_DUPLICATE: "WARNING",
   NOT_ACTIVATED: "WARNING",
   RECALLED: "WARNING",
@@ -126,6 +128,12 @@ export function smsBody(r: EngineResult, supportPhone: string): string {
         issuer,
       )
 
+    case "CHECKED_MANY_TIMES":
+      return fit(
+        `HAKIKI: TAHADHARI. ${product}: code hii imethibitishwa mara ${times}. Kama si wewe uliyehakiki mara zote, huenda si halisi. Piga ${supportPhone}.`,
+        ref,
+      )
+
     case "SUSPICIOUS_DUPLICATE":
       return fit(
         `HAKIKI: TAHADHARI. ${product}: code hii huenda imenakiliwa. USITUMIE. Piga ${supportPhone}.`,
@@ -197,6 +205,16 @@ export function webCopy(r: EngineResult): {
         titleEn: "Genuine product",
         bodySw: `Bidhaa hii ni halisi. Umeihakiki mara ${r.verification_number}.`,
         bodyEn: `This product is authentic. You have checked it ${r.verification_number} times.`,
+      }
+    case "CHECKED_MANY_TIMES":
+      // Still a real credential, so we do not call it fake. We hand the
+      // customer the count and let them judge whether it was all them.
+      return {
+        verdict: "WARNING",
+        titleSw: "IMEHAKIKIWA MARA NYINGI",
+        titleEn: "Checked many times",
+        bodySw: `Code hii ni halali, lakini imeshathibitishwa mara ${r.verification_number}. Kama si wewe uliyeihakiki mara zote hizo, bidhaa huenda si halisi. Tafadhali wasiliana nasi.`,
+        bodyEn: `This code is valid, but it has already been verified ${r.verification_number} times. If those checks were not all made by you, the product may not be genuine. Please contact us.`,
       }
     case "SUSPICIOUS_DUPLICATE":
       return {

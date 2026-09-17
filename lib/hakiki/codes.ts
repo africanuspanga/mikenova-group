@@ -1,4 +1,5 @@
 import crypto from "node:crypto"
+import { MIN_CODE_LENGTH, MAX_CODE_LENGTH } from "./format"
 
 /**
  * Identity generation for physical units.
@@ -51,16 +52,17 @@ export function generatePublicToken(): string {
  * distrust the system.
  */
 export function generateScratchCode(length: number): string {
-  if (length < 6 || length > 14) throw new Error("Code length must be between 6 and 14")
+  if (length < MIN_CODE_LENGTH || length > MAX_CODE_LENGTH) {
+    throw new Error(`Code length must be between ${MIN_CODE_LENGTH} and ${MAX_CODE_LENGTH}`)
+  }
   let code = String(1 + Math.floor((crypto.randomBytes(4).readUInt32BE(0) / 0x100000000) * 9))
   for (let i = 1; i < length; i++) code += pick("0123456789")
   return code
 }
 
-/** 4827 1936 5204 — grouped for legibility on the label and on screen. */
-export function formatScratchCode(code: string): string {
-  return code.replace(/(\d{4})(?=\d)/g, "$1 ")
-}
+// Grouping and the expected digit count are shared with the browser and the
+// label artwork, so they live in ./format and everything reads them from there.
+export { groupDigits as formatScratchCode, codePlaceholder, MIN_CODE_LENGTH, MAX_CODE_LENGTH } from "./format"
 
 // Risk maths lives in ./risk so client components can import it without
 // pulling node:crypto into the browser bundle.

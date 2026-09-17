@@ -88,13 +88,22 @@ Deterministic rules, no model. Every alert can be read back and defended.
 | Signal | Result |
 | --- | --- |
 | First ever verification | Genuine |
-| Same person re-checks their own bottle | Genuine |
+| Same person re-checks their own bottle, up to 3 times | Genuine |
+| 4th+ verification of one code, however few people | Checked many times → warning + alert |
 | 3+ *different* people verify one code | Suspicious → alert |
 | 5+ verifications / 5+ people | HIGH |
 | 10+ | CRITICAL |
 | 3 wrong codes against one QR | Brute-force alert |
 | Verified before the batch was activated | HIGH — stolen label stock |
 | Revoked or recalled credential | Blocked + alert |
+
+Two separate shapes of counterfeiting, so two separate rules. **Distinct verifiers**
+catches a code copied across a region — one credential surfacing in many different
+hands. **Raw count** catches the same code copied across a single carton and sold from
+one stall, where every check comes from the same phone or the same shop wifi and the
+distinct-verifier rule never fires. The 4th check returns `CHECKED_MANY_TIMES`: the
+credential is real and we say so, but the customer is shown the count and asked to
+call us.
 
 The whole decision runs as one Postgres transaction with a row lock on the unit
 (`hakiki_verify`). That matters: a counterfeiter submitting one stolen code from 20
@@ -234,6 +243,11 @@ into UCS-2, cutting the segment from 160 characters to 70 and doubling the cost.
 ```bash
 # Apply a migration
 node scripts/run-sql.mjs supabase/migrations/0001_hakiki_core.sql
+
+# Pilot label sheet. Without --live the codes are specimens and verify as
+# "code not recognised" — correct for a print trial, confusing if unexpected.
+# With --live the nine labels are registered and activated, and really do verify.
+node --env-file=.env.local scripts/hakiki-pilot-labels.mjs --live
 
 # Create the company, first ADMIN and product catalogue
 node --env-file=.env.local scripts/hakiki-seed.mjs <email> [password]

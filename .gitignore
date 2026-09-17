@@ -30,3 +30,7 @@ next-env.d.ts
 # Operational runbook — contains live gateway credentials and the relay secret
 HAKIKI-VPS-SETUP.md
 HAKIKI-VERCEL-ENV.md
+
+# Generated label artwork. The --live sheets and their CSVs carry real scratch
+# codes in plain text, which is exactly what must never reach a repository.
+print/

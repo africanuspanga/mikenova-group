@@ -19,6 +19,7 @@ export async function GET(request: Request) {
 
     if (result && result !== "all") {
       if (result === "genuine") query = query.in("result", ["GENUINE_FIRST", "GENUINE_REPEAT"])
+      else if (result === "suspicious") query = query.in("result", ["SUSPICIOUS_DUPLICATE", "CHECKED_MANY_TIMES"])
       else if (result === "invalid") query = query.in("result", ["INVALID_CODE", "INVALID_SECRET"])
       else query = query.eq("result", result)
     }
