@@ -88,8 +88,9 @@ Deterministic rules, no model. Every alert can be read back and defended.
 | Signal | Result |
 | --- | --- |
 | First ever verification | Genuine |
-| Same person re-checks their own bottle, up to 3 times | Genuine |
-| 4th+ verification of one code, however few people | Checked many times → warning + alert |
+| Same person re-submits within 60 seconds | The first answer, replayed — nothing counted |
+| 2nd+ verification of one code, however few people | Code already used → warning, with the support number |
+| 4th+ verification, or 3+ *different* people | Alert raised for the company |
 | 3+ *different* people verify one code | Suspicious → alert |
 | 5+ verifications / 5+ people | HIGH |
 | 10+ | CRITICAL |
@@ -101,9 +102,23 @@ Two separate shapes of counterfeiting, so two separate rules. **Distinct verifie
 catches a code copied across a region — one credential surfacing in many different
 hands. **Raw count** catches the same code copied across a single carton and sold from
 one stall, where every check comes from the same phone or the same shop wifi and the
-distinct-verifier rule never fires. The 4th check returns `CHECKED_MANY_TIMES`: the
-credential is real and we say so, but the customer is shown the count and asked to
-call us.
+distinct-verifier rule never fires.
+
+A scratch code is a **one-time credential**. It sits under foil, so the person who
+reveals and submits it is the buyer; anyone checking it afterwards is holding either
+that same bottle or a copy of it. So the second check and every one after it returns
+`CHECKED_MANY_TIMES`: the credential is real and we still say so, but the customer is
+shown the count, told the product may not be genuine, and given the number to call.
+
+What the customer is told and what the company is alerted about are deliberately two
+different thresholds. A buyer who scans their own bottle twice is warned, because they
+cannot know whether the earlier check was theirs — but that is not evidence of
+anything, so no alert is raised until the old bar is crossed: 4+ checks, or 3+
+different people.
+
+An accidental double tap or a page refresh would otherwise turn a genuine first scan
+into a counterfeit warning, so a re-submit by the same verifier identity within 60
+seconds replays the previous answer and counts nothing.
 
 The whole decision runs as one Postgres transaction with a row lock on the unit
 (`hakiki_verify`). That matters: a counterfeiter submitting one stolen code from 20

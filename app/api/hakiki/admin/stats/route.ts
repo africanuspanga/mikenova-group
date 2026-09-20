@@ -23,8 +23,12 @@ export async function GET() {
         count("auth_units", (q) => q),
         count("verification_events", (q) => q),
         count("verification_events", (q) => q.eq("result", "GENUINE_FIRST")),
-        count("verification_events", (q) => q.eq("result", "GENUINE_REPEAT")),
-        count("verification_events", (q) => q.in("result", ["SUSPICIOUS_DUPLICATE", "CHECKED_MANY_TIMES"])),
+        // A code is good for one check, so every later check lands in
+        // CHECKED_MANY_TIMES. That is a warning to the customer, not yet
+        // evidence for the company, so it is counted apart from the codes
+        // we can actually show are in several different hands.
+        count("verification_events", (q) => q.in("result", ["GENUINE_REPEAT", "CHECKED_MANY_TIMES"])),
+        count("verification_events", (q) => q.eq("result", "SUSPICIOUS_DUPLICATE")),
         count("verification_events", (q) => q.in("result", ["INVALID_CODE", "INVALID_SECRET"])),
         count("fraud_alerts", (q) => q.eq("status", "OPEN")),
         count("products", (q) => q),

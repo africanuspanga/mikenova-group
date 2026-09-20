@@ -96,6 +96,13 @@ export async function verifyUnit(input: VerifyInput): Promise<VerifyOutput> {
 
   const engineResult = data as EngineResult
 
+  // The engine collapses a retried gateway callback onto the answer it
+  // already gave, without counting a second verification. The customer was
+  // replied to the first time, so stay silent now.
+  if (engineResult.deduplicated) {
+    return { ...decorate(engineResult, false), deduplicated: true }
+  }
+
   // ---- SMS receipt ---------------------------------------------------
   let smsSent = false
   if (input.notifyBySms && input.phone) {

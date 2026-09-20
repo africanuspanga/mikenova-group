@@ -29,6 +29,11 @@ export interface EngineResult {
   expires_at?: string
   failed_attempts?: number
   severity?: string
+  /**
+   * The engine recognised this call as a repeat of one it had already
+   * answered (a retried SMS gateway callback) and counted nothing.
+   */
+  deduplicated?: boolean
 }
 
 export const VERDICT: Record<VerificationResult, Verdict> = {
@@ -116,7 +121,7 @@ export function smsBody(r: EngineResult, supportPhone: string): string {
       return fit(
         `HAKIKI: ${product} ni HALISI.`,
         ref,
-        "Hii ni mara ya kwanza code hii kuthibitishwa.",
+        "Hii ni mara ya kwanza. Code hii hutumika mara moja tu.",
         issuer,
       )
 
@@ -128,10 +133,14 @@ export function smsBody(r: EngineResult, supportPhone: string): string {
         issuer,
       )
 
+    // A code is revealed from under scratch foil once, so the person who
+    // checks it first is the buyer. Everyone after them is holding either
+    // the same bottle or a copy, and the copy is what we are looking for.
     case "CHECKED_MANY_TIMES":
       return fit(
-        `HAKIKI: TAHADHARI. ${product}: code hii imethibitishwa mara ${times}. Kama si wewe uliyehakiki mara zote, huenda si halisi. Piga ${supportPhone}.`,
+        `HAKIKI: TAHADHARI. ${product}: code hii imeshathibitishwa mara ${times}. Bidhaa huenda si halisi. Piga ${supportPhone}.`,
         ref,
+        "Kila code hutumika mara moja tu.",
       )
 
     case "SUSPICIOUS_DUPLICATE":
@@ -195,8 +204,12 @@ export function webCopy(r: EngineResult): {
         verdict: "GENUINE",
         titleSw: "HALISI",
         titleEn: "Genuine product",
-        bodySw: "Hii ni mara ya kwanza code hii kuthibitishwa. Bidhaa yako ni halisi.",
-        bodyEn: "This is the first time this code has ever been verified. Your product is authentic.",
+        bodySw:
+          "Hii ni mara ya kwanza code hii kuthibitishwa. Bidhaa yako ni halisi. "
+          + "Code hii sasa imetumika na hutumika mara moja tu.",
+        bodyEn:
+          "This is the first time this code has ever been verified. Your product is authentic. "
+          + "The code is now used; each code is only valid for one check.",
       }
     case "GENUINE_REPEAT":
       return {
@@ -207,14 +220,21 @@ export function webCopy(r: EngineResult): {
         bodyEn: `This product is authentic. You have checked it ${r.verification_number} times.`,
       }
     case "CHECKED_MANY_TIMES":
-      // Still a real credential, so we do not call it fake. We hand the
-      // customer the count and let them judge whether it was all them.
+      // Still a real credential, so we never say "fake" outright — the
+      // buyer may simply be checking their own bottle twice. We give them
+      // the count, the reason it matters, and one number to call.
       return {
         verdict: "WARNING",
-        titleSw: "IMEHAKIKIWA MARA NYINGI",
-        titleEn: "Checked many times",
-        bodySw: `Code hii ni halali, lakini imeshathibitishwa mara ${r.verification_number}. Kama si wewe uliyeihakiki mara zote hizo, bidhaa huenda si halisi. Tafadhali wasiliana nasi.`,
-        bodyEn: `This code is valid, but it has already been verified ${r.verification_number} times. If those checks were not all made by you, the product may not be genuine. Please contact us.`,
+        titleSw: "CODE IMESHATUMIKA",
+        titleEn: "Code already used",
+        bodySw:
+          `Code hii ni halali, lakini imeshathibitishwa mara ${r.verification_number}. `
+          + "Kila code ya HAKIKI hutumika mara moja tu, hivyo bidhaa hii huenda si halisi. "
+          + "Tafadhali piga namba yetu hapa chini.",
+        bodyEn:
+          `This code is valid, but it has already been verified ${r.verification_number} times. `
+          + "Every HAKIKI code is meant to be checked once, so this product may not be genuine. "
+          + "Please call the number below.",
       }
     case "SUSPICIOUS_DUPLICATE":
       return {

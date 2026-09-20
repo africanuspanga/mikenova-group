@@ -2,6 +2,7 @@
  * The 100-label proof of concept, run end to end against the live system.
  *
  *   70 genuine units, verified once each
+ *    1 unit checked a second time (a code is good for one check)
  *   10 units whose code is verified by many different people (copied code)
  *   10 units where the QR and the scratch code do not belong together
  *    5 codes that exist nowhere in the system
@@ -125,14 +126,24 @@ for (const unit of live.slice(0, 70)) {
 }
 expect("all 70 return GENUINE_FIRST", firstOk, 70)
 
-// ---------- 2. same owner re-checks their own bottle ----------
-console.log("\nSame owner checking the same bottle again")
-const own = live[0]
-const sameIp = "41.59.100.5"
-await verify({ code: own.code, publicToken: own.public_token, ip: sameIp })
-const repeat = await verify({ code: own.code, publicToken: own.public_token, ip: sameIp })
-expect("repeat scan from same person stays genuine", repeat.result, "GENUINE_REPEAT")
-expect("verdict remains green", repeat.verdict, "GENUINE")
+// ---------- 2. the code is spent after one check ----------
+console.log("\nA second check of an already-verified code")
+const spent = live[1] // verified once in step 1
+const second = await verify({ code: spent.code, publicToken: spent.public_token })
+expect("second check warns the customer", second.result, "CHECKED_MANY_TIMES")
+expect("verdict turns amber", second.verdict, "WARNING")
+expect("and the count is shown", second.verificationNumber, 2)
+expect("support number is offered", Boolean(second.supportPhone), true)
+
+// ---------- 2b. a double tap must not look like counterfeiting ----------
+console.log("\nSame person submitting twice within the grace window")
+const fresh = live[91]
+const shopIp = "41.59.100.5"
+const tap1 = await verify({ code: fresh.code, publicToken: fresh.public_token, ip: shopIp })
+const tap2 = await verify({ code: fresh.code, publicToken: fresh.public_token, ip: shopIp })
+expect("first submit is genuine", tap1.result, "GENUINE_FIRST")
+expect("instant re-submit replays that answer", tap2.result, "GENUINE_FIRST")
+expect("and counts nothing", tap2.verificationNumber, tap1.verificationNumber)
 
 // ---------- 3. one code copied onto many counterfeits ----------
 console.log("\n10 copied codes, each verified by many different people")

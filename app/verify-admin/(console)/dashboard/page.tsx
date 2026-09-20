@@ -64,7 +64,7 @@ export default function DashboardPage() {
 
       <div className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard label="First verified" value={s.firstVerified} tone="success" hint="Never seen before" />
-        <StatCard label="Repeat" value={s.repeatVerified} hint="Owner re-checking" />
+        <StatCard label="Re-checked" value={s.repeatVerified} hint="Code checked more than once" />
         <StatCard label="Invalid" value={s.invalid} tone={s.invalid > 0 ? "danger" : "default"} hint="Not recognised" />
         <StatCard label="Codes issued" value={s.generatedUnits} hint={`${s.batches} batches`} />
       </div>
@@ -75,7 +75,7 @@ export default function DashboardPage() {
           <SectionTitle>Verifications (last 30 days)</SectionTitle>
           <div className="flex gap-3 text-[11px] text-muted-foreground">
             <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-sm bg-[var(--hakiki-success)]" /> Genuine</span>
-            <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-sm bg-primary" /> Suspicious</span>
+            <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-sm bg-primary" /> Warning</span>
             <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-sm bg-[var(--hakiki-danger)]" /> Invalid</span>
           </div>
         </div>

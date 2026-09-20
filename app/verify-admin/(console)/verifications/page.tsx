@@ -33,7 +33,7 @@ export default function VerificationsPage() {
         <select className={inputClass} value={result} onChange={(e) => setResult(e.target.value)}>
           <option value="all">All results</option>
           <option value="genuine">Genuine</option>
-          <option value="CHECKED_MANY_TIMES">Checked many times</option>
+          <option value="CHECKED_MANY_TIMES">Code already used</option>
           <option value="SUSPICIOUS_DUPLICATE">Suspicious duplicates</option>
           <option value="invalid">Invalid codes</option>
           <option value="NOT_ACTIVATED">Not activated</option>

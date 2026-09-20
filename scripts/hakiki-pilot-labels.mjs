@@ -432,7 +432,7 @@ async function build() {
           LIVE
             ? `<li>The codes on page 1 are <b>live credentials</b> in batch ${registered.batchCode}, registered to ${registered.product}. They verify as genuine. Do not send this sheet to a printer &mdash; use the specimen sheet for that.</li>
                <li>Each code is ${CODE_LENGTH} digits, shown in groups of four, exactly as the verify page asks for them.</li>
-               <li>A code checked more than three times reports IMEHAKIKIWA MARA NYINGI. That is the duplicate guard working, not a failure.</li>`
+               <li>A code checked a second time reports CODE IMESHATUMIKA. Each code is a one-time credential, so that is the guard working, not a failure.</li>`
             : `<li>The codes on page 1 are <b>specimen data</b>. They exist nowhere in the system and will report "code not recognised" if anyone tries to verify them. That is correct behaviour for a print trial.</li>
                <li>Each code is ${CODE_LENGTH} digits, shown in groups of four, exactly as the verify page asks for them.</li>
                <li>Real codes arrive as a CSV at production time and must never be reused, reprinted or stored.</li>`
