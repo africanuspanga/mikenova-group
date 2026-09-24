@@ -58,7 +58,7 @@ export default function ProductsPage() {
             <div>
               <label className={labelClass}>SKU *</label>
               <input className={`${inputClass} uppercase`} value={form.sku}
-                onChange={(e) => setForm({ ...form, sku: e.target.value })} placeholder="GG-CREAM-250" />
+                onChange={(e) => setForm({ ...form, sku: e.target.value })} placeholder="GG-CREAM-300" />
             </div>
             <div>
               <label className={labelClass}>Size</label>

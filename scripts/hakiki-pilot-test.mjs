@@ -50,7 +50,7 @@ function expect(label, actual, wanted) {
 
 // ---------- set up two batches ----------
 const { data: company } = await db.from("companies").select("id").eq("slug", "goddess-glow").single()
-const { data: product } = await db.from("products").select("id").eq("sku", "GG-CREAM-250").single()
+const { data: product } = await db.from("products").select("id").eq("sku", "GG-CREAM-300").single()
 
 const stamp = Date.now().toString().slice(-6)
 const mkBatch = async (code, qty) => {

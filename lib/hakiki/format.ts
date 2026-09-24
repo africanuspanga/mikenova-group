@@ -15,6 +15,16 @@
 export const MIN_CODE_LENGTH = 6
 export const MAX_CODE_LENGTH = 14
 
+/**
+ * "Ulinunua wapi?" — how much a customer may type about where they bought it.
+ *
+ * 160 characters is one SMS, which is about as much as anyone will type on a
+ * phone standing in a shop, and it is enough for a street, a market and a
+ * stall name. The field, the API and Postgres all truncate to this same
+ * number so a customer never loses text they thought they had entered.
+ */
+export const MAX_PURCHASE_PLACE = 160
+
 /** 4827193652 -> "4827 1936 52". Groups of four, whatever the length. */
 export function groupDigits(code: string): string {
   return code.replace(/(\d{4})(?=\d)/g, "$1 ")

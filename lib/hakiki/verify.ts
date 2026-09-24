@@ -2,6 +2,7 @@ import { serviceClient } from "./supabase"
 import { hmacCode, hashPhone, hashIp, phoneLast4, normalizeCode, normalizePhone } from "./crypto"
 import { sendSms } from "./sms"
 import { smsBody, webCopy, VERDICT, type EngineResult, type VerificationResult } from "./messages"
+import { MAX_PURCHASE_PLACE } from "./format"
 
 export type Channel = "QR_WEB" | "WEB" | "SMS" | "ADMIN"
 
@@ -13,6 +14,15 @@ export interface VerifyInput {
   ip?: string | null
   userAgent?: string | null
   region?: string | null
+  /**
+   * Where the customer says they bought it, in their own words.
+   *
+   * A region tells an investigator "Dar es Salaam", which is three million
+   * people. This is the line that says "Kariakoo, duka karibu na Msimbazi" —
+   * the only detail that turns a map of complaints into a door someone can
+   * knock on. Optional, free text, truncated to 160 characters.
+   */
+  purchasePlace?: string | null
   latitude?: number | null
   longitude?: number | null
   providerMessageId?: string | null
@@ -79,6 +89,9 @@ export async function verifyUnit(input: VerifyInput): Promise<VerifyOutput> {
     p_latitude: input.latitude ?? null,
     p_longitude: input.longitude ?? null,
     p_provider_message_id: input.providerMessageId ?? null,
+    // Truncated here as well as in Postgres. The browser's maxlength is a
+    // courtesy to the customer, not a control — anything can POST to this.
+    p_purchase_place: input.purchasePlace?.slice(0, MAX_PURCHASE_PLACE) || null,
   })
 
   if (error) {

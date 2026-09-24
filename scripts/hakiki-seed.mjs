@@ -65,13 +65,13 @@ console.log("linked admin_users row with role ADMIN")
 
 // ---- product catalogue ---------------------------------------------
 const products = [
-  { name: "Goddess Glow Body Cream", sku: "GG-CREAM-250", size: "250ml",
+  { name: "Goddess Glow Body Cream", sku: "GG-CREAM-300", size: "300ml",
     description: "Brightening body cream that reveals smooth, even, radiant skin.",
     image_url: "/New Goddess Glow.PNG" },
-  { name: "Goddess Glow Body Oil", sku: "GG-OIL-100", size: "100ml",
+  { name: "Goddess Glow Body Oil", sku: "GG-OIL",
     description: "Luxurious body oil that nourishes and gives skin a luminous glow.",
     image_url: "/goddess-glow/body-oil-product.jpeg" },
-  { name: "Goddess Glow Bar Soap", sku: "GG-SOAP-100", size: "100g",
+  { name: "Goddess Glow Bar Soap", sku: "GG-SOAP",
     description: "Natural brightening bar soap infused with fruit extracts.",
     image_url: "/goddess-glow/bar-soap-1.jpeg" },
 ]

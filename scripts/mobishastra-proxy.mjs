@@ -10,7 +10,7 @@
  * Run on the whitelisted box:
  *   MOBISHASTRA_USER=DRIFTMARK \
  *   MOBISHASTRA_PASSWORD=... \
- *   MOBISHASTRA_SENDER_ID="CV CHAP" \
+ *   MOBISHASTRA_SENDER_ID="MIKENOVA" \
  *   HAKIKI_PROXY_SECRET=<same value as MOBISHASTRA_PROXY_SECRET on Vercel> \
  *   node mobishastra-proxy.mjs
  *

@@ -11,7 +11,7 @@ import { CodeInput } from "@/components/hakiki/code-input"
 import { HakikiWordmark } from "@/components/hakiki/brand"
 import { TZ_REGIONS } from "@/lib/hakiki/regions"
 import { DEFAULT_CODE_LENGTH } from "@/lib/hakiki/risk"
-import { MIN_CODE_LENGTH } from "@/lib/hakiki/format"
+import { MAX_PURCHASE_PLACE } from "@/lib/hakiki/format"
 import type { UnitPublicInfo } from "@/lib/hakiki/queries"
 
 interface VerifyResponse {
@@ -74,6 +74,7 @@ export function VerifyClient({ unit }: { unit?: UnitPublicInfo | null }) {
   const [phone, setPhone] = useState("")
   const [wantsSms, setWantsSms] = useState(true)
   const [region, setRegion] = useState("")
+  const [place, setPlace] = useState("")
   const [showExtra, setShowExtra] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
@@ -87,7 +88,15 @@ export function VerifyClient({ unit }: { unit?: UnitPublicInfo | null }) {
   // stays open to any length a batch may legally carry.
   const codeLength = unit?.codeLength ?? DEFAULT_CODE_LENGTH
   const strictLength = Boolean(unit)
-  const required = strictLength ? codeLength : MIN_CODE_LENGTH
+
+  // Ask for the full code either way.
+  //
+  // Letting a manual entry through at MIN_CODE_LENGTH meant someone who had
+  // typed six of their ten digits got INVALID_CODE — a screen that tells a
+  // customer holding a genuine bottle that it may be counterfeit, because
+  // they were four keypresses from done. The field still accepts up to
+  // MAX_CODE_LENGTH so a longer batch is not locked out.
+  const required = codeLength
 
   async function submit() {
     if (code.length < required) {
@@ -108,6 +117,7 @@ export function VerifyClient({ unit }: { unit?: UnitPublicInfo | null }) {
           phone: phone.trim() || null,
           notifyBySms: Boolean(wantsSms && phone.trim()),
           region: region || null,
+          purchasePlace: place.trim() || null,
         }),
       })
       const data = await res.json()
@@ -332,11 +342,18 @@ export function VerifyClient({ unit }: { unit?: UnitPublicInfo | null }) {
           <MapPin className="h-3.5 w-3.5" />
           Ulinunua wapi? (si lazima)
         </span>
-        <ChevronDown className={`h-4 w-4 transition-transform ${showExtra ? "rotate-180" : ""}`} />
+        <span className="flex items-center gap-2">
+          {/* Collapsed, the section looks empty even when it is not. This says
+              the answer was kept, so nobody types it twice. */}
+          {!showExtra && (region || place) && (
+            <span className="text-[10px] tracking-normal text-[#12683F]">Imehifadhiwa</span>
+          )}
+          <ChevronDown className={`h-4 w-4 transition-transform ${showExtra ? "rotate-180" : ""}`} />
+        </span>
       </button>
 
       {showExtra && (
-        <div className="mt-3">
+        <div className="mt-3 space-y-3">
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value)}
@@ -348,10 +365,36 @@ export function VerifyClient({ unit }: { unit?: UnitPublicInfo | null }) {
               <option key={r} value={r}>{r}</option>
             ))}
           </select>
-          <p className="mt-2 text-xs leading-relaxed text-[#8C8A85]">
-            Hii inatusaidia kujua maeneo yenye bidhaa bandia. This helps us map where
-            counterfeits are being sold.
-          </p>
+
+          {/*
+            The region is a list; this is the part that actually locates a
+            counterfeit. "Dar es Salaam" is three million people — "Kariakoo,
+            duka karibu na Msimbazi" is a door someone can knock on.
+          */}
+          <div>
+            <textarea
+              value={place}
+              onChange={(e) => setPlace(e.target.value.slice(0, MAX_PURCHASE_PLACE))}
+              maxLength={MAX_PURCHASE_PLACE}
+              rows={2}
+              aria-label="Shop or area where the product was bought"
+              placeholder="Jina la duka au eneo, mfano: Kariakoo, duka karibu na Msimbazi"
+              className="w-full resize-none border border-[#D8D4CB] bg-white px-4 py-3 text-base leading-snug text-[#1B1A17] placeholder:text-[#B3AFA6] transition-colors focus:border-[#F0A500] focus:outline-none focus:ring-1 focus:ring-[#F0A500]"
+            />
+            <div className="mt-1.5 flex items-start justify-between gap-3">
+              <p className="text-xs leading-relaxed text-[#8C8A85]">
+                Hii inatusaidia kujua maeneo yenye bidhaa bandia.
+                <span className="block">This helps us map where counterfeits are being sold.</span>
+              </p>
+              <span
+                className={`shrink-0 font-mono text-xs tabular-nums ${
+                  place.length >= MAX_PURCHASE_PLACE ? "text-[#8A6000]" : "text-[#B3AFA6]"
+                }`}
+              >
+                {place.length}/{MAX_PURCHASE_PLACE}
+              </span>
+            </div>
+          </div>
         </div>
       )}
 

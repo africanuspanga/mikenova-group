@@ -53,6 +53,62 @@ gets used walking a production line, not at a desk.
 Step 6 is the one that matters. Codes that were printed but never confirmed onto a
 product stay inert, so a stolen label roll authenticates nothing.
 
+**Activate before the product reaches a shelf, not after.** The gate that stops a
+stolen label roll is the same gate that stops a genuine bottle: a unit that is not
+`ACTIVE` answers `NOT_ACTIVATED` — "haijaidhinishwa kwa mauzo rasmi" — and raises a
+HIGH fraud alert. Ship 20,000 bottles before activating their batch and every honest
+customer is told their product was never approved for sale, while the console fills
+with 20,000 alerts. This is the single most expensive mistake available in the
+workflow, and nothing in the system can distinguish it from the theft it is designed
+to catch.
+
+### Printing a run
+
+A 20,000 unit batch is 40 PDFs and 840 A4 pages. Two failures showed up doing
+this for real, and both are now guarded in `hakiki-print-sheet.mjs`:
+
+- **Chrome writes short PDFs without saying so.** Twice it returned a
+  perfectly valid document for a 21 page layout that contained 14, or 17,
+  pages — labels quietly absent from a file whose name promised a range of
+  500, with the CSV still listing every one of them. The page count is now
+  read back out of the finished file and a shortfall is retried like any
+  other error. Never trust the count the generator *meant* to write.
+- **A long run gets interrupted.** `--resume` keeps files already on disk,
+  but only after checking their page count — "the file exists" is worthless
+  as a test when the failure mode is a valid file with pages missing.
+
+Verify a run before it goes anywhere:
+
+1. Distinct serials, tokens and code hashes all equal the unit count.
+2. `hakiki-verify-printfile.mjs` — every CSV row's code hashes to the
+   `secret_code_hmac` stored for that serial, and its QR carries that unit's
+   token. All rows, not a sample.
+3. Page counts per file, and that every label index is covered exactly once
+   across the whole folder — no gaps, no overlaps.
+4. One real label end to end against production, then reset that unit
+   (`verification_count = 0`, delete its events) so the label is not burned.
+
+Each split file is self-contained, so its last page is short — 500 labels is
+20 full pages of 24 plus a 21st carrying 20. That is why 20,000 units come out
+as 840 pages rather than 834. Tell the printer, or they will read it as a fault.
+
+### Label artwork
+
+`scripts/hakiki-print-sheet.mjs` lays labels out 45 x 40 mm, **4 across by 6 down,
+24 to an A4 page**, and renders the PDF with headless Chrome.
+
+Three things on that artwork are load-bearing and must not be "tidied up":
+
+- **The scratch instruction sits above the panel, never inside it.** The dashed box is
+  the silver ink footprint. Anything printed inside it disappears under the coating,
+  including the words telling the customer to scratch.
+- **The QR is a 20 mm box: 33 data modules plus a two module quiet zone, 0.54 mm per
+  module.** Below roughly 0.5 mm a module stops surviving ink spread on coated stock
+  and the code goes from "scans every time" to "scans on the third try".
+- **The QR is 100% K, not the brand near-black.** #1B1A17 separates into a four colour
+  build; a tenth of a millimetre of registration drift fattens every module with
+  coloured fringes and the symbol stops decoding.
+
 ---
 
 ## Scratch-code length — answering "is 6 digits enough?"
@@ -88,7 +144,7 @@ Deterministic rules, no model. Every alert can be read back and defended.
 | Signal | Result |
 | --- | --- |
 | First ever verification | Genuine |
-| Same person re-submits within 60 seconds | The first answer, replayed — nothing counted |
+| Same person re-submits within 10 seconds | The first answer, replayed — nothing counted |
 | 2nd+ verification of one code, however few people | Code already used → warning, with the support number |
 | 4th+ verification, or 3+ *different* people | Alert raised for the company |
 | 3+ *different* people verify one code | Suspicious → alert |
@@ -116,9 +172,17 @@ cannot know whether the earlier check was theirs — but that is not evidence of
 anything, so no alert is raised until the old bar is crossed: 4+ checks, or 3+
 different people.
 
-An accidental double tap or a page refresh would otherwise turn a genuine first scan
-into a counterfeit warning, so a re-submit by the same verifier identity within 60
-seconds replays the previous answer and counts nothing.
+An accidental double tap, or a retry after a request that looked like it failed,
+would otherwise turn a genuine first scan into a counterfeit warning, so a re-submit
+by the same verifier identity within **10 seconds** replays the previous answer and
+counts nothing.
+
+Ten seconds, not sixty. That window covers one accident and nothing else. At sixty it
+had quietly become a product rule: scanning a label and entering its code twice in a
+row — what anyone does when testing, and what a suspicious customer does in a shop —
+answered "HALISI, hii ni mara ya kwanza" both times, and hid genuine duplicate use for
+a full minute. A real second check, however quickly it follows, is now counted and
+warned about.
 
 The whole decision runs as one Postgres transaction with a row lock on the unit
 (`hakiki_verify`). That matters: a counterfeiter submitting one stolen code from 20
@@ -179,7 +243,7 @@ as a failure, because a message we cannot confirm was sent must not be logged as
 | 006 | DND number | | 012 | Sender ID > 13 chars |
 | 007 | Cannot extract country code | | 013 | Server error |
 
-`CV CHAP` is 7 characters, comfortably inside the 13-character sender limit. Numbers
+`MIKENOVA` is 8 characters, comfortably inside the 13-character sender limit. Numbers
 are normalised to full international form (`255XXXXXXXXX`) and sent with
 `CountryCode=ALL`; the doc's "must start with 5 / min 9 digits" note is UAE-specific.
 
@@ -257,11 +321,35 @@ into UCS-2, cutting the segment from 160 characters to 70 and doubling the cost.
 
 ```bash
 # Apply a migration
-node scripts/run-sql.mjs supabase/migrations/0001_hakiki_core.sql
+node scripts/run-sql.mjs supabase/migrations/0007_purchase_place.sql
 
-# Pilot label sheet. Without --live the codes are specimens and verify as
-# "code not recognised" — correct for a print trial, confusing if unexpected.
-# With --live the nine labels are registered and activated, and really do verify.
+# Pre-print self check. Creates a throwaway batch, drives every path through
+# the real HTTP API, asserts the answers, deletes everything it made. Run this
+# against production before committing to any print run.
+node --env-file=.env.local scripts/hakiki-selfcheck.mjs
+node --env-file=.env.local scripts/hakiki-selfcheck.mjs --url=https://www.mikenovagroup.co.tz
+
+# Every SMS a customer can receive, rendered by the real composer, with the
+# GSM-7 segment count for each. --send=<number> actually texts them.
+node --experimental-strip-types --env-file=.env.local scripts/hakiki-sms-preview.mjs
+
+# Create a real production batch. Leaves it CODES_GENERATED, never activated.
+node --env-file=.env.local scripts/hakiki-create-batch.mjs \
+  --batch=Q4-2026-GG-OIL --product=GG-OIL --quantity=20000 \
+  --notes="Q4 Batch 2026 Goddess Glow Body Oil"
+
+# Label sheets: 45 x 40 mm, 4 across x 6 down, 24 to an A4 page, PDF included.
+node scripts/hakiki-print-sheet.mjs --specimen              # printer trial, nothing registered
+node --env-file=.env.local scripts/hakiki-print-sheet.mjs --test        # 24 LIVE labels, one page
+node --env-file=.env.local scripts/hakiki-print-sheet.mjs --batch=Q4-2026-GG-OIL --pages=1   # proof one page
+node --env-file=.env.local scripts/hakiki-print-sheet.mjs --batch=Q4-2026-GG-OIL \
+  --split=500 --resume --out="print/final print/goddess-glow-body-oil/pdf"
+
+# Does the file the press merges from actually match the database?
+node --env-file=.env.local scripts/hakiki-verify-printfile.mjs \
+  --batch=Q4-2026-GG-OIL --csv="print/final print/goddess-glow-body-oil/Q4-2026-GG-OIL.csv"
+
+# The old nine-up pilot sheet, superseded by hakiki-print-sheet.mjs above.
 node --env-file=.env.local scripts/hakiki-pilot-labels.mjs --live
 
 # Create the company, first ADMIN and product catalogue

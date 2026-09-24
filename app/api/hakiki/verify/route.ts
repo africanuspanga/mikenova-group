@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { verifyUnit, clientIp } from "@/lib/hakiki/verify"
 import { isValidTzPhone } from "@/lib/hakiki/crypto"
+import { MAX_PURCHASE_PLACE } from "@/lib/hakiki/format"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -19,6 +20,7 @@ export async function POST(request: Request) {
     phone?: string | null
     notifyBySms?: boolean
     region?: string | null
+    purchasePlace?: string | null
     latitude?: number | null
     longitude?: number | null
   }
@@ -33,6 +35,22 @@ export async function POST(request: Request) {
   if (code.length < 6 || code.length > 14) {
     return NextResponse.json({ error: "Tafadhali weka code sahihi / Please enter a valid code" }, { status: 400 })
   }
+
+  /**
+   * "Ulinunua wapi?" — optional free text from the public.
+   *
+   * Truncated rather than rejected: a customer who typed 200 characters about
+   * the stall they bought from should not be handed a validation error in
+   * place of the answer they came for. Control characters are stripped so a
+   * pasted newline cannot break the console's table rendering, and the value
+   * only ever reaches Postgres as a bound parameter.
+   */
+  const purchasePlace =
+    body.purchasePlace
+      ?.replace(/[\u0000-\u001f\u007f]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, MAX_PURCHASE_PLACE) || null
 
   const phone = body.phone?.trim() || null
   if (phone && !isValidTzPhone(phone)) {
@@ -51,6 +69,7 @@ export async function POST(request: Request) {
       ip: clientIp(request.headers),
       userAgent: request.headers.get("user-agent"),
       region: body.region ?? null,
+      purchasePlace: purchasePlace,
       latitude: body.latitude ?? null,
       longitude: body.longitude ?? null,
       notifyBySms: Boolean(body.notifyBySms && phone),

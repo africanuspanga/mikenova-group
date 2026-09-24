@@ -41,7 +41,7 @@ const SUPPORT = process.env.NEXT_PUBLIC_HAKIKI_SUPPORT_PHONE ?? "+255 623 821 17
 const COMPANY = "MIKENOVA GROUP"
 const COUNT = Number(arg("count", 9))
 const COMPANY_SLUG = arg("company", "goddess-glow")
-const PRODUCT_SKU = arg("product", "GG-CREAM-250")
+const PRODUCT_SKU = arg("product", "GG-CREAM-300")
 const CODE_LENGTH = Number(arg("code-length", 10))
 const OUT = path.join(process.cwd(), "print")
 
