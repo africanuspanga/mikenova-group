@@ -27,7 +27,7 @@ const blogContent: Record<string, BlogPost> = {
     title: "10 Signs Your Skin Needs Goddess Glow: Are You Missing Out on Radiant Skin?",
     excerpt:
       "Discover the telltale signs that your skin is crying out for Goddess Glow brightening treatment. From dull complexion to stubborn dark spots, learn why vipodozi salama (safe cosmetics) like Goddess Glow are essential for your skin's health.",
-    image: "/images/goddess-glow-portrait.png",
+    image: "/images/goddess-glow-portrait.webp",
     date: "November 20, 2025",
     category: "Skincare Tips",
     readTime: "8 min read",
@@ -317,7 +317,7 @@ const blogContent: Record<string, BlogPost> = {
     title: "Complete Guide: How to Use Goddess Glow for Maximum Results",
     excerpt:
       "Master the art of application with our comprehensive guide. Learn the best practices for using vipodozi for face and body to achieve that coveted goddess glow with proper technique.",
-    image: "/images/goddess-glow-application.png",
+    image: "/images/goddess-glow-application.webp",
     date: "November 12, 2025",
     category: "How-To Guide",
     readTime: "9 min read",
@@ -563,7 +563,7 @@ const blogContent: Record<string, BlogPost> = {
     title: "Bridal Glow: Preparing for Your Big Day with MIKENOVA GROUP",
     excerpt:
       "Planning a wedding? Discover how MIKENOVA GROUP's Goddess Glow helps brides achieve that coveted bridal radiance. Learn about our pre-wedding skincare packages and special offers for bridal parties.",
-    image: "/images/goddess-glow-wedding.png",
+    image: "/images/goddess-glow-wedding.webp",
     date: "November 18, 2025",
     category: "Bridal Beauty",
     readTime: "7 min read",
@@ -839,7 +839,7 @@ const blogContent: Record<string, BlogPost> = {
     title: "The Ultimate Skin Brightening Guide: Science, Safety & Results",
     excerpt:
       "Everything you need to know about safe skin brightening. Learn the science behind brightening cosmetics, safety guidelines, and why dermatologists recommend Goddess Glow.",
-    image: "/images/goddess-glow-beach.png",
+    image: "/images/goddess-glow-beach.webp",
     date: "November 10, 2025",
     category: "Education",
     readTime: "12 min read",

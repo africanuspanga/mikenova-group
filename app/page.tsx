@@ -37,9 +37,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/golden-edition.png",
+        url: "/golden-edition.jpg",
         width: 1200,
-        height: 630,
+        height: 675,
         alt: "MIKENOVA GROUP - Luxury Conglomerate & Goddess Glow Golden Edition",
       },
     ],
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     title: "MIKENOVA GROUP | Luxury Conglomerate & Goddess Glow Skincare",
     description:
       "A curated house of premium brands and services shaping Africa's future. Explore 12 divisions and shop Goddess Glow skincare.",
-    images: ["/golden-edition.png"],
+    images: ["/golden-edition.jpg"],
   },
   alternates: {
     canonical: "https://www.mikenovagroup.co.tz/",

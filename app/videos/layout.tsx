@@ -21,9 +21,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/golden-edition.png",
+        url: "/golden-edition.jpg",
         width: 1200,
-        height: 630,
+        height: 675,
         alt: "MIKENOVA GROUP - Videos",
       },
     ],
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     title: "MIKENOVA Videos | Vlogs, Stories & Behind the Scenes",
     description:
       "Watch the latest MIKENOVA GROUP videos, vlogs, and behind-the-scenes stories.",
-    images: ["/golden-edition.png"],
+    images: ["/golden-edition.jpg"],
   },
   alternates: {
     canonical: "https://www.mikenovagroup.co.tz/videos/",

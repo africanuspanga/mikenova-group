@@ -304,7 +304,7 @@ export default function GoddessGlowPage() {
             <Card className="!bg-white overflow-hidden group border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="relative h-[280px] sm:h-[320px] md:h-[350px] overflow-hidden">
                 <Image
-                  src="/goddess-glow/Goddess Glow - Shower Gel.png"
+                  src="/goddess-glow/Goddess Glow - Shower Gel.webp"
                   alt="Goddess Glow Shower Gel - Coming Soon"
                   fill
                   className="object-cover blur-sm scale-110"
@@ -424,7 +424,7 @@ export default function GoddessGlowPage() {
             <div className="relative aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl">
               {!isVideoPlaying ? (
                 <div className="relative w-full h-full">
-                  <Image src="/goddess-glow/body-cream-beach.png" alt="Video thumbnail" fill className="object-cover" />
+                  <Image src="/goddess-glow/body-cream-beach.webp" alt="Video thumbnail" fill className="object-cover" />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <button
                       onClick={() => setIsVideoPlaying(true)}

@@ -31,7 +31,7 @@ export function CtaContact() {
       {/* Background Image with Parallax */}
       <motion.div style={{ y: backgroundY }} className="absolute inset-[-10%] w-[120%] h-[120%] will-change-transform">
         <Image
-          src="/goddess-glow/luxury-horse.png"
+          src="/goddess-glow/luxury-horse.webp"
           alt="MIKENOVA Group - Experience Excellence"
           fill
           className="object-cover"

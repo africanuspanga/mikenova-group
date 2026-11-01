@@ -42,7 +42,7 @@ export function FlagshipBrand() {
             <div className="relative aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] overflow-hidden">
               <motion.div style={{ y: imageY }} className="absolute inset-[-10%] w-[120%] h-[120%] will-change-transform">
                 <Image
-                  src="/goddess-glow/hero-beach.png"
+                  src="/goddess-glow/hero-beach.webp"
                   alt="Goddess Glow - Signature Skincare Brand"
                   fill
                   className="object-cover"
@@ -62,7 +62,7 @@ export function FlagshipBrand() {
               className="hidden lg:flex absolute -right-8 bottom-20 gap-3"
             >
               {[
-                "/New model goddess glow.png",
+                "/New model goddess glow.webp",
                 "/goddess-glow/body-oil-hero.jpeg",
                 "/goddess-glow/bar-soap-1.jpeg",
               ].map((src, index) => (

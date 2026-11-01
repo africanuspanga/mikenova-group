@@ -52,7 +52,7 @@ export default function ServicesPage() {
       title: "Comprehensive Pharmacy Services",
       description:
         "MIKENOVA ensures crucial access to high-standard medication. We establish and operate licensed retail and wholesale pharmacies and dispensaries, specializing in the regulated supply of human medicines, essential medical supplies, and advanced healthcare products. Our service is built on integrity, guaranteeing the quality, authenticity, and effective distribution of every item. We partner with trusted global suppliers to maintain the highest level of reliability and clinical support for the communities we serve.",
-      image: "/services/pharmacy-counter.jpg",
+      image: "/services/pharmacy-counter.webp",
     },
     {
       number: "05",
@@ -87,7 +87,7 @@ export default function ServicesPage() {
       title: "General & Industrial Trade",
       description:
         "MIKENOVA acts as a major hub for essential industrial and retail supplies. We are importers, exporters, distributors, and wholesalers of general merchandise, including hardware, specialized building materials, industrial tools, and essential equipment. We serve a vast client base, including government offices, factories, hospitals, and construction firms, guaranteeing the quality and scale necessary to support large-scale industrial and commercial operations across the region.",
-      image: "/services/industrial-supplies.png",
+      image: "/services/industrial-supplies.webp",
     },
     {
       number: "10",

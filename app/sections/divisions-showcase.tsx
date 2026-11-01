@@ -29,7 +29,7 @@ const divisions = [
     number: "04",
     title: "Comprehensive Pharmacy Services",
     description: "Licensed retail and wholesale pharmaceutical supply.",
-    image: "/services/pharmacy-counter.jpg",
+    image: "/services/pharmacy-counter.webp",
   },
   {
     number: "05",
@@ -59,7 +59,7 @@ const divisions = [
     number: "09",
     title: "General & Industrial Trade",
     description: "Import, export, and distribution of industrial supplies.",
-    image: "/services/industrial-supplies.png",
+    image: "/services/industrial-supplies.webp",
   },
   {
     number: "10",

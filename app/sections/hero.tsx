@@ -10,12 +10,12 @@ import { MagneticButton } from "@/app/components/animation/magnetic-button"
 const heroVideos = [
   {
     src: "/the-golden-editoon%20promo.mp4",
-    poster: "/golden-edition.png",
+    poster: "/golden-edition.jpg",
     label: "The Golden Edition",
   },
   {
     src: "/Goddess%20Glow%20BG.mp4",
-    poster: "/goddess-glow/natural-beauty.png",
+    poster: "/goddess-glow/natural-beauty.webp",
     label: "Goddess Glow",
   },
 ]

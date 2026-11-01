@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     locale: "en_TZ",
     images: [
       {
-        url: "/goddess-glow/Body-cream%202.png",
+        url: "/goddess-glow/Body-cream%202.webp",
         width: 1200,
         height: 630,
         alt: "Goddess Glow Brightening Body Cream - Premium Skincare Tanzania",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     title: "Goddess Glow - Brightening Body Cream, Oil & Soap | Tanzania",
     description:
       "Premium brightening skincare products. Body Cream, Body Oil & Bar Soap for radiant glowing skin. Buy online with free delivery.",
-    images: ["/goddess-glow/Body-cream%202.png"],
+    images: ["/goddess-glow/Body-cream%202.webp"],
   },
   robots: {
     index: true,

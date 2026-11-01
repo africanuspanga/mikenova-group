@@ -26,7 +26,7 @@ export default function ProductsPage() {
       name: "Luxury Face Serum",
       category: "cosmetics",
       brand: "Premium Skincare",
-      image: "/products/luxury-face-serum-new.png",
+      image: "/products/luxury-face-serum-new.webp",
     },
     {
       name: "Gold Infused Moisturizer",

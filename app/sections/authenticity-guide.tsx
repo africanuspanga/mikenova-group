@@ -68,7 +68,7 @@ export function AuthenticityGuide({ className = "" }: AuthenticityGuideProps) {
             <div className="relative aspect-square bg-white border border-[#F0A500]/20 p-8 sm:p-12 flex items-center justify-center overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#F0A500] to-[#D4AF37]" />
               <Image
-                src="/OG.PNG"
+                src="/OG.webp"
                 alt="Authentic Goddess Glow Body Cream"
                 fill
                 className="object-contain p-8 sm:p-12"

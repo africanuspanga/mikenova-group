@@ -14,7 +14,7 @@ export function GoldenEditionPromo() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/golden-edition.png"
+          src="/golden-edition.jpg"
           alt="Goddess Glow Golden Edition"
           fill
           className="object-cover object-center"
