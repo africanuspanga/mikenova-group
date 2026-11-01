@@ -65,6 +65,63 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Blog Articles -->
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/blog/10-signs-your-skin-needs-goddess-glow/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/blog/science-behind-goddess-glow/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/blog/dark-spots-be-gone-real-stories/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/blog/complete-skincare-routine-goddess-glow/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/blog/30-day-journey-glowing-skin/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/blog/bridal-glow-mikenova/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/blog/goddess-glow-vs-competitors/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.mikenovagroup.co.tz/blog/skin-brightening-guide/</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
   <!-- Videos Page -->
   <url>
     <loc>https://www.mikenovagroup.co.tz/videos/</loc>

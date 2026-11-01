@@ -915,8 +915,19 @@ const blogContent: Record<string, BlogPost> = {
   },
 }
 
-export default function BlogPost({ params }: { params: { slug: string } }) {
-  const post = blogContent[params.slug as keyof typeof blogContent]
+// Every article is known at build time: prerender them all, and 404 any other
+// slug without running a function.
+export const dynamicParams = false
+
+export function generateStaticParams() {
+  return Object.keys(blogContent).map((slug) => ({ slug }))
+}
+
+// Next.js 15+ passes params as a Promise. Reading params.slug directly gave
+// undefined, so every article returned 404.
+export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const post = blogContent[slug as keyof typeof blogContent]
 
   if (!post) {
     notFound()
