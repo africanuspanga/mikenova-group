@@ -72,6 +72,14 @@ export default function AboutPage() {
                 "MIKENOVA GROUP is a holding company with roots in Tanzania, defined by a meticulously curated approach to market engagement. We transcend typical business models by integrating 12 specialized divisions under a single, unwavering standard of luxury and precision—the MNG standard."
               }
             </p>
+            <p className="mt-8 text-base text-[#1B1A17]/75 leading-relaxed text-center">
+              Careers: all official job openings across the MIKENOVA GROUP divisions are announced here, on our
+              website. When you apply, make sure your CV reads well; you can{" "}
+              <a href="https://www.cvchapchap.com/ats-cv-checker" className="text-[#1B1A17] underline underline-offset-2">
+                check your CV with the free ATS checker from CV Chap Chap
+              </a>
+              .
+            </p>
           </div>
         </div>
       </section>
