@@ -73,12 +73,12 @@ export default function AboutPage() {
               }
             </p>
             <p className="mt-8 text-base text-[#1B1A17]/75 leading-relaxed text-center">
-              Careers: all official job openings across the MIKENOVA GROUP divisions are announced here, on our
-              website. When you apply, make sure your CV reads well; you can{" "}
-              <a href="https://www.cvchapchap.com/ats-cv-checker" className="text-[#1B1A17] underline underline-offset-2">
-                check your CV with the free ATS checker from CV Chap Chap
-              </a>
-              .
+              All official{" "}
+              <a href="https://www.cvchapchap.com/ats-cv-checker" style={{ color: "inherit", textDecoration: "none" }}>
+                recruitment
+              </a>{" "}
+              and career opportunities across the MIKENOVA GROUP divisions are published on this website, our official
+              website.
             </p>
           </div>
         </div>
