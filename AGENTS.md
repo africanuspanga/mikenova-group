@@ -67,6 +67,7 @@ MIKENOVA GROUP is a multi-divisional business portfolio website for a Tanzanian 
 │   │   ├── philosophy.tsx            # Brand story / "House of MIKENOVA"
 │   │   ├── flagship-brand.tsx        # Goddess Glow signature brand feature
 │   │   ├── product-collection.tsx    # Goddess Glow product grid
+│   │   ├── coming-soon.tsx           # Coming-soon products (Bellela, Meloura)
 │   │   ├── golden-edition-promo.tsx  # Golden Edition promotional feature
 │   │   ├── authenticity-guide.tsx    # Original product authenticity guide
 │   │   ├── divisions-showcase.tsx    # 12-division horizontal gallery
@@ -136,7 +137,8 @@ MIKENOVA GROUP is a multi-divisional business portfolio website for a Tanzanian 
 │
 ├── lib/
 │   ├── utils.ts                      # `cn()` utility (clsx + tailwind-merge)
-│   └── products-store.ts             # Product data model + localStorage CRUD + admin auth
+│   ├── products-store.ts             # Product data model + localStorage CRUD + admin auth
+│   └── coming-soon.ts                # Coming-soon products, shared by /products and homepage
 │
 ├── public/                           # Static assets (see full listing below)
 │   ├── arrivals/                     # 8 new arrival images
@@ -241,7 +243,7 @@ Apply serif with `font-serif`, sans with `font-sans`.
 | `/` | `app/page.tsx` | Server | Homepage: multi-video hero, philosophy, Goddess Glow flagship, collection, Golden Edition promo, authenticity guide, divisions, partners, testimonials, CTA |
 | `/about` | `app/about/page.tsx` | Server | About: company overview, mission/vision, 4 core values |
 | `/services` | `app/services/page.tsx` | Server | Services: 12 divisions with descriptions |
-| `/products` | `app/products/page.tsx` | Server | Product catalog: 36 inquiry products, category filter |
+| `/products` | `app/products/page.tsx` | Client | Product catalog: inquiry products + coming-soon products (from `lib/coming-soon.ts`), category filter |
 | `/goddess-glow` | `app/goddess-glow/page.tsx` | **Client** | E-commerce: product grid, cart, payment flow |
 | `/blog` | `app/blog/page.tsx` | Server | Blog listing: 5 posts |
 | `/blog/[slug]` | `app/blog/[slug]/page.tsx` | Server | Blog post: 8 hardcoded posts with HTML content |
@@ -660,6 +662,9 @@ ALL interactive elements MUST have `touch-manipulation` class:
 }
 ```
 3. Clear browser localStorage (`"goddess-glow-products"`) or test in incognito
+
+### Coming-Soon Products
+`lib/coming-soon.ts` lists announced products (currently Bellela Face Cream and Meloura Rich Moisture Body Cream). They show on `/products` (Coming Soon badge, WhatsApp "Notify Me") and in the homepage `ComingSoon` section. When one goes on sale, remove it from that list and add it to the shop. Both already have HAKIKI stickers: batches `Q4-2026-BELLELA-FACE` and `Q4-2026-MELOURA-300`, 5,000 units each, under the HAKIKI company now named "MIKENOVA GROUP" (slug still `goddess-glow`).
 
 ### Update Contact Information
 Update in ALL of these files:

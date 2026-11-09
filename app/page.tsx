@@ -6,6 +6,7 @@ import { Philosophy } from "@/app/sections/philosophy"
 import { FlagshipBrand } from "@/app/sections/flagship-brand"
 import { GlowCampaign } from "@/app/sections/glow-campaign"
 import { ProductCollection } from "@/app/sections/product-collection"
+import { ComingSoon } from "@/app/sections/coming-soon"
 import { GoldenEditionPromo } from "@/app/sections/golden-edition-promo"
 import { DivisionsShowcase } from "@/app/sections/divisions-showcase"
 import { PartnersMarquee } from "@/app/sections/partners-marquee"
@@ -94,6 +95,7 @@ export default function HomePage() {
       <FlagshipBrand />
       <GlowCampaign />
       <ProductCollection />
+      <ComingSoon />
       <GoldenEditionPromo />
       <AuthenticityGuide />
       <DivisionsShowcase />

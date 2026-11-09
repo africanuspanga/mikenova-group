@@ -7,6 +7,7 @@ import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import { comingSoonProducts, notifyMeLink } from "@/lib/coming-soon"
 
 export default function ProductsPage() {
   const [activeCategory, setActiveCategory] = useState("all")
@@ -20,7 +21,15 @@ export default function ProductsPage() {
     { id: "dispensary", label: "DISPENSARY" },
   ]
 
-  const products = [
+  const products: { name: string; category: string; brand: string; image: string; comingSoon?: boolean }[] = [
+    // Coming soon
+    ...comingSoonProducts.map((p) => ({
+      name: p.name,
+      category: "cosmetics",
+      brand: p.brand,
+      image: p.image,
+      comingSoon: true,
+    })),
     // Cosmetics
     {
       name: "Luxury Face Serum",
@@ -261,6 +270,11 @@ export default function ProductsPage() {
                 className="bg-white border-[#D4D2CC] hover:shadow-xl transition-all duration-300 overflow-hidden group"
               >
                 <div className="aspect-square bg-white relative overflow-hidden flex items-center justify-center p-8">
+                  {product.comingSoon && (
+                    <span className="absolute top-4 left-4 z-10 bg-[#1B1A17] text-[#F0A500] text-[10px] font-semibold tracking-[0.2em] uppercase px-3 py-1.5">
+                      Coming Soon
+                    </span>
+                  )}
                   <img
                     src={product.image || "/placeholder.svg"}
                     alt={product.name}
@@ -270,13 +284,25 @@ export default function ProductsPage() {
                 <CardContent className="p-6">
                   <p className="text-xs text-[#6B6A67] mb-2 tracking-wider uppercase">{product.brand}</p>
                   <h3 className="font-serif text-lg text-[#1B1A17] mb-4 min-h-[3.5rem]">{product.name}</h3>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full border-[#F0A500] text-[#F0A500] hover:bg-[#F0A500] hover:text-[#1B1A17] font-medium tracking-wider transition-all duration-300 bg-transparent"
-                  >
-                    INQUIRE
-                  </Button>
+                  {product.comingSoon ? (
+                    <Button
+                      asChild
+                      size="sm"
+                      className="w-full bg-[#F0A500] text-[#1B1A17] hover:bg-[#F0A500]/90 font-medium tracking-wider transition-all duration-300 touch-manipulation"
+                    >
+                      <a href={notifyMeLink(product.name)} target="_blank" rel="noopener noreferrer">
+                        NOTIFY ME
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full border-[#F0A500] text-[#F0A500] hover:bg-[#F0A500] hover:text-[#1B1A17] font-medium tracking-wider transition-all duration-300 bg-transparent"
+                    >
+                      INQUIRE
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             ))}
