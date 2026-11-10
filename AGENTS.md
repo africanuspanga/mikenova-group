@@ -774,6 +774,7 @@ pnpm lint
 |----------|----------|---------|
 | `OPENAI_API_KEY` | Yes | Chatbot. If missing, chatbot falls back to contact info. |
 | `YOUTUBE_API_KEY` | No | YouTube Data API v3 key for `/videos` duration and view counts. Page works without it (shows title, thumbnail, description, date from RSS). |
+| `CRON_SECRET` | Recommended | Protects `/api/hakiki/keepalive/`, the daily Vercel Cron (`vercel.json`) that queries Supabase so the free plan never pauses for 7 days of inactivity. |
 
 ---
 
