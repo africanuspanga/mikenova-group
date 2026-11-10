@@ -27,6 +27,14 @@ export const comingSoonProducts: ComingSoonProduct[] = [
     description: "Rich moisture body cream that nourishes, softens and restores. 300g.",
     image: "/products/meloura-body-cream.webp",
   },
+  {
+    id: "meloura-body-serum",
+    name: "Meloura Brightening Body Serum",
+    brand: "Meloura",
+    tagline: "For Melanin-Rich Skin",
+    description: "Brightening body serum that evens tone, boosts glow, nourishes and softens. 100ml.",
+    image: "/products/meloura-body-serum.webp",
+  },
 ]
 
 export const notifyMeLink = (name: string) =>

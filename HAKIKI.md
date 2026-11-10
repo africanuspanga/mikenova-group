@@ -47,6 +47,9 @@ gets used walking a production line, not at a desk.
 4. **Download the print file** — CSV of serial, QR URL and scratch code, for the
    security printer's variable-data press. ADMIN role only, hashed and audited.
 5. **Apply the labels.** Nothing verifies as genuine yet.
+   Order 200 labels more than the production quantity (5,000 bottles → 5,200
+   labels). Bottles and cans get damaged on the line, and the packed ones are
+   the ones paid for, so the spare labels are the room for error.
 6. **Reconcile and activate** — 50,000 printed, maybe 49,873 actually reached a
    bottle. Activate by count or by pasting scanned serials. Then **void the remainder**.
 
@@ -337,6 +340,11 @@ node --experimental-strip-types --env-file=.env.local scripts/hakiki-sms-preview
 node --env-file=.env.local scripts/hakiki-create-batch.mjs \
   --batch=Q4-2026-GG-OIL --product=GG-OIL --quantity=20000 \
   --notes="Q4 Batch 2026 Goddess Glow Body Oil"
+
+# Add units to a batch that is not activated yet. Existing units are untouched.
+node --env-file=.env.local scripts/hakiki-create-batch.mjs --batch=Q4-2026-MELOURA-300 --add=200
+# then print with the --topup-since it reports, so the old PDFs stay identical
+# and the new units come out as the last file(s)
 
 # Label sheets: 45 x 40 mm, 4 across x 6 down, 24 to an A4 page, PDF included.
 node scripts/hakiki-print-sheet.mjs --specimen              # printer trial, nothing registered

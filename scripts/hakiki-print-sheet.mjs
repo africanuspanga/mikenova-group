@@ -67,6 +67,16 @@ const SPLIT = Number(arg("split", 0))
 /** Where the files land. Defaults to print/, overridden for real runs. */
 const OUT_DIR = arg("out", null)
 
+/**
+ * Units created at or after this time go last, after the rest of the batch.
+ *
+ * Units are laid out in serial order, and a top-up's random serials would
+ * otherwise land all through the run, shifting every label after the first
+ * one and making PDFs already sent to a printer wrong. With this, the first
+ * files come out identical and the top-up is only the tail.
+ */
+const TOPUP_SINCE = arg("topup-since", null)
+
 /** Keep PDFs already on disk whose page count checks out. */
 const RESUME = has("resume")
 
@@ -175,7 +185,7 @@ async function fromBatch(code) {
   for (let offset = 0; ; offset += PAGE) {
     const { data, error: unitError } = await db
       .from("auth_units")
-      .select("serial_number, public_token, secret_code_encrypted, status")
+      .select("serial_number, public_token, secret_code_encrypted, status, created_at")
       .eq("batch_id", batch.id)
       .order("serial_number")
       .range(offset, offset + PAGE - 1)
@@ -186,6 +196,15 @@ async function fromBatch(code) {
   }
 
   if (!units.length) throw new Error(`Batch ${code} has no generated units yet`)
+
+  if (TOPUP_SINCE) {
+    const since = new Date(TOPUP_SINCE).getTime()
+    if (Number.isNaN(since)) throw new Error(`--topup-since is not a date: ${TOPUP_SINCE}`)
+    const isTopUp = (u) => new Date(u.created_at).getTime() >= since
+    const added = units.filter(isTopUp)
+    units.splice(0, units.length, ...units.filter((u) => !isTopUp(u)), ...added)
+    console.log(`  top-up: ${added.length.toLocaleString()} units created since ${TOPUP_SINCE} go last`)
+  }
 
   const inactive = units.filter((u) => u.status !== "ACTIVE").length
 

@@ -7,6 +7,14 @@
  *     --quantity=10000 \
  *     --notes="Q4 Batch 2026 Goddess Glow Body Cream"
  *
+ * Top up a batch that has not been activated (production spoilage allowance):
+ *
+ *   node --env-file=.env.local scripts/hakiki-create-batch.mjs \
+ *     --batch=Q4-2026-MELOURA-300 --add=200
+ *
+ * The existing units are untouched, so labels already laid out stay valid.
+ * Print with --topup-since=<the time this prints> to put the new units last.
+ *
  * The batch is left in CODES_GENERATED. It is NOT activated, and that is the
  * whole point: a unit that is not ACTIVE answers NOT_ACTIVATED, so a roll of
  * labels that never reached a bottle authenticates nothing. Activation happens
@@ -28,18 +36,22 @@ const arg = (n, d) => {
 
 const BATCH_CODE = arg("batch", null)
 const PRODUCT_SKU = arg("product", null)
-const QUANTITY = Number(arg("quantity", 0))
+let QUANTITY = Number(arg("quantity", 0))
+const ADD = Number(arg("add", 0))
 const NOTES = arg("notes", "")
 const CODE_LENGTH = Number(arg("code-length", 10))
 const COMPANY_SLUG = arg("company", "goddess-glow")
 const EXPIRES = arg("expires", null)          // YYYY-MM-DD, or omitted for none
 const YES = process.argv.includes("--yes")
 
-if (!BATCH_CODE || !PRODUCT_SKU || !QUANTITY) {
-  console.error("\nusage: --batch=CODE --product=SKU --quantity=N [--notes=...] [--expires=YYYY-MM-DD] [--yes]\n")
+if (!BATCH_CODE || (!ADD && (!PRODUCT_SKU || !QUANTITY))) {
+  console.error("\nusage: --batch=CODE --product=SKU --quantity=N [--notes=...] [--expires=YYYY-MM-DD] [--yes]")
+  console.error("       --batch=CODE --add=N [--yes]   top up a batch that is not activated\n")
   process.exit(1)
 }
 if (CODE_LENGTH < 6 || CODE_LENGTH > 14) throw new Error("code-length must be between 6 and 14")
+
+const CHUNK_SIZE = 2500
 
 // ------------------------------------------------------------- identities
 const SERIAL_ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
@@ -81,6 +93,89 @@ function encryptCode(code) {
   return `v1:${iv.toString("hex")}:${cipher.getAuthTag().toString("hex")}:${ct.toString("hex")}`
 }
 
+// Every unique index (serial, public_token, secret hmac) can collide. At
+// 10,000 units in a 10-digit keyspace that is unlikely but not negligible,
+// and a silent duplicate secret would mean two bottles sharing one
+// identity — so the whole chunk is regenerated rather than patched.
+async function insertUnits(batch, product, size) {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const rows = Array.from({ length: size }, () => {
+      const code = generateScratchCode(batch.code_length)
+      return {
+        company_id: company.id,
+        product_id: product.id,
+        batch_id: batch.id,
+        serial_number: generateSerial(),
+        public_token: generatePublicToken(),
+        secret_code_hmac: hmacCode(code),
+        secret_code_encrypted: encryptCode(code),
+        status: "GENERATED",
+      }
+    })
+
+    const { error } = await db.from("auth_units").insert(rows)
+    if (!error) return
+    if (error.code !== "23505") throw new Error(error.message)
+    console.warn(`  identity collision, regenerating chunk (attempt ${attempt + 1})`)
+  }
+  throw new Error("Could not generate unique identities after several attempts")
+}
+
+/**
+ * Add units to an existing batch. Only before activation: once a batch is
+ * live, extra codes belong in a new batch so reconciliation stays honest.
+ */
+async function topUp() {
+  const { data: batch, error } = await db
+    .from("batches").select("*, products(id, name, size, sku)")
+    .eq("company_id", company.id).eq("batch_code", BATCH_CODE).single()
+  if (error || !batch) throw new Error(`Batch "${BATCH_CODE}" not found`)
+  if (batch.status !== "CODES_GENERATED" || batch.activated_quantity > 0) {
+    throw new Error(`Batch ${BATCH_CODE} is ${batch.status} with ${batch.activated_quantity} activated. Only an unactivated batch can be topped up.`)
+  }
+  const before = batch.generated_quantity
+  const target = before + ADD
+  const since = new Date().toISOString()
+
+  console.log(`
+  Batch        ${BATCH_CODE}  ${batch.products.name} ${batch.products.size ?? ""}
+  Units        ${before.toLocaleString()} -> ${target.toLocaleString()}  (+${ADD.toLocaleString()})
+  Existing units and their labels are not changed.
+`)
+  if (!YES) {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+    const answer = await rl.question(`  Type the batch code to confirm: `)
+    rl.close()
+    if (answer.trim() !== BATCH_CODE) {
+      console.log("\n  Did not match. Nothing was created.\n")
+      process.exit(1)
+    }
+  }
+
+  let generated = before
+  while (generated < target) {
+    const size = Math.min(target - generated, CHUNK_SIZE)
+    await insertUnits(batch, batch.products, size)
+    generated += size
+    await db.from("batches").update({ generated_quantity: generated, planned_quantity: Math.max(batch.planned_quantity, generated) }).eq("id", batch.id)
+    console.log(`  generated ${generated.toLocaleString()} / ${target.toLocaleString()}`)
+  }
+
+  const { count } = await db.from("auth_units")
+    .select("*", { count: "exact", head: true }).eq("batch_id", batch.id)
+  if (count !== target) {
+    console.error(`  !! expected ${target} units, found ${count}. Investigate before printing.\n`)
+    process.exit(1)
+  }
+  console.log(`
+  ${count.toLocaleString()} units in ${BATCH_CODE}, still NOT activated.
+
+  Next: node --env-file=.env.local scripts/hakiki-print-sheet.mjs --batch=${BATCH_CODE} \\
+          --topup-since=${since} --split=500 --resume --out=<folder with the existing PDFs>
+`)
+  process.exit(0)
+}
+
 // ------------------------------------------------------------------- run
 const { createClient } = await import("@supabase/supabase-js")
 const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
@@ -90,6 +185,8 @@ const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABA
 const { data: company, error: ce } = await db
   .from("companies").select("id, name").eq("slug", COMPANY_SLUG).single()
 if (ce || !company) throw new Error(`Company "${COMPANY_SLUG}" not found`)
+
+if (ADD) await topUp()
 
 const { data: product, error: pe } = await db
   .from("products").select("id, name, sku, size").eq("company_id", company.id).eq("sku", PRODUCT_SKU).single()
@@ -152,41 +249,13 @@ if (be) throw new Error(`Could not create batch: ${be.message}`)
 
 console.log(`\n  created batch ${BATCH_CODE}\n`)
 
-const CHUNK = 2500
 let generated = 0
 
 try {
   while (generated < QUANTITY) {
-    const size = Math.min(QUANTITY - generated, CHUNK)
-
-    // Every unique index (serial, public_token, secret hmac) can collide. At
-    // 10,000 units in a 10-digit keyspace that is unlikely but not negligible,
-    // and a silent duplicate secret would mean two bottles sharing one
-    // identity — so the whole chunk is regenerated rather than patched.
-    let inserted = 0
-    for (let attempt = 0; attempt < 6 && inserted === 0; attempt++) {
-      const rows = Array.from({ length: size }, () => {
-        const code = generateScratchCode(CODE_LENGTH)
-        return {
-          company_id: company.id,
-          product_id: product.id,
-          batch_id: batch.id,
-          serial_number: generateSerial(),
-          public_token: generatePublicToken(),
-          secret_code_hmac: hmacCode(code),
-          secret_code_encrypted: encryptCode(code),
-          status: "GENERATED",
-        }
-      })
-
-      const { error } = await db.from("auth_units").insert(rows)
-      if (!error) { inserted = size; break }
-      if (error.code !== "23505") throw new Error(error.message)
-      console.warn(`  identity collision, regenerating chunk (attempt ${attempt + 1})`)
-    }
-    if (inserted === 0) throw new Error("Could not generate unique identities after several attempts")
-
-    generated += inserted
+    const size = Math.min(QUANTITY - generated, CHUNK_SIZE)
+    await insertUnits(batch, product, size)
+    generated += size
     await db.from("batches").update({ generated_quantity: generated }).eq("id", batch.id)
     console.log(`  generated ${generated.toLocaleString()} / ${QUANTITY.toLocaleString()}`)
   }

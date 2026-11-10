@@ -1,6 +1,6 @@
 # MIKENOVA GROUP - Comprehensive Agent Documentation
 
-> Last updated: 2026-06-18
+> Last updated: 2026-11-10
 > This document is the single source of truth for AI agents working on this codebase.
 
 ---
@@ -664,7 +664,7 @@ ALL interactive elements MUST have `touch-manipulation` class:
 3. Clear browser localStorage (`"goddess-glow-products"`) or test in incognito
 
 ### Coming-Soon Products
-`lib/coming-soon.ts` lists announced products (currently Bellela Face Cream and Meloura Rich Moisture Body Cream). They show on `/products` (Coming Soon badge, WhatsApp "Notify Me") and in the homepage `ComingSoon` section. When one goes on sale, remove it from that list and add it to the shop. Both already have HAKIKI stickers: batches `Q4-2026-BELLELA-FACE` and `Q4-2026-MELOURA-300`, 5,000 units each, under the HAKIKI company now named "MIKENOVA GROUP" (slug still `goddess-glow`).
+`lib/coming-soon.ts` lists announced products (currently Bellela Face Cream, Meloura Rich Moisture Body Cream and Meloura Brightening Body Serum). They show on `/products` (Coming Soon badge, WhatsApp "Notify Me") and in the homepage `ComingSoon` section. When one goes on sale, remove it from that list and add it to the shop. All three already have HAKIKI stickers: batches `Q4-2026-BELLELA-FACE`, `Q4-2026-MELOURA-300` and `Q4-2026-MELOURA-SERUM-100`, 5,200 units each, under the HAKIKI company now named "MIKENOVA GROUP" (slug still `goddess-glow`). Sticker runs are ordered as the planned quantity plus 200 for bottles and cans damaged in production; the unused remainder is voided at reconciliation.
 
 ### Update Contact Information
 Update in ALL of these files:

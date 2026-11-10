@@ -80,6 +80,9 @@ const products = [
   { name: "Meloura Rich Moisture Body Cream", sku: "MELOURA-300", size: "300g",
     description: "Rich moisture body cream for melanin-rich skin. Nourishes, softens, restores.",
     image_url: "/products/meloura-body-cream.webp" },
+  { name: "Meloura Brightening Body Serum", sku: "MELOURA-SERUM-100", size: "100ml",
+    description: "Brightening body serum for melanin-rich skin. Evens tone, boosts glow, nourishes and softens.",
+    image_url: "/products/meloura-body-serum.webp" },
 ]
 
 for (const product of products) {
