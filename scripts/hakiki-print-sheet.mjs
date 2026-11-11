@@ -74,8 +74,18 @@ const OUT_DIR = arg("out", null)
  * otherwise land all through the run, shifting every label after the first
  * one and making PDFs already sent to a printer wrong. With this, the first
  * files come out identical and the top-up is only the tail.
+ *
+ * A batch topped up more than once takes a comma-separated list, one time per
+ * top-up, so every earlier tier keeps its place: --topup-since=T1,T2
  */
 const TOPUP_SINCE = arg("topup-since", null)
+
+/**
+ * Lay out only units after this position. For a top-up whose earlier labels
+ * are already printed: slices start here, so the new files never repeat a
+ * label from the old last file. The CSV still covers the whole batch.
+ */
+const FROM = Number(arg("from", 0))
 
 /** Keep PDFs already on disk whose page count checks out. */
 const RESUME = has("resume")
@@ -198,12 +208,17 @@ async function fromBatch(code) {
   if (!units.length) throw new Error(`Batch ${code} has no generated units yet`)
 
   if (TOPUP_SINCE) {
-    const since = new Date(TOPUP_SINCE).getTime()
-    if (Number.isNaN(since)) throw new Error(`--topup-since is not a date: ${TOPUP_SINCE}`)
-    const isTopUp = (u) => new Date(u.created_at).getTime() >= since
-    const added = units.filter(isTopUp)
-    units.splice(0, units.length, ...units.filter((u) => !isTopUp(u)), ...added)
-    console.log(`  top-up: ${added.length.toLocaleString()} units created since ${TOPUP_SINCE} go last`)
+    const sinces = TOPUP_SINCE.split(",").map((t) => {
+      const ms = new Date(t).getTime()
+      if (Number.isNaN(ms)) throw new Error(`--topup-since is not a date: ${t}`)
+      return ms
+    }).sort((a, b) => a - b)
+    // Tier 0 is the original run, tier n the nth top-up. Serial order within a tier.
+    const tier = (u) => sinces.filter((ms) => new Date(u.created_at).getTime() >= ms).length
+    const tiers = Array.from({ length: sinces.length + 1 }, () => [])
+    for (const u of units) tiers[tier(u)].push(u)
+    units.splice(0, units.length, ...tiers.flat())
+    console.log(`  top-up tiers: ${tiers.map((t) => t.length.toLocaleString()).join(" + ")}`)
   }
 
   const inactive = units.filter((u) => u.status !== "ACTIVE").length
@@ -580,7 +595,8 @@ async function build() {
   const limit = Math.min(source.units.length, PAGES === Infinity ? source.units.length : PAGES * PER_PAGE)
   const chunkSize = SPLIT > 0 ? SPLIT : limit
   const slices = []
-  for (let start = 0; start < limit; start += chunkSize) {
+  if (FROM >= limit) throw new Error(`--from=${FROM} leaves nothing to lay out (${limit} units)`)
+  for (let start = FROM; start < limit; start += chunkSize) {
     slices.push([start, Math.min(start + chunkSize, limit)])
   }
 

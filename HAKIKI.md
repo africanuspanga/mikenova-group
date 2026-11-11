@@ -346,6 +346,14 @@ node --env-file=.env.local scripts/hakiki-create-batch.mjs --batch=Q4-2026-MELOU
 # then print with the --topup-since it reports, so the old PDFs stay identical
 # and the new units come out as the last file(s)
 
+# A batch topped up more than once: one --topup-since time per top-up, comma
+# separated, so each earlier tier keeps its place. --from=N lays out only the
+# labels after N, so new files start where the printed ones stopped and never
+# repeat a label (the CSV still covers the whole batch).
+node --env-file=.env.local scripts/hakiki-print-sheet.mjs --batch=Q4-2026-MELOURA-300 \
+  --topup-since=2026-11-10T07:00:00Z,2026-11-11T08:54:45.092Z --from=5200 --split=500 \
+  --resume --out="print/final print/meloura-body-cream/pdf-topup-2026-11-11"
+
 # Label sheets: 45 x 40 mm, 4 across x 6 down, 24 to an A4 page, PDF included.
 node scripts/hakiki-print-sheet.mjs --specimen              # printer trial, nothing registered
 node --env-file=.env.local scripts/hakiki-print-sheet.mjs --test        # 24 LIVE labels, one page
