@@ -728,6 +728,9 @@ When admin uploads images, `FileReader.readAsDataURL()` stores base64 strings di
 ### ⚠️ No image optimization
 `next.config.mjs` has `images: { unoptimized: true }`. Next.js Image Optimization API is disabled. Images are served as static files.
 
+### ⚠️ Hero videos must never play off screen
+In-app browsers on iPhone (WhatsApp, Facebook, Instagram) ignore `playsInline`, so any `video.play()` opens the video full screen over the page. `app/sections/hero.tsx` therefore shows the poster stills instead of video in those browsers (user agent without a `Safari/` token), exits and switches to stills if a video still goes full screen, and pauses the video and slider whenever the hero is off screen or the tab is hidden. The `/goddess-glow` promo video also pauses when scrolled out of view. Keep these guards when editing either video.
+
 ### ⚠️ Cart is NOT persisted
 The shopping cart is pure React state. Refreshing the page clears the cart. This is intentional but important to know.
 

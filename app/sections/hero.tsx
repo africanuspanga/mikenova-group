@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, ChevronDown, Play, Pause } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -22,12 +23,29 @@ const heroVideos = [
 
 const SLIDE_DURATION = 10000 // 10 seconds per video
 
+// In-app browsers on iPhone (WhatsApp, Facebook, Instagram…) run on WKWebView
+// and often refuse inline playback: every play() call opens the video full
+// screen, over whatever the visitor is reading. Their user agent lacks the
+// "Safari" token that real Safari, Chrome iOS and Firefox iOS all carry.
+function isIosInAppBrowser() {
+  const ua = navigator.userAgent
+  const isIos = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  return isIos && !/Safari\//.test(ua)
+}
+
+type WebkitVideo = HTMLVideoElement & { webkitExitFullscreen?: () => void }
+
 export function Hero() {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isLoaded, setIsLoaded] = useState<boolean[]>(heroVideos.map(() => false))
   const [isPlaying, setIsPlaying] = useState(true)
+  // The hero only plays while it is on screen and the tab is visible
+  const [isInView, setIsInView] = useState(true)
+  const [isPageVisible, setIsPageVisible] = useState(true)
+  // Show the poster stills instead of video where video can't stay inline
+  const [useStills, setUseStills] = useState(false)
+  const sectionRef = useRef<HTMLElement | null>(null)
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const shownIndexRef = useRef(-1)
 
   const goToSlide = useCallback((index: number) => {
     setCurrentIndex(index)
@@ -37,25 +55,45 @@ export function Hero() {
     setCurrentIndex((prev) => (prev + 1) % heroVideos.length)
   }, [])
 
-  // Auto-advance slides
   useEffect(() => {
-    if (!isPlaying) return
+    if (isIosInAppBrowser()) setUseStills(true)
+  }, [])
 
-    intervalRef.current = setInterval(() => {
-      nextSlide()
-    }, SLIDE_DURATION)
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-  }, [isPlaying, nextSlide])
-
-  // Manage video playback based on active slide
   useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting))
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const onVisibilityChange = () => setIsPageVisible(document.visibilityState === "visible")
+    onVisibilityChange()
+    document.addEventListener("visibilitychange", onVisibilityChange)
+    return () => document.removeEventListener("visibilitychange", onVisibilityChange)
+  }, [])
+
+  const isActive = isInView && isPageVisible
+
+  // Auto-advance slides, only while the hero is being looked at
+  useEffect(() => {
+    if (!isPlaying || !isActive) return
+    const interval = setInterval(nextSlide, SLIDE_DURATION)
+    return () => clearInterval(interval)
+  }, [isPlaying, isActive, nextSlide])
+
+  // Play the active slide's video; pause everything once the hero is off screen
+  useEffect(() => {
+    // Check the browser here too: on first render the stills state hasn't been set yet
+    if (useStills || isIosInAppBrowser()) return
     videoRefs.current.forEach((video, index) => {
       if (!video) return
-      if (index === currentIndex) {
-        video.currentTime = 0
+      if (index === currentIndex && isActive) {
+        if (shownIndexRef.current !== index) {
+          video.currentTime = 0
+          shownIndexRef.current = index
+        }
         video.play().catch(() => {
           // Autoplay may be blocked; poster will show
         })
@@ -63,18 +101,34 @@ export function Hero() {
         video.pause()
       }
     })
-  }, [currentIndex])
+  }, [currentIndex, isActive, useStills])
 
-  const handleVideoLoaded = (index: number) => {
-    setIsLoaded((prev) => {
-      const next = [...prev]
-      next[index] = true
-      return next
-    })
-  }
+  // Last line of defence: if a browser still takes the background video full
+  // screen, close it and switch to stills for the rest of the visit
+  const handleForcedFullscreen = useCallback((event: Event) => {
+    const video = event.currentTarget as WebkitVideo
+    video.pause()
+    video.webkitExitFullscreen?.()
+    setUseStills(true)
+  }, [])
+
+  const videoRefCallbacks = useMemo(
+    () =>
+      heroVideos.map((_, index) => (el: HTMLVideoElement | null) => {
+        const previous = videoRefs.current[index]
+        if (previous && previous !== el) previous.removeEventListener("webkitbeginfullscreen", handleForcedFullscreen)
+        videoRefs.current[index] = el
+        if (!el) return
+        // React doesn't always write the muted attribute; iOS needs it for inline autoplay
+        el.muted = true
+        el.defaultMuted = true
+        el.addEventListener("webkitbeginfullscreen", handleForcedFullscreen)
+      }),
+    [handleForcedFullscreen]
+  )
 
   return (
-    <section className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
+    <section ref={sectionRef} className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Video Background Slider */}
       <div className="absolute inset-0 animate-ken-burns will-change-transform">
         <AnimatePresence mode="sync">
@@ -88,21 +142,30 @@ export function Hero() {
                 transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
                 className="absolute inset-0"
               >
-                <video
-                  ref={(el) => {
-                    videoRefs.current[index] = el
-                  }}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  poster={video.poster}
-                  onLoadedData={() => handleVideoLoaded(index)}
-                  className="absolute inset-0 w-full h-full object-cover"
-                >
-                  <source src={video.src} type="video/mp4" />
-                </video>
+                {useStills ? (
+                  <Image
+                    src={video.poster}
+                    alt=""
+                    fill
+                    priority={index === 0}
+                    sizes="100vw"
+                    className="object-cover"
+                  />
+                ) : (
+                  <video
+                    ref={videoRefCallbacks[index]}
+                    muted
+                    loop
+                    playsInline
+                    disablePictureInPicture
+                    disableRemotePlayback
+                    preload="auto"
+                    poster={video.poster}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  >
+                    <source src={video.src} type="video/mp4" />
+                  </video>
+                )}
               </motion.div>
             ) : null
           )}

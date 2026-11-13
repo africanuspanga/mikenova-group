@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -126,6 +126,19 @@ export default function GoddessGlowPage() {
   const [showBankDetails, setShowBankDetails] = useState(false)
   const [showConfirmationForm, setShowConfirmationForm] = useState(false)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+
+  // Pause the promo video once it scrolls out of view so browsers don't
+  // pop it out into a floating player over the rest of the page
+  const promoObserverRef = useRef<IntersectionObserver | null>(null)
+  const promoVideoRef = useCallback((video: HTMLVideoElement | null) => {
+    promoObserverRef.current?.disconnect()
+    promoObserverRef.current = null
+    if (!video) return
+    promoObserverRef.current = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) video.pause()
+    })
+    promoObserverRef.current.observe(video)
+  }, [])
   const [confirmationData, setConfirmationData] = useState({
     name: "",
     phone: "",
@@ -437,6 +450,7 @@ export default function GoddessGlowPage() {
                 </div>
               ) : (
                 <video
+                  ref={promoVideoRef}
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/promo%20video-XwIGcoZzWkdIGf3tXnbTNxVgHCMqtX.mp4"
                   controls
                   autoPlay
